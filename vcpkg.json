@@ -1,0 +1,13 @@
+{
+  "name": "openglproject",
+  "dependencies": [
+    "opengl",
+    "glm",
+    "glfw3",
+    "glew",
+    {
+      "name": "imgui",
+      "features": ["glfw-binding","opengl3-binding"]
+    }
+  ]
+}
