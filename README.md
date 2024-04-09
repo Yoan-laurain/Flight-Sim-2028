@@ -7,8 +7,8 @@
 <div align="center">
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+![GitHub repo size](https://img.shields.io/github/repo-size/Yoan-laurain/Flight-Sim-2028?style=flat&logo=github&logoColor=whitesmoke&label=Repo%20Size)
+![GitHub repo contributors](https://img.shields.io/github/contributors-anon/Yoan-laurain/Flight-Sim-2028?style=flat&label=Contributors)
 
 </div>
 
@@ -16,7 +16,7 @@
 
 👩‍💻 Bienvenue sur Flight Sim 2028 ! Un création originale ! euhh enfin presque.. 😅
 
-👨‍🎓 Nous sommes 3 étudiants Bac+5 et nous devons réaliser un projet de génération procédurale en 1 mois ! 
+👨‍🎓 Nous sommes 3 étudiants en Bac+5 et nous devons réaliser un projet de génération procédurale en 1 mois ! 
 
 <br/>
 
@@ -31,7 +31,7 @@
 ## 🚀 Build
 
 ```
-Pour build le project lancer le Build.bat
+Pour build le project lancer le build.bat
 ```
 
 ## A propos du projet ! 😄
@@ -47,6 +47,8 @@ Voici les objectifs :
 ⚙️ Avoir une interfaçe qui permet de changer les paramètres de la génération.
   
 🔍 Pouvoir voir le nombre de primitives et le frame rate.
+
+⛔ GLM interdit
 
 ## Contributeurs
 
