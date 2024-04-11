@@ -11,7 +11,6 @@ set(CMAKE_CXX_STANDARD 20)
 # vcpkg dependencies
 find_package(OpenGL REQUIRED)
 find_package(imgui CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
 
