@@ -1,4 +1,4 @@
-![LogoFlightSim](https://github.com/Yoan-laurain/OpenGLDiscovery/assets/80961060/259cda0e-d648-4415-9fb3-07b687e93cdb)
+![LogoFlightSim](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/70f84e5e-aa0d-4b12-8426-4a97735e9f00)
 
 #
 
