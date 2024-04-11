@@ -43,7 +43,6 @@ target_link_libraries(OpenGLProject
     PUBLIC
         OpenGL::GL
 	glfw
-        glm::glm
 	GLEW::GLEW
 	imgui::imgui
 )
