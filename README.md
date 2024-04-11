@@ -14,7 +14,7 @@
 
 <br/>
 
-👩‍💻 Bienvenue sur Flight Sim 2028 ! Un création originale ! euhh enfin presque.. 😅
+👩‍💻 Bienvenue sur Flight Sim 2028 ! Une création originale ! euhh enfin presque.. 😅
 
 👨‍🎓 Nous sommes 3 étudiants en Bac+5 et nous devons réaliser un projet de génération procédurale en 1 mois ! 
 
@@ -44,7 +44,7 @@ Voici les objectifs :
 
 ✈️ Pouvoir bouger la caméra dans le monde.
 
-⚙️ Avoir une interfaçe qui permet de changer les paramètres de la génération.
+⚙️ Avoir une interface qui permet de changer les paramètres de la génération.
   
 🔍 Pouvoir voir le nombre de primitives et le frame rate.
 
