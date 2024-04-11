@@ -2,7 +2,6 @@
   "name": "openglproject",
   "dependencies": [
     "opengl",
-    "glm",
     "glfw3",
     "glew",
     {
