@@ -6,8 +6,8 @@
 #include "../Managers/BatchRenderer.h"
 #include "../OpenGL/VertexBuffer/VertexBuffer.h"
 #include "../Model/Model.h"
+#include "Library/Math.h"
 
-#include <glm/ext.hpp>
 #include <fstream>
 
 std::string Get_file_contents(const char* filename)
@@ -61,11 +61,11 @@ void ModelLoader::LoadMesh(const unsigned int indMesh)
 
 	// Use accessor indices to get all vertices components
 	std::vector<float> posVec = GetFloats(m_JSON["accessors"][posAccInd]);
-	std::vector<glm::vec3> positions = GroupFloatsVec3(posVec);
+	std::vector<Vec3<float>> positions = GroupFloatsVec3(posVec);
 	std::vector<float> normalVec = GetFloats(m_JSON["accessors"][normalAccInd]);
-	std::vector<glm::vec3> normals = GroupFloatsVec3(normalVec);
+	std::vector<Vec3<float>> normals = GroupFloatsVec3(normalVec);
 	std::vector<float> texVec = GetFloats(m_JSON["accessors"][texAccInd]);
-	std::vector<glm::vec2> texUVs = GroupFloatsVec2(texVec);
+	std::vector<Vec2<float>> texUVs = GroupFloatsVec2(texVec);
 	
 	// Combine all the vertex components and also get the indices and textures
 	std::vector<Vertex> vertices = AssembleVertices(positions, normals, texUVs);
@@ -83,22 +83,22 @@ void ModelLoader::LoadMesh(const unsigned int indMesh)
 	m_Model->m_Meshes.emplace_back(std::make_unique<Mesh>(vertices, indices, textures, m_MatricesMeshes.back()));
 }
 
-void ModelLoader::TraverseNode(const unsigned int nextNode, const glm::mat4& matrix)
+void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& matrix)
 {
 	// Current node
 	json node = m_JSON["nodes"][nextNode];
 
 	// Get translation if it exists
-	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+	Vec3<float> translation = Vec3<float>(0.0f, 0.0f, 0.0f);
 	if (node.find("translation") != node.end())
 	{
 		float transValues[3];
 		for (unsigned int i = 0; i < node["translation"].size(); i++)
 			transValues[i] = (node["translation"][i]);
-		translation = glm::make_vec3(transValues);
+		translation = Math::make_vec3(transValues);
 	}
 	// Get quaternion if it exists
-	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	Quaternion rotation = Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
 	if (node.find("rotation") != node.end())
 	{
 		float rotValues[4] =
@@ -108,32 +108,32 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const glm::mat4& mat
 			node["rotation"][1],
 			node["rotation"][2]
 		};
-		rotation = glm::make_quat(rotValues);
+		rotation = Math::make_quaternion(rotValues);
 	}
 	// Get scale if it exists
-	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	Vec3<float> scale(1.0f, 1.0f, 1.0f);
 	if (node.find("scale") != node.end())
 	{
 		float scaleValues[3];
 		for (unsigned int i = 0; i < node["scale"].size(); i++)
 			scaleValues[i] = (node["scale"][i]);
-		scale = glm::make_vec3(scaleValues);
+		scale = Math::make_vec3(scaleValues);
 	}
 	// Get matrix if it exists
-	glm::mat4 matNode = glm::mat4(1.0f);
+	Mat4<float> matNode = Mat4<float>(1.0f);
 	if (node.find("matrix") != node.end())
 	{
 		float matValues[16];
 		for (unsigned int i = 0; i < node["matrix"].size(); i++)
 			matValues[i] = (node["matrix"][i]);
-		matNode = glm::make_mat4(matValues);
+		matNode = Math::make_mat4(matValues);
 	}
 
-	const glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
-	const glm::mat4 rot = glm::mat4_cast(rotation);
-	const glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
+	const Mat4<float> trans = Math::translate(Mat4<float>(1.0f), translation);
+	const Mat4<float> rot = Math::mat4_cast(rotation);
+	const Mat4<float> sca = Math::Scale(Mat4(1.0f), scale);
 
-	const glm::mat4 matNextNode = matrix * matNode * trans * rot * sca;
+	const Mat4<float> matNextNode = matrix * matNode * trans * rot * sca;
 
 	// Check if the node contains a mesh and if it does load it
 	if (node.find("mesh") != node.end())
@@ -305,20 +305,20 @@ std::vector<Texture> ModelLoader::GetTextures()
 	return textures;
 }
 
-std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec2>& texUVs )
+std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<Vec3<float>>& positions, const std::vector<Vec3<float>>& normals, const std::vector<Vec2<float>>& texUVs )
 {
 	std::vector<Vertex> vertices;
 	for (int i = 0; i < positions.size(); i++)
 	{
-		vertices.emplace_back(positions[i], normals[i], glm::vec3(1.0f, 1.0f, 1.0f), texUVs[i]
+		vertices.emplace_back(positions[i], normals[i], Vec3<float>(1.0f, 1.0f, 1.0f), texUVs[i]
 		);
 	}
 	return vertices;
 }
 
-std::vector<glm::vec2> ModelLoader::GroupFloatsVec2(const std::vector<float>& floatVec)
+std::vector<Vec2<float>> ModelLoader::GroupFloatsVec2(const std::vector<float>& floatVec)
 {
-	std::vector<glm::vec2> vectors;
+	std::vector<Vec2<float>> vectors;
 	for (int i = 0; i < floatVec.size(); i)
 	{
 		vectors.emplace_back(floatVec[i++], floatVec[i++]);
@@ -326,9 +326,9 @@ std::vector<glm::vec2> ModelLoader::GroupFloatsVec2(const std::vector<float>& fl
 	return vectors;
 }
 
-std::vector<glm::vec3> ModelLoader::GroupFloatsVec3(const std::vector<float>& floatVec)
+std::vector<Vec3<float>> ModelLoader::GroupFloatsVec3(const std::vector<float>& floatVec)
 {
-	std::vector<glm::vec3> vectors;
+	std::vector<Vec3<float>> vectors;
 	for (int i = 0; i < floatVec.size(); i)
 	{
 		vectors.emplace_back(floatVec[i++], floatVec[i++], floatVec[i++]);
@@ -336,9 +336,9 @@ std::vector<glm::vec3> ModelLoader::GroupFloatsVec3(const std::vector<float>& fl
 	return vectors;
 }
 
-std::vector<glm::vec4> ModelLoader::GroupFloatsVec4(const std::vector<float>& floatVec)
+std::vector<Vec4<float>> ModelLoader::GroupFloatsVec4(const std::vector<float>& floatVec)
 {
-	std::vector<glm::vec4> vectors;
+	std::vector<Vec4<float>> vectors;
 	for (int i = 0; i < floatVec.size(); i)
 	{
 		vectors.emplace_back(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]);

@@ -1,8 +1,8 @@
 #pragma once 
 
+#include "../../Library/coreMinimal.h"
 #include <string>
 #include <unordered_map>
-#include <glm/glm.hpp>
 
 struct ShaderProgramSource
 {
@@ -26,7 +26,7 @@ class Shader
 		void SetUniform1i(const std::string& name, int value);
 		void SetUniform1f(const std::string& name, float value);
 		void SetUniform1iv(const std::string& name, const std::vector<int>& value);
-		void SetUniformMat4fv(const std::string& name, const glm::mat4& matrix);
+		void SetUniformMat4fv(const std::string& name, const Mat4<float>& matrix);
 	
 		int GetUniformLocation(const std::string& name);
 

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "../Library/coreMinimal.h"
+
 #include <GLFW/glfw3.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -10,7 +11,7 @@ struct GLFWwindow;
 class Camera
 {
 	public:
-		Camera( int width, int height, glm::vec3 position);
+		Camera( int width, int height, const Vec3<float>& position);
 
 		void Update(GLFWwindow* window );
 
@@ -19,12 +20,12 @@ class Camera
 		*/
 		void Reset();
 
-		glm::vec3 m_Position;
-		glm::mat4 m_ViewMatrix;
-		glm::mat4 m_ProjectionMatrix;
-		glm::mat4 m_ViewProjectionMatrix;
-		glm::vec3 m_Rotation;
-		glm::vec3 m_Up;
+		Vec3<float> m_Position;
+		Mat4<float> m_ViewMatrix;
+		Mat4<float> m_ProjectionMatrix;
+		Mat4<float> m_ViewProjectionMatrix;
+		Vec3<float> m_Rotation;
+		Vec3<float> m_Up;
 
 		int m_Width;
 		int m_Height;
@@ -36,13 +37,13 @@ class Camera
 	private:
 
 		float m_Fov;
-		float m_Speed;
-		float m_Sensitivity;
+		float m_Speed{};
+		float m_Sensitivity{};
 
 		double m_BaseMouseX;
 		double m_BaseMouseY;
 
-		bool m_FirstClick;
+		bool m_FirstClick{};
 
 		void Inputs( GLFWwindow* window );
 		void HandleRotation( GLFWwindow* window );

@@ -1,9 +1,9 @@
 #pragma once
 
+#include "../Model/Model.h"
+
 #include <vector>
 #include <memory>
-
-#include "../Model/Model.h"
 
 class Terrain;
 class Mesh;

@@ -3,24 +3,22 @@
 #include "../OpenGL/Mesh/Mesh.h"
 #include "../Managers/BatchRenderer.h"
 #include "../Core/Application.h"
-
-#include <glm/ext.hpp>
-#include <iostream>
+#include "Library/Math.h"
 
 Model::Model(const char* file, const ShaderType shaderType)
 	: m_ShaderType(shaderType)
-	, m_Rotation(glm::vec3(0))
-	, m_Translation(glm::vec3(0))
-	, m_Scale(glm::vec3(1))
+	, m_Rotation(Vec3<float>(0))
+	, m_Translation(Vec3<float>(0))
+	, m_Scale(Vec3<float>(1))
 	, m_File(file)
 {
 }
 
 Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 	: m_ShaderType(shaderType)
-	, m_Rotation(glm::vec3(0.0f))
-	, m_Translation(glm::vec3(0.0f))
-	, m_Scale(glm::vec3(1.0f))
+	, m_Rotation(Vec3<float>(0.0f))
+	, m_Translation(Vec3<float>(0.0f))
+	, m_Scale(Vec3<float>(1.0f))
 	, m_File(nullptr)
 {
 
@@ -56,7 +54,7 @@ void Model::Update()
 	for (const auto& Mesh : m_Meshes)
 	{
 		Mesh->m_Transform = m_Translation;
-		Mesh->m_Rotation = glm::quat(glm::radians(m_Rotation));
+		Mesh->m_Rotation = Quaternion(Math::radians(m_Rotation));
 		Mesh->m_Scale = m_Scale;
 	}
 }
@@ -66,35 +64,35 @@ void Model::SendDataRender()
 	Application::Get()->GetBatchRenderer()->AddNewMesh(this, m_Meshes.back().get());
 }
 
-void Model::SetRotation(const glm::vec3 rotation)
+void Model::SetRotation(const Vec3<float> rotation)
 {
 	m_Rotation = rotation;
 	Update();
 }
 
-void Model::SetTranslation(const glm::vec3 translation)
+void Model::SetTranslation(const Vec3<float> translation)
 {
 	m_Translation = translation;
 	Update();
 }
 
-void Model::SetScale(const glm::vec3 scale)
+void Model::SetScale(const Vec3<float> scale)
 {
 	m_Scale = scale;
 	Update();
 }
 
-glm::vec3& Model::GetRotation()
+Vec3<float>& Model::GetRotation()
 {
 	return m_Rotation;
 }
 
-glm::vec3& Model::GetTranslation()
+Vec3<float>& Model::GetTranslation()
 {
 	return m_Translation;
 }
 
-glm::vec3& Model::GetScale()
+Vec3<float>& Model::GetScale()
 {
 	return m_Scale;
 }

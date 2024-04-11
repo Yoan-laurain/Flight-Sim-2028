@@ -1,8 +1,8 @@
 #pragma once
 
+#include "../Library/coreMinimal.h"
 #include <vector>
 #include <memory>
-#include <glm/glm.hpp>
 
 enum class ShaderType;
 
@@ -25,13 +25,13 @@ class Model
 		virtual void Update();
 		void SendDataRender(); 
 	
-		void SetRotation(glm::vec3 rotation);
-		void SetTranslation(glm::vec3 translation);
-		void SetScale(glm::vec3 scale);
+		void SetRotation(Vec3<float> rotation);
+		void SetTranslation(Vec3<float> translation);
+		void SetScale(Vec3<float> scale);
 
-		glm::vec3& GetRotation();
-		glm::vec3& GetTranslation();
-		glm::vec3& GetScale();
+		Vec3<float>& GetRotation();
+		Vec3<float>& GetTranslation();
+		Vec3<float>& GetScale();
 		
 		ShaderType m_ShaderType;
 	
@@ -39,8 +39,8 @@ class Model
 
 	private:
 	
-		glm::vec3 m_Rotation;
-		glm::vec3 m_Translation;
-		glm::vec3 m_Scale;
+		Vec3<float> m_Rotation;
+		Vec3<float> m_Translation;
+		Vec3<float> m_Scale;
 		const char* m_File;
 };

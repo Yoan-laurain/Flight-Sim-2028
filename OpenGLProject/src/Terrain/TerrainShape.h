@@ -1,11 +1,13 @@
 ﻿#pragma once
 
+#include "../Library/coreMinimal.h"
 #include <vector>
 #include <memory>
-#include <glm/glm.hpp>
-#include "../OpenGL/Mesh/Mesh.h"
 
 enum class ShaderType;
+class Mesh;
+class Texture;
+struct Vertex;
 
 class Terrain
 {
@@ -19,9 +21,9 @@ public:
     void SetTexture(const std::vector<Texture>& textures);
     int GetNumberOfTriangles();
 
-    glm::vec3 m_Rotation;
-    glm::vec3 m_Translation;
-    glm::vec3 m_Scale;
+    Vec3<float> m_Rotation;
+    Vec3<float> m_Translation;
+    Vec3<float> m_Scale;
     ShaderType m_ShaderType;
 private:
     std::vector<Vertex> GenerateVertices(float size, int subdivisions);

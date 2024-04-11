@@ -1,9 +1,10 @@
 ﻿#pragma once
 
-#include <GL/glew.h>
+#include "../Library/coreMinimal.h"
 #include "Vendor/json/json.h"
+
+#include <GL/glew.h>
 #include <vector>
-#include <glm/glm.hpp>
 
 class Texture;
 class Model;
@@ -27,7 +28,7 @@ class ModelLoader
         void LoadMesh(unsigned int indMesh);
 
         // Traverses a node recursively, so it essentially traverses all connected nodes
-        void TraverseNode(unsigned int nextNode, const glm::mat4& matrix = glm::mat4(1.0f));
+        void TraverseNode(unsigned int nextNode, const Mat4<float>& matrix = Mat4<float>(1.0f));
 
         // Gets the binary data from a file
         std::vector<unsigned char> GetData();
@@ -38,22 +39,22 @@ class ModelLoader
         std::vector<Texture> GetTextures();
 
         // Assembles all the floats into vertices
-        std::vector<Vertex> AssembleVertices(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec2>& texUVs );
+        std::vector<Vertex> AssembleVertices(const std::vector<Vec3<float>>& positions, const std::vector<Vec3<float>>& normals, const std::vector<Vec2<float>>& texUVs );
 
         // Helps with the assembly from above by grouping floats
-        std::vector<glm::vec2> GroupFloatsVec2(const std::vector<float>& floatVec);
-        std::vector<glm::vec3> GroupFloatsVec3(const std::vector<float>& floatVec);
-        std::vector<glm::vec4> GroupFloatsVec4(const std::vector<float>& floatVec);
+        std::vector<Vec2<float>> GroupFloatsVec2(const std::vector<float>& floatVec);
+        std::vector<Vec3<float>> GroupFloatsVec3(const std::vector<float>& floatVec);
+        std::vector<Vec4<float>> GroupFloatsVec4(const std::vector<float>& floatVec);
 
         // Variables for easy access
         const char* m_File;
         std::vector<unsigned char> m_Data;
         json m_JSON;
 
-        std::vector<glm::vec3> m_TranslationsMeshes;
-        std::vector<glm::quat> m_RotationsMeshes;
-        std::vector<glm::vec3> m_ScalesMeshes;
-        std::vector<glm::mat4> m_MatricesMeshes;
+        std::vector<Vec3<float>> m_TranslationsMeshes;
+        std::vector<Quaternion<float>> m_RotationsMeshes;
+        std::vector<Vec3<float>> m_ScalesMeshes;
+        std::vector<Mat4<float>> m_MatricesMeshes;
 
         // Prevents textures from being loaded twice
         std::vector<std::string> m_LoadedTexName;

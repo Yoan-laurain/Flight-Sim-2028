@@ -1,14 +1,16 @@
 ﻿#include "TerrainShape.h"
-#include <vector>
 #include "../OpenGL/VertexBuffer/VertexBuffer.h"
 #include "../OpenGL/Textures/Texture.h"
 #include "../OpenGL/Mesh/Mesh.h"
 #include <memory>
+#include <vector>
+
+#include "Library/Math.h"
 
 Terrain::Terrain(float size, int subdivisions, ShaderType shaderType) :
-    m_Rotation(glm::vec3(0.0f))
-    , m_Translation(glm::vec3(0.0f))
-    , m_Scale(glm::vec3(1.0f)),
+    m_Rotation(Vec3<float>(0.0f))
+    , m_Translation(Vec3<float>(0.0f))
+    , m_Scale(Vec3<float>(1.0f)),
     m_Size(size), m_Subdivisions(subdivisions),m_ShaderType(shaderType)
 {
     std::vector<Vertex> vertices = GenerateVertices(size, subdivisions);
@@ -16,7 +18,7 @@ Terrain::Terrain(float size, int subdivisions, ShaderType shaderType) :
 
     std::vector<Texture> textures = {};
 
-    glm::mat4 model = glm::mat4(1.0f);
+    Mat4<float> model = Mat4<float>(1.0f);
 
     m_Mesh = std::make_unique<Mesh>(vertices, indices, textures, model);
 }
@@ -50,7 +52,7 @@ void Terrain::SetTexture(const std::vector<Texture>& textures)
 void Terrain::Update()
 {
     m_Mesh->m_Transform = m_Translation;
-    m_Mesh->m_Rotation = glm::quat(glm::radians(m_Rotation));
+    m_Mesh->m_Rotation = Quaternion(Math::radians(m_Rotation));
     m_Mesh->m_Scale = m_Scale;
 }
 
@@ -78,10 +80,10 @@ std::vector<Vertex> Terrain::GenerateVertices(float size, int subdivisions)
             float z = -halfSize + i * step;
             float y = 0.0f;
 
-            glm::vec3 position(x, y, z);
-            glm::vec3 normal(0.0f, 1.0f, 0.0f);
-            glm::vec3 color(1.0f); // Default white color
-            glm::vec2 texUV(static_cast<float>(j) / subdivisions, static_cast<float>(i) / subdivisions);
+            Vec3<float> position(x, y, z);
+            Vec3<float> normal(0.0f, 1.0f, 0.0f);
+            Vec3<float> color(1.0f); // Default white color
+            Vec2<float> texUV(static_cast<float>(j) / subdivisions, static_cast<float>(i) / subdivisions);
 
             vertices.emplace_back(position, normal, color, texUV);
         }
