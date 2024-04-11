@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 #include <GL/glew.h>
 
-Vertex::Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec3& color, const glm::vec2& texUV)
+Vertex::Vertex(const Vec3<float>& position, const Vec3<float>& normal, const Vec3<float>& color, const Vec2<float>& texUV)
     : m_Position( position )
     , m_Normal( normal )
     , m_Color( color )
@@ -12,11 +12,11 @@ Vertex::Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::ve
 {
 }
 
-Vertex::Vertex(const glm::vec3& position)
+Vertex::Vertex(const Vec3<float>& position)
     : m_Position(position)
-    , m_Normal(glm::vec3(0.0f))
-    , m_Color(glm::vec3(1.0f))
-    , m_TexUV(glm::vec2(0.0f))
+    , m_Normal(Vec3<float>(0.0f))
+    , m_Color(Vec3<float>(1.0f))
+    , m_TexUV(Vec2<float>(0.0f))
     , m_IndexModel(0)
     , m_IndexDiffuse(-1)
     , m_IndexSpecular(-1)

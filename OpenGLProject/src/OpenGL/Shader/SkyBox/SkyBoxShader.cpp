@@ -1,9 +1,9 @@
 #include "SkyBoxShader.h"
 #include "Core/Application.h"
 #include "Camera/Camera.h"
+#include "Library/Math.h"
 
 #include <GL/glew.h>
-#include <glm/ext/matrix_transform.hpp>
 
 SkyBoxShader::SkyBoxShader(const std::string& filepath) : Shader(filepath)
 {
@@ -18,7 +18,9 @@ void SkyBoxShader::OnBeforeDraw()
 
     const Camera& camera = *Application::Get()->GetCamera();
 
-    const glm::mat4 view = glm::mat4(glm::mat3(glm::lookAt(camera.m_Position, camera.m_Position + camera.m_Rotation, camera.m_Up)));
+    Mat3<float> a = Math::mat3_cast(Math::lookAtM4(camera.m_Position, camera.m_Position + camera.m_Rotation, camera.m_Up));
+    
+    const Mat4<float> view = Mat4(a);
     SetUniformMat4fv("u_View", view);
     
     SetUniformMat4fv("u_Projection", camera.m_ProjectionMatrix);

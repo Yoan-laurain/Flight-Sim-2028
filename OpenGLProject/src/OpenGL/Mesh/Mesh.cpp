@@ -5,12 +5,10 @@
 #include "OpenGL/VertexBuffer/VertexBuffer.h"
 #include "Config.h"
 
-#include <glm/gtc/type_ptr.hpp>
-
-Mesh::Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const glm::mat4& matrix)
-	: m_Transform( glm::vec3(0.0f) )
-	, m_Rotation( glm::quat(1.0f, 0.0f, 0.0f, 0.0f) )
-	, m_Scale( glm::vec3(1.0f) )
+Mesh::Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const Mat4<float>& matrix)
+	: m_Transform(Vec3<float>(0.0f) )
+	, m_Rotation( Quaternion<float>(1.0f, 0.0f, 0.0f, 0.0f) )
+	, m_Scale(Vec3<float>(1.0f) )
 	, m_Matrix(matrix)
 	, m_TriangleCount(0)
 	, m_Vertices(std::move(vertices))

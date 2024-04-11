@@ -12,6 +12,8 @@
 #include "../Renderer/Renderer.h"
 #include "../Model/Model.h"
 #include "../Config.h"
+#include "Library/Math.h"
+
 #include <vector>
 #include <chrono>
 #include <iostream>
@@ -252,9 +254,9 @@ void ShadersData::ExtractModelData()
         {
             TransformData transformData 
             {
-                glm::translate(glm::mat4(1.0f), model->GetTranslation()),
-                glm::mat4_cast(glm::quat(model->GetRotation())),
-                glm::scale(glm::mat4(1.0f), model->GetScale()),
+                Math::translate(Mat4(1.0f), model->GetTranslation()),
+                Math::mat4_cast(Quaternion(model->GetRotation())),
+                Math::Scale(Mat4<float>(1.0f), model->GetScale()),
                 mesh->m_Matrix
             };
 

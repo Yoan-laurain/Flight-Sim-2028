@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <glm/glm.hpp>
+#include "../Library/coreMinimal.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -21,10 +21,10 @@ enum class ShaderType;
 
 struct TransformData 
 {
-    glm::mat4 transform;
-    glm::mat4 rotation;
-    glm::mat4 scale;
-    glm::mat4 model;
+    Mat4<float> transform;
+    Mat4<float> rotation;
+    Mat4<float> scale;
+    Mat4<float> model;
 };
 
 struct ShadersData

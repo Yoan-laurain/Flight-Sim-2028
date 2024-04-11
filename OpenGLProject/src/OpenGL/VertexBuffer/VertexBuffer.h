@@ -1,17 +1,17 @@
 #pragma once
 
+#include "../../Library/coreMinimal.h"
 #include <vector>
-#include <glm/glm.hpp>
 
 struct Vertex
 {
-	Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec3& color, const glm::vec2& texUV);
-	explicit Vertex(const glm::vec3& position);
+	Vertex(const Vec3<float>& position, const Vec3<float>& normal, const Vec3<float>& color, const Vec2<float>& texUV);
+	explicit Vertex(const Vec3<float>& position);
 
-	glm::vec3 m_Position;
-	glm::vec3 m_Normal;
-	glm::vec3 m_Color;
-	glm::vec2 m_TexUV;
+	Vec3<float> m_Position;
+	Vec3<float> m_Normal;
+	Vec3<float> m_Color;
+	Vec2<float> m_TexUV;
 	
 	int m_IndexModel; 
 	int m_IndexDiffuse; 

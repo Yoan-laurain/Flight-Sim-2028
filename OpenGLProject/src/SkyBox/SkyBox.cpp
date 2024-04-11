@@ -5,16 +5,16 @@
 
 SkyBox::SkyBox()
 {
-    const std::vector<Vertex> vertices =
+    const std::vector vertices =
     {
-        Vertex(glm::vec3(-1.0f, -1.0f,  1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(1.0f, -1.0f,  1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f,  1.0f,  1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(1.0f,  1.0f,  1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(1.0f,  1.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f)),
-        Vertex(glm::vec3(-1.0f,  1.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec2(0.0f, 0.0f))
+        Vertex(Vec3(-1.0f, -1.0f,  1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(1.0f, -1.0f,  1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(1.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(-1.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(-1.0f,  1.0f,  1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(1.0f,  1.0f,  1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(1.0f,  1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f)),
+        Vertex(Vec3(-1.0f,  1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f),Vec3(0.0f, 0.0f, 0.0f),Vec2(0.0f, 0.0f))
     };
 
     const std::vector<unsigned int> indices =
@@ -57,7 +57,7 @@ SkyBox::SkyBox()
     m_Vertices = vertices;
     m_Indices = indices;
 
-    m_Matrix = glm::mat4(1.0f);
+    m_Matrix = Mat4(1.0f);
 }
 
 SkyBox::~SkyBox() = default;

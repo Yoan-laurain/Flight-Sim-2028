@@ -1,8 +1,8 @@
 #pragma once
 
+#include "../../Library/coreMinimal.h"
+
 #include <memory>
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <vector>
 
 class Texture;
@@ -12,15 +12,15 @@ class Mesh
 {
 	public:
 	
-		Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const glm::mat4& matrix);
+		Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const Mat4<float>& matrix);
 		Mesh(const Mesh&);
 		Mesh();
 		virtual ~Mesh();
 
-		glm::vec3 m_Transform;
-		glm::quat m_Rotation;
-		glm::vec3 m_Scale;
-		glm::mat4 m_Matrix;
+		Vec3<float> m_Transform;
+		Quaternion<float> m_Rotation;
+		Vec3<float> m_Scale;
+		Mat4<float> m_Matrix;
 		int m_TriangleCount;
 
 		std::vector<Vertex> m_Vertices;
