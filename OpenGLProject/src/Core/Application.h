@@ -51,7 +51,10 @@ class Application
         */
         void SetStencilTest( bool enable );
 
+        int GetMaxSlotForTextures();
+
     private:
+    
         GLFWwindow* CreateWindow(const char* title, int height, int width);
         void SetCurrentLevel(Level* level);
 
@@ -68,6 +71,7 @@ class Application
         std::unique_ptr<BatchRenderer> m_BatchRenderer;
 
         const char* m_AppIcon;
+        int MaxSlotForTextures;
 
         static Application* m_Instance;
 };

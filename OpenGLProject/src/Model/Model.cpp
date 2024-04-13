@@ -1,7 +1,7 @@
 #include "Model.h"
 #include "../OpenGL/VertexBuffer/VertexBuffer.h"
 #include "../OpenGL/Mesh/Mesh.h"
-#include "../Managers/BatchRenderer.h"
+#include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "../Core/Application.h"
 #include "Library/Math.h"
 

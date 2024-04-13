@@ -34,6 +34,7 @@ void Application::Run()
     InitImGui(window);
     
     SetFaceCulling(true);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MaxSlotForTextures);
 
     m_Renderer = std::make_unique<Renderer>();
     m_ShaderManager = std::make_unique<ShaderManager>();
@@ -232,4 +233,10 @@ void Application::SetStencilTest(const bool enable)
         glStencilMask(0x00);
         glDisable(GL_STENCIL_TEST);
     }
+}
+
+int Application::GetMaxSlotForTextures()
+{
+    //return MaxSlotForTextures;
+    return 2; // TODO : Fix this
 }

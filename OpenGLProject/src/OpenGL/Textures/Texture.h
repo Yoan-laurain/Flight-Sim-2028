@@ -3,15 +3,18 @@
 #include <GL/glew.h>
 #include <string>
 
+enum class ShaderType;
+
 class Texture
 {
 	public:
 
-		Texture(const char* image, const char* texType);
+		Texture(const char* image, const char* texType, const ShaderType shaderType);
 		Texture() = default; 
 		virtual ~Texture() = default;
 
 		virtual void Bind() const;
+		void Bind(int slot) const;
 		virtual void Unbind() const;
 
 		const char* GetType() const;

@@ -49,8 +49,8 @@ in vec2 v_TexCoord;
 flat in int v_IndexDiffuse;
 flat in int v_IndexSpecular;
 
-uniform sampler2D u_Diffuse[20];
-uniform sampler2D u_Specular[20];
+uniform sampler2D u_Diffuse[32];
+uniform sampler2D u_Specular[32];
 
 uniform vec3 u_CamPos;
 
