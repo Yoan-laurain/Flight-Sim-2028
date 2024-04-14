@@ -25,14 +25,15 @@ struct TransformData
     Mat4<float> scale;
     Mat4<float> model;
 };
-
+/*
+ * Todo : Adapt code to allow texture blending & multiple (diffuse or specular) textures per mesh 
+ */
 // TODO : Optimize draw call by regrouping same texture slot together
-// TODO : Check if multiple mesh in the same model does not break logic of model index
-struct ShadersData
+struct ShadersBuffer
 {
     public:
  
-        ShadersData(Mesh* mesh, Model* model, int index, int textureIndex = -1);
+        ShadersBuffer(Mesh* mesh, Model* model, int indexOfBuffer);
 
         /*
          * Create the vertex buffer, index buffer , shader storage buffer object and fill the arrays
@@ -43,7 +44,7 @@ struct ShadersData
         /*
          * Add a new mesh to the buffer
          */
-        void AddNewMesh(Mesh* mesh, Model* model, int textureIndex = -1);
+        void AddNewMesh(Mesh* mesh, Model* model);
 
         /*
          * Fill the arrays of diffuse and specular slot to use for this buffer
@@ -86,7 +87,7 @@ struct ShadersData
        /*
        * Add the textures of the mesh to the list of textures of the buffer
        */
-       void AddTexture(std::unordered_map<std::string,Texture>& textures, Texture* texture);
+       void AddTexture(std::unordered_map<std::string,Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture);
 
        /*
         * Fill the transform data array for the buffer to be used by SSBO to send data to the shader
@@ -102,17 +103,29 @@ struct ShadersData
        /*
        * Set the index of Specular and diffuse texture to use for the current mesh
        */
-       void SetIndexOfTextures(Mesh* mesh, int index = -1);
+       void SetIndexOfTextures(Mesh* mesh);
 
        /*
-       * Get the index of the texture if it already exist, otherwise return -1 to reuse same textures
+       * Get the index of the texture if it already exist, otherwise return the next available slot
        */
-       int GetIndexOfTextureIfAlreadyExisting(const Mesh* mesh, bool isSpecular);
+       int GetSlotForTexture(const Mesh* mesh, bool isSpecular);
 
         /*
         * Adapt the indices buffer of the current mesh to match offset apply by the existence of other meshes
         */
         void InsertIndices(const Mesh* mesh);
+
+        /*
+        * Set the index of the model associated to this mesh to allow shader to determine which values to use in the arrays
+        */
+        void SetModelIndexForVertexBuffers(Mesh* mesh);
+
+        /*
+         * Set the textures uniforms and bind the textures to the shader for the specified array of textures
+         */
+        void SetUniformAndBind(Shader* shader, const std::string& uniformName,
+                               const std::vector<int>& arraySlot,
+                               const std::unordered_map<std::string, Texture>& textures);
 
         /* List of slot used by the shader to bind the diffuses textures */
         std::vector<int> m_Diffuse;

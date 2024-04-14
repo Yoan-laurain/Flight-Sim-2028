@@ -35,11 +35,11 @@ void Mesh::FillTexturesArrays()
 	{
 		if (texture.GetType() == Specular)
 		{
-			m_TextureSpecular = std::make_unique<Texture>(texture);
+			m_TextureSpecular.emplace_back(std::make_unique<Texture>(texture));
 		}
 		else if (texture.GetType() == Diffuse)
 		{
-			m_TextureDiffuse = std::make_unique<Texture>(texture);
+			m_TextureDiffuse.emplace_back(std::make_unique<Texture>(texture));
 		}
 	}
 }

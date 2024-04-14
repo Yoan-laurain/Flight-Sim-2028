@@ -78,8 +78,11 @@ void Camera::Inputs(GLFWwindow* window)
 		// Makes sure the next time the camera looks around it doesn't jump
 		m_FirstClick = true;
 
-		// set the cursor back to the base position
-		glfwSetCursorPos(window, m_BaseMouseX, m_BaseMouseY);
+		if ( m_BaseMouseX != 0.0 && m_BaseMouseY != 0.0)
+		{
+			// set the cursor back to the base position
+			glfwSetCursorPos(window, m_BaseMouseX, m_BaseMouseY);
+		}
 	}
 }
 

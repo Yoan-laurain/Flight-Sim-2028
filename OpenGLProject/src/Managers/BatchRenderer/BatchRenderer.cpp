@@ -1,5 +1,5 @@
 ﻿#include "BatchRenderer.h"
-#include "../../OpenGL/VertexBuffer/VertexBuffer.h"
+#include "../../OpenGL/VertexBuffer/VertexBuffer.h" // Ne pas delete
 #include "../../OpenGL/VertexBufferLayout/VertexBufferLayout.h"
 #include "../../OpenGL/Shader/Shader.h"
 #include "../../OpenGL/Mesh/Mesh.h"
@@ -10,7 +10,7 @@
 #include "../../Model/Model.h"
 #include "../../Config.h"
 #include "OpenGL/IndexBuffer/IndexBuffer.h" // Ne pas delete
-#include "ShaderData/ShaderData.h"
+#include "ShaderBuffer\ShaderBuffer.h"
 #include "OpenGL/ShaderStorageBuffer/ShaderStorageBufferObject.h"
 #include "OpenGL/VertexArray/VertexArray.h"
 
@@ -18,9 +18,6 @@
 
 BatchRenderer::BatchRenderer() 
 {
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-
     m_Layout = std::make_unique<VertexBufferLayout>();
     m_Layout->Push<float>(3); // m_Position
     m_Layout->Push<float>(3); // Normal
@@ -35,15 +32,11 @@ BatchRenderer::~BatchRenderer() = default;
 
 void BatchRenderer::AddNewMesh(Model* model, Mesh* mesh)
 {
-    const ShaderType shaderType = model->m_ShaderType;
+    const bool bNewBufferCreated = CreateNewBufferIfNeed(model->m_ShaderType, mesh,model);
 
-    const bool bNewBufferCreated = CreateNewBufferIfNeed(shaderType, mesh,model);
-
-    if (!bNewBufferCreated) // Prevent useless operations if a new buffer has been created
+    if (!bNewBufferCreated) 
     {
-        SetModelIndexForVertexBuffers(shaderType, mesh);
-
-        m_ShadersData[shaderType].back()->AddNewMesh(mesh, model);
+        m_ShadersData[model->m_ShaderType].back()->AddNewMesh(mesh, model);
     }
 }
 
@@ -57,7 +50,7 @@ int BatchRenderer::Draw()
         
         for (const auto& currentBuffer : m_ShadersData[shaderData.first])
         {
-            if (currentBuffer->m_VBO == nullptr) // If the VBO is not initialized, initialize it
+            if (currentBuffer->m_VBO == nullptr) // If the buffer is not initialized, initialize it
             {
                currentBuffer->Init();
             }
@@ -108,10 +101,9 @@ int BatchRenderer::GetNextIndexToBindTextureTo(const ShaderType shaderType)
 
 bool BatchRenderer::CreateNewBufferIfNeed(const ShaderType shaderType, Mesh* mesh,Model* model)
 {
-    // Buffer does not already exist for this shader
-    if (!m_ShadersData.contains(shaderType)) 
+    if (!m_ShadersData.contains(shaderType))  // Buffer does not already exist for this shader
     {
-        m_ShadersData[shaderType].emplace_back(std::make_unique<ShadersData>(ShadersData(mesh, model, 0)));
+        m_ShadersData[shaderType].emplace_back(std::make_unique<ShadersBuffer>(ShadersBuffer(mesh, model, 0)));
         return true;
     }
 
@@ -121,23 +113,13 @@ bool BatchRenderer::CreateNewBufferIfNeed(const ShaderType shaderType, Mesh* mes
     // if the number of textures is greater than the max slot for textures, create a new buffer
     for (const auto& texture : mesh->m_Textures)
     {
-        int index = texture.m_Slot - Application::Get()->GetMaxSlotForTextures() * size;
+        const int index = texture.m_Slot - Application::Get()->GetMaxSlotForTextures() * size;
         if ( index >= 0 )
         {
-            m_ShadersData[shaderType].emplace_back(std::make_unique<ShadersData>(ShadersData(mesh, model, m_ShadersData[shaderType].size(),0)));
+            m_ShadersData[shaderType].emplace_back(std::make_unique<ShadersBuffer>(ShadersBuffer(mesh, model, m_ShadersData[shaderType].size())));
             return true;
         }
     }
 
     return false;
-}
-
-void BatchRenderer::SetModelIndexForVertexBuffers(const ShaderType shaderType, Mesh* mesh)
-{
-    const int index = m_ShadersData.find(shaderType)->second.back()->m_Models.size();
-    
-    for (auto& vertex : mesh->m_Vertices)
-    {
-        vertex.m_IndexModel = index;
-    }
 }

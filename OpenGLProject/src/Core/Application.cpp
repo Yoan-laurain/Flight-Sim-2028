@@ -6,8 +6,8 @@
 #include "../Levels/3D/Level3D.h"
 #include "../Camera/Camera.h"
 #include "../OpenGL/Shader/Shader.h"
-#include "../Managers/ShaderManager.h"
-#include "../Managers/BatchRenderer.h"
+#include "../Managers/ShaderManager/ShaderManager.h"
+#include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "Vendor/stb_image/stb_image.h"
 
 #include <imgui.h>
@@ -238,5 +238,5 @@ void Application::SetStencilTest(const bool enable)
 int Application::GetMaxSlotForTextures()
 {
     //return MaxSlotForTextures;
-    return 2; // TODO : Fix this
+    return 10; // TODO : Fix this
 }

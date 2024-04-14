@@ -28,8 +28,8 @@ class Mesh
 	
 		std::vector<Texture> m_Textures;
 	
-		std::unique_ptr<Texture> m_TextureSpecular;
-		std::unique_ptr<Texture> m_TextureDiffuse;
+		std::vector<std::unique_ptr<Texture>> m_TextureSpecular;
+		std::vector<std::unique_ptr<Texture>> m_TextureDiffuse;
 
 	private:
 		void FillTexturesArrays();

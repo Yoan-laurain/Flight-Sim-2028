@@ -298,18 +298,22 @@ std::vector<Texture> ModelLoader::GetTextures()
 			// Load diffuse texture
 			if (texPath.find("baseColor") != std::string::npos || texPath.find("diffuse") != std::string::npos)
 			{
-				Texture diffuse((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
-				textures.push_back(diffuse);
-				m_LoadedTex.push_back(diffuse);
+				Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
+				textures.push_back(*defaultTex);
+				m_LoadedTex.push_back(*defaultTex);
 				m_LoadedTexName.push_back(texPath);
+				
+				delete defaultTex;
+			
 			}
 			// Load specular texture
 			else if (texPath.find("metallicRoughness") != std::string::npos || texPath.find("specular") != std::string::npos)
 			{
-				Texture specular((fileDirectory + texPath).c_str(), Specular, m_ShaderType);
-				textures.push_back(specular);
-				m_LoadedTex.push_back(specular);
+				Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Specular, m_ShaderType);
+				textures.push_back(*defaultTex);
+				m_LoadedTex.push_back(*defaultTex);
 				m_LoadedTexName.push_back(texPath);
+				delete defaultTex;
 			}
 		}
 	}

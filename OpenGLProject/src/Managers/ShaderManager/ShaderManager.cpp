@@ -6,8 +6,8 @@
 
 ShaderManager::ShaderManager()
 {
-    CreateShader<BasicShader>(ShaderType::BASIC, "res/shaders/Basic.shader");
-    CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "res/shaders/Skybox.shader"); 
+    CreateShader<BasicShader>(ShaderType::BASIC, "../../OpenGLProject/src/Shaders/Basic.shader");
+    CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "../../OpenGLProject/src/Shaders/Skybox.shader"); 
 }
 
 void ShaderManager::RegisterShader(const ShaderType shaderType, Shader* shader)

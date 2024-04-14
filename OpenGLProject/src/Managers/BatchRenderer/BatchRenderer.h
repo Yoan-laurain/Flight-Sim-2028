@@ -10,7 +10,7 @@ class Shader;
 class Model;
 class Mesh;
 class Texture;
-class ShadersData;
+class ShadersBuffer;
 
 enum class ShaderType;
 
@@ -49,12 +49,7 @@ class BatchRenderer
         std::unique_ptr<VertexBufferLayout> m_Layout;
 
         /* Store all the required data to draw shapes for each shader */
-        std::unordered_map<ShaderType,std::vector<std::unique_ptr<ShadersData>>> m_ShadersData;
-
-        /*
-         * Set the index of the model associated to this mesh to allow shader to determine which values to use in the arrays
-         */
-        void SetModelIndexForVertexBuffers(ShaderType shaderType, Mesh* mesh);
+        std::unordered_map<ShaderType,std::vector<std::unique_ptr<ShadersBuffer>>> m_ShadersData;
 
         /*
          * Create a new buffer for the shader type if needed, if the buffer does not exist at all or if we have reached the maximum slot of textures

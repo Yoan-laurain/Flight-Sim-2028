@@ -61,7 +61,10 @@ void Model::Update()
 
 void Model::SendDataRender()
 {
-	Application::Get()->GetBatchRenderer()->AddNewMesh(this, m_Meshes.back().get());
+	for (const auto& Mesh : m_Meshes)
+	{
+		Application::Get()->GetBatchRenderer()->AddNewMesh(this, Mesh.get());
+	}
 }
 
 void Model::SetRotation(const Vec3<float> rotation)
