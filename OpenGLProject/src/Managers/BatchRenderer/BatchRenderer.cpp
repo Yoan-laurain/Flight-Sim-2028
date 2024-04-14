@@ -156,6 +156,7 @@ bool BatchRenderer::AddToBufferIfAlreadyExisting(Model* model, Mesh* mesh)
                     if (!array->m_TexturesDiffuse.contains(texture.m_FilePath))
                     {
                         bIsAlreadyInBuffer = false;
+                        break;
                     }
                 }
                 else if (texture.m_Type == Specular)
@@ -163,6 +164,7 @@ bool BatchRenderer::AddToBufferIfAlreadyExisting(Model* model, Mesh* mesh)
                     if (!array->m_TexturesSpecular.contains(texture.m_FilePath))
                     {
                         bIsAlreadyInBuffer = false;
+                        break;
                     }
                 }
             }
