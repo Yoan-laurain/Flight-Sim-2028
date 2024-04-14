@@ -36,7 +36,7 @@ class Model
 		ShaderType m_ShaderType;
 	
 		std::vector<std::unique_ptr<Mesh>> m_Meshes;
-
+	
 	private:
 	
 		Vec3<float> m_Rotation;

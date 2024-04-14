@@ -22,14 +22,13 @@ class Texture
 		GLuint m_Slot;
 		std::string m_FilePath;
 		int m_Index;
+		const char* m_Type;
 
 	private:
 		void HandleFormat();
 	
 	protected:
 		unsigned int m_ID;
-	
-		const char* m_Type;
 	
 		unsigned char* m_LocalBuffer;
 		int m_Width, m_Height, m_BPP;

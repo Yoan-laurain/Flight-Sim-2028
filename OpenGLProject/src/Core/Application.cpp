@@ -237,6 +237,5 @@ void Application::SetStencilTest(const bool enable)
 
 int Application::GetMaxSlotForTextures()
 {
-    //return MaxSlotForTextures;
-    return 10; // TODO : Fix this
+    return MaxSlotForTextures;
 }

@@ -28,7 +28,6 @@ struct TransformData
 /*
  * Todo : Adapt code to allow texture blending & multiple (diffuse or specular) textures per mesh 
  */
-// TODO : Optimize draw call by regrouping same texture slot together
 struct ShadersBuffer
 {
     public:

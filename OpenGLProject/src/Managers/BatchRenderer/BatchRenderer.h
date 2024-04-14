@@ -55,4 +55,12 @@ class BatchRenderer
          * Create a new buffer for the shader type if needed, if the buffer does not exist at all or if we have reached the maximum slot of textures
          */
         bool CreateNewBufferIfNeed(ShaderType shaderType, Mesh* mesh,Model* model);
+
+        /*
+         * Methods that will be called by AddNewMesh to add the mesh to the appropriate buffer
+         * Allow to regroup same textures in the same buffer to reduce the number of draw calls
+         */
+        void AddToAppropriateBuffer(Model* model, Mesh* mesh);
+        bool AddToBufferIfAlreadyExisting( Model* model, Mesh* mesh);
+        void AddToFirstBufferWhoCanHoldIt( Model* model, Mesh* mesh);
 };

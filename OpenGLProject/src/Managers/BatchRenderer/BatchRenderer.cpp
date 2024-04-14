@@ -32,11 +32,9 @@ BatchRenderer::~BatchRenderer() = default;
 
 void BatchRenderer::AddNewMesh(Model* model, Mesh* mesh)
 {
-    const bool bNewBufferCreated = CreateNewBufferIfNeed(model->m_ShaderType, mesh,model);
-
-    if (!bNewBufferCreated) 
+    if (!CreateNewBufferIfNeed(model->m_ShaderType, mesh,model)) 
     {
-        m_ShadersData[model->m_ShaderType].back()->AddNewMesh(mesh, model);
+        AddToAppropriateBuffer(model, mesh);
     }
 }
 
@@ -76,16 +74,26 @@ Texture* BatchRenderer::CreateOrGetTexture(const char* image, const char* texTyp
 {
     if (m_ShadersData.contains(shaderType))
     {
-        const auto& shadersData = m_ShadersData[shaderType].back();
-
-        if (texType == Diffuse && shadersData->m_TexturesDiffuse.contains(image))
+        if (texType == Diffuse )
         {
-            return new Texture(shadersData->m_TexturesDiffuse[image]);
+            for ( const auto& arrayTexture : m_ShadersData[shaderType])
+            {
+                if (arrayTexture->m_TexturesDiffuse.contains(image))
+                {
+                    return new Texture(arrayTexture->m_TexturesDiffuse[image]);
+                }
+            }
         }
         
-        if (texType == Specular && shadersData->m_TexturesSpecular.contains(image))
+        if (texType == Specular)
         {
-            return new Texture(shadersData->m_TexturesSpecular[image]);
+            for (const auto& arrayTexture : m_ShadersData[shaderType])
+            {
+                if (arrayTexture->m_TexturesSpecular.contains(image))
+                {
+                    return new Texture(arrayTexture->m_TexturesSpecular[image]);
+                }
+            }
         }
     }
 
@@ -122,4 +130,64 @@ bool BatchRenderer::CreateNewBufferIfNeed(const ShaderType shaderType, Mesh* mes
     }
 
     return false;
+}
+
+void BatchRenderer::AddToAppropriateBuffer(Model* model, Mesh* mesh)
+{
+    if (!AddToBufferIfAlreadyExisting(model, mesh))
+    {
+        AddToFirstBufferWhoCanHoldIt(model, mesh);
+    }
+}
+
+bool BatchRenderer::AddToBufferIfAlreadyExisting(Model* model, Mesh* mesh)
+{
+    if (m_ShadersData[model->m_ShaderType].size() > 1 )
+    {
+        // if this mesh is already in another buffer, add it to this one
+        for (auto& array : m_ShadersData[model->m_ShaderType])
+        {
+            bool bIsAlreadyInBuffer = true;
+        
+            for (const auto& texture : mesh->m_Textures)
+            {
+                if (texture.m_Type == Diffuse)
+                {
+                    if (!array->m_TexturesDiffuse.contains(texture.m_FilePath))
+                    {
+                        bIsAlreadyInBuffer = false;
+                    }
+                }
+                else if (texture.m_Type == Specular)
+                {
+                    if (!array->m_TexturesSpecular.contains(texture.m_FilePath))
+                    {
+                        bIsAlreadyInBuffer = false;
+                    }
+                }
+            }
+
+            if (bIsAlreadyInBuffer)
+            {
+                array->AddNewMesh(mesh, model);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void BatchRenderer::AddToFirstBufferWhoCanHoldIt(Model* model, Mesh* mesh)
+{
+    const int nbTextureSlotRequired = mesh->m_Textures.size();
+    
+    for (auto& array : m_ShadersData[model->m_ShaderType])
+    {
+        const int nbSlotAvailable = Application::Get()->GetMaxSlotForTextures() - array->m_TexturesDiffuse.size() - array->m_TexturesSpecular.size();
+        if ( nbTextureSlotRequired <= nbSlotAvailable )
+        {
+            array->AddNewMesh(mesh, model); 
+            break;
+        }
+    }
 }
