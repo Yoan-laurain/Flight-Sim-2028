@@ -14,9 +14,9 @@ Vertex::Vertex(const Vec3<float>& position, const Vec3<float>& normal, const Vec
 
 Vertex::Vertex(const Vec3<float>& position)
     : m_Position(position)
-    , m_Normal(Vec3<float>(0.0f))
-    , m_Color(Vec3<float>(1.0f))
-    , m_TexUV(Vec2<float>(0.0f))
+    , m_Normal(Vec3(0.0f))
+    , m_Color(Vec3(1.0f))
+    , m_TexUV(Vec2(0.0f))
     , m_IndexModel(0)
     , m_IndexDiffuse(-1)
     , m_IndexSpecular(-1)

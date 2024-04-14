@@ -9,7 +9,7 @@ class Texture
 {
 	public:
 
-		Texture(const char* image, const char* texType, const ShaderType shaderType);
+		Texture(const char* image, const char* texType, ShaderType shaderType);
 		Texture() = default; 
 		virtual ~Texture() = default;
 

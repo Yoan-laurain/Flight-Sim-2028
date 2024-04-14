@@ -5,7 +5,6 @@
 #include "Managers/ShaderManager/ShaderManager.h"
 #include <iostream>
 
-
 CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces,const char* texType) : Texture()
 {
 	m_NumFaces = numFaces;

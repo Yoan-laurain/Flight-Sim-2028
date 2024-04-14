@@ -9,7 +9,6 @@
 #include "Library/Math.h"
 
 #include <fstream>
-#include <iostream>
 
 std::string Get_file_contents(const char* filename)
 {
@@ -76,24 +75,7 @@ void ModelLoader::LoadMesh(const unsigned int indMesh)
 	 // If there is no texture set a default texture
 	 if (textures.empty())
 	 {
-		std::string tex[11] =
-		{
-			"res/textures/Texture1.png",
-			"res/textures/Texture2.png",
-			"res/textures/Texture3.png",
-			"res/textures/Texture4.png",
-			"res/textures/Texture5.png",
-			"res/textures/Texture6.png",
-			"res/textures/Texture7.png",
-			"res/textures/Texture8.png",
-			"res/textures/Texture9.png",
-			"res/textures/Texture10.png",
-			"res/textures/Texture11.png"
-		};
-
-	 	 std::string texPath = tex[rand() % 11];
-	 	
-		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(texPath.c_str(), Diffuse, m_ShaderType);
+		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/default.jpg", Diffuse, m_ShaderType);
 	 	 textures.push_back(*defaultTex);
 	 	 delete defaultTex;
 	 }
@@ -332,7 +314,7 @@ std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<Vec3<float>>
 	std::vector<Vertex> vertices;
 	for (int i = 0; i < positions.size(); i++)
 	{
-		vertices.emplace_back(positions[i], normals[i], Vec3<float>(1.0f, 1.0f, 1.0f), texUVs[i]
+		vertices.emplace_back(positions[i], normals[i], Vec3(1.0f, 1.0f, 1.0f), texUVs[i]
 		);
 	}
 	return vertices;
