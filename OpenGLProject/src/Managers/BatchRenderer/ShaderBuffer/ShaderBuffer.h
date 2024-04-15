@@ -68,7 +68,7 @@ struct ShadersBuffer
         std::unordered_map<std::string,Texture> m_TexturesSpecular = {}; 
 
         /* List of all the models that will be drawn for this buffer */
-        std::vector<std::shared_ptr<Model>> m_Models;
+        std::vector<Model*> m_Models;
         
         std::unique_ptr<VertexBuffer> m_VBO;
         std::unique_ptr<IndexBuffer> m_IBO;

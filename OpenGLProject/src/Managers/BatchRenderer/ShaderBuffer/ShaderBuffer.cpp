@@ -43,9 +43,9 @@ void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
     m_Vertices.insert(m_Vertices.end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
     
     // if the model is not already in the list, add it ( Since a model can have multiple meshes )
-    if (std::ranges::find_if(m_Models, [&model](const auto& m) { return m.get() == model; }) == m_Models.end())
+    if (std::ranges::find_if(m_Models, [model](Model* m) { return m == model; }) == m_Models.end())
     {
-        m_Models.push_back(std::shared_ptr<Model>(model));
+        m_Models.push_back(model);
     }
 
     AddTexture(m_TexturesDiffuse, mesh->m_TextureDiffuse);
