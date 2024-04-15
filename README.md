@@ -25,7 +25,7 @@
 ## Pour cloner le projet 👋
 
 ```bash
-  git clone https://github.com/Yoan-laurain/Flight-Sim-2028.git
+git clone --recurse-submodules -j8 https://github.com/Yoan-laurain/Flight-Sim-2028.git
 ```
 
 ## 🚀 Build
