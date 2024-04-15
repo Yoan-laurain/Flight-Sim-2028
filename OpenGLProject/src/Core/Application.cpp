@@ -24,6 +24,13 @@ Application::Application() : m_AppIcon(nullptr)
 
 Application::~Application() = default;
 
+void Application::UpdateDeltaTime(float& lastTime, float& deltaTime)
+{
+    const float currentTime = glfwGetTime();
+    deltaTime =  currentTime - lastTime;
+    lastTime = currentTime;
+}
+
 void Application::Run()
 {
     GLFWwindow* window = CreateWindow(AppName, WindowHeight, WindowWidth);
@@ -47,11 +54,16 @@ void Application::Run()
 
     m_CurrentLevel->BeginPlay();
 
+    float lastTime = 0.0f;
+    float deltaTime = 0.0f;
+
     while (!glfwWindowShouldClose(window))
     {
+        UpdateDeltaTime(lastTime, deltaTime);
+
         m_Renderer->Clear();
 
-        m_Camera->Update(window);
+        m_Camera->Update(window,deltaTime);
         m_CurrentLevel->OnRender();
         
         OnImGuiRender();

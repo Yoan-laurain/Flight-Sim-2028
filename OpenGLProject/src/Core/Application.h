@@ -17,7 +17,7 @@ class Application
 
         Application();
         virtual ~Application();
-    
+
         void Run();
         void SetWindowIcon(const char* path);
 
@@ -63,6 +63,8 @@ class Application
         void OnImGuiRender();
 
         void ApplyAppIcon();
+
+        void UpdateDeltaTime(float& lastTime, float& deltaTime);
 
         std::unique_ptr<Level> m_CurrentLevel;
         std::unique_ptr<Renderer> m_Renderer;
