@@ -7,6 +7,7 @@ Level3D::Level3D()
 {
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
 	m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+	m_Plane->SetRotation(Vec3(90.0f, 0.0f, 0.0f));
 }
 
 void Level3D::OnImGuiRender()

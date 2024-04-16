@@ -110,8 +110,6 @@ void BatchRenderer::UpdateModelDatas(Model* model,ShaderType shaderType)
             return;
         }
     }
-    
-    throw std::exception("Model Not founded for update transform ! ");
 }
 
 int BatchRenderer::GetNextIndexToBindTextureTo(const ShaderType shaderType)
