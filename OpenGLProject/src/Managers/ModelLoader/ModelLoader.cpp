@@ -1,11 +1,11 @@
 ﻿#include "ModelLoader.h"
-#include "../OpenGL/Textures/Texture.h"
-#include "../OpenGL/Mesh/Mesh.h"
-#include "../Config.h"
-#include "../Core/Application.h"
-#include "../Managers/BatchRenderer.h"
-#include "../OpenGL/VertexBuffer/VertexBuffer.h"
-#include "../Model/Model.h"
+#include "../../OpenGL/Textures/Texture.h"
+#include "../../OpenGL/Mesh/Mesh.h"
+#include "../../Config.h"
+#include "../../Core/Application.h"
+#include "../BatchRenderer/BatchRenderer.h"
+#include "../../OpenGL/VertexBuffer/VertexBuffer.h"
+#include "../../Model/Model.h"
 #include "Library/Math.h"
 
 #include <fstream>
@@ -89,7 +89,7 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& m
 	json node = m_JSON["nodes"][nextNode];
 
 	// Get translation if it exists
-	Vec3<float> translation = Vec3<float>(0.0f, 0.0f, 0.0f);
+	Vec3<float> translation = Vec3(0.0f, 0.0f, 0.0f);
 	if (node.find("translation") != node.end())
 	{
 		float transValues[3];
@@ -286,18 +286,22 @@ std::vector<Texture> ModelLoader::GetTextures()
 			// Load diffuse texture
 			if (texPath.find("baseColor") != std::string::npos || texPath.find("diffuse") != std::string::npos)
 			{
-				Texture diffuse((fileDirectory + texPath).c_str(), Diffuse);
-				textures.push_back(diffuse);
-				m_LoadedTex.push_back(diffuse);
+				Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
+				textures.push_back(*defaultTex);
+				m_LoadedTex.push_back(*defaultTex);
 				m_LoadedTexName.push_back(texPath);
+				
+				delete defaultTex;
+			
 			}
 			// Load specular texture
 			else if (texPath.find("metallicRoughness") != std::string::npos || texPath.find("specular") != std::string::npos)
 			{
-				Texture specular((fileDirectory + texPath).c_str(), Specular);
-				textures.push_back(specular);
-				m_LoadedTex.push_back(specular);
+				Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Specular, m_ShaderType);
+				textures.push_back(*defaultTex);
+				m_LoadedTex.push_back(*defaultTex);
 				m_LoadedTexName.push_back(texPath);
+				delete defaultTex;
 			}
 		}
 	}
@@ -310,7 +314,7 @@ std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<Vec3<float>>
 	std::vector<Vertex> vertices;
 	for (int i = 0; i < positions.size(); i++)
 	{
-		vertices.emplace_back(positions[i], normals[i], Vec3<float>(1.0f, 1.0f, 1.0f), texUVs[i]
+		vertices.emplace_back(positions[i], normals[i], Vec3(1.0f, 1.0f, 1.0f), texUVs[i]
 		);
 	}
 	return vertices;

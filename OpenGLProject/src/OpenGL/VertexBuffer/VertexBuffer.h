@@ -28,6 +28,7 @@ class VertexBuffer
 		void Unbind() const;
 
 		std::vector<Vertex> m_Vertices;
+	
 	private:
 		unsigned int m_ID;
 };

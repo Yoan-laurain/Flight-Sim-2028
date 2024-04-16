@@ -1,7 +1,7 @@
 #include "Model.h"
 #include "../OpenGL/VertexBuffer/VertexBuffer.h"
 #include "../OpenGL/Mesh/Mesh.h"
-#include "../Managers/BatchRenderer.h"
+#include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "../Core/Application.h"
 #include "Library/Math.h"
 
@@ -16,9 +16,9 @@ Model::Model(const char* file, const ShaderType shaderType)
 
 Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 	: m_ShaderType(shaderType)
-	, m_Rotation(Vec3<float>(0.0f))
-	, m_Translation(Vec3<float>(0.0f))
-	, m_Scale(Vec3<float>(1.0f))
+	, m_Rotation(Vec3(0.0f))
+	, m_Translation(Vec3(0.0f))
+	, m_Scale(Vec3(1.0f))
 	, m_File(nullptr)
 {
 
@@ -61,22 +61,25 @@ void Model::Update()
 
 void Model::SendDataRender()
 {
-	Application::Get()->GetBatchRenderer()->AddNewMesh(this, m_Meshes.back().get());
+	for (const auto& Mesh : m_Meshes)
+	{
+		Application::Get()->GetBatchRenderer()->AddNewMesh(this, Mesh.get());
+	}
 }
 
-void Model::SetRotation(const Vec3<float> rotation)
+void Model::SetRotation(const Vec3<float>& rotation)
 {
 	m_Rotation = rotation;
 	Update();
 }
 
-void Model::SetTranslation(const Vec3<float> translation)
+void Model::SetTranslation(const Vec3<float>& translation)
 {
 	m_Translation = translation;
 	Update();
 }
 
-void Model::SetScale(const Vec3<float> scale)
+void Model::SetScale(const Vec3<float>& scale)
 {
 	m_Scale = scale;
 	Update();

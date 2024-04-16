@@ -1,13 +1,13 @@
 #include "ShaderManager.h"
-#include "../OpenGL/Shader/Shader.h"
-#include "../OpenGL/Shader/Basic/BasicShader.h"
-#include "../OpenGL/Shader/SkyBox/SkyBoxShader.h"
+#include "../../OpenGL/Shader/Shader.h"
+#include "../../OpenGL/Shader/Basic/BasicShader.h"
+#include "../../OpenGL/Shader/SkyBox/SkyBoxShader.h"
 #include <stdexcept>
 
 ShaderManager::ShaderManager()
 {
-    CreateShader<BasicShader>(ShaderType::BASIC, "res/shaders/Basic.shader");
-    CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "res/shaders/Skybox.shader"); 
+    CreateShader<BasicShader>(ShaderType::BASIC, "../../OpenGLProject/src/Shaders/Basic.shader");
+    CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "../../OpenGLProject/src/Shaders/Skybox.shader"); 
 }
 
 void ShaderManager::RegisterShader(const ShaderType shaderType, Shader* shader)

@@ -6,7 +6,6 @@
 
 enum class ShaderType;
 
-class Shader;
 class Mesh;
 
 class Model
@@ -25,9 +24,9 @@ class Model
 		virtual void Update();
 		void SendDataRender(); 
 	
-		void SetRotation(Vec3<float> rotation);
-		void SetTranslation(Vec3<float> translation);
-		void SetScale(Vec3<float> scale);
+		void SetRotation(const Vec3<float>& rotation);
+		void SetTranslation(const Vec3<float>& translation);
+		void SetScale(const Vec3<float>& scale);
 
 		Vec3<float>& GetRotation();
 		Vec3<float>& GetTranslation();
@@ -36,7 +35,7 @@ class Model
 		ShaderType m_ShaderType;
 	
 		std::vector<std::unique_ptr<Mesh>> m_Meshes;
-
+	
 	private:
 	
 		Vec3<float> m_Rotation;

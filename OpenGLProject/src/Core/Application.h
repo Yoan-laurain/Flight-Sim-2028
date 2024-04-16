@@ -17,7 +17,7 @@ class Application
 
         Application();
         virtual ~Application();
-    
+
         void Run();
         void SetWindowIcon(const char* path);
 
@@ -51,7 +51,10 @@ class Application
         */
         void SetStencilTest( bool enable );
 
+        int GetMaxSlotForTextures();
+
     private:
+    
         GLFWwindow* CreateWindow(const char* title, int height, int width);
         void SetCurrentLevel(Level* level);
 
@@ -61,6 +64,8 @@ class Application
 
         void ApplyAppIcon();
 
+        void UpdateDeltaTime(float& lastTime, float& deltaTime);
+
         std::unique_ptr<Level> m_CurrentLevel;
         std::unique_ptr<Renderer> m_Renderer;
         std::unique_ptr<ShaderManager> m_ShaderManager;
@@ -68,6 +73,7 @@ class Application
         std::unique_ptr<BatchRenderer> m_BatchRenderer;
 
         const char* m_AppIcon;
+        int MaxSlotForTextures;
 
         static Application* m_Instance;
 };

@@ -1,14 +1,15 @@
 #include "CubeMapTexture.h"
 #include "Core/Application.h"
-#include "Managers/BatchRenderer.h"
+#include "Managers/BatchRenderer/BatchRenderer.h"
 #include "Vendor/stb_image/stb_image.h"
+#include "Managers/ShaderManager/ShaderManager.h"
 #include <iostream>
 
 CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces,const char* texType) : Texture()
 {
 	m_NumFaces = numFaces;
 	m_Type = texType;
-	m_Slot = Application::Get()->GetBatchRenderer()->GetNextIndexToBindTextureTo();
+	m_Slot = Application::Get()->GetBatchRenderer()->GetNextIndexToBindTextureTo(ShaderType::SKYBOX);
 	
 	glGenTextures(1, &m_ID);
 	CubeMapTexture::Bind();

@@ -1,4 +1,4 @@
-![LogoFlightSim](https://github.com/Yoan-laurain/OpenGLDiscovery/assets/80961060/259cda0e-d648-4415-9fb3-07b687e93cdb)
+![LogoFlightSim](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/70f84e5e-aa0d-4b12-8426-4a97735e9f00)
 
 #
 
@@ -14,7 +14,7 @@
 
 <br/>
 
-👩‍💻 Bienvenue sur Flight Sim 2028 ! Un création originale ! euhh enfin presque.. 😅
+👩‍💻 Bienvenue sur Flight Sim 2028 ! Une création originale ! euhh enfin presque.. 😅
 
 👨‍🎓 Nous sommes 3 étudiants en Bac+5 et nous devons réaliser un projet de génération procédurale en 1 mois ! 
 
@@ -25,7 +25,7 @@
 ## Pour cloner le projet 👋
 
 ```bash
-  git clone https://github.com/Yoan-laurain/Flight-Sim-2028.git
+git clone --recurse-submodules -j8 https://github.com/Yoan-laurain/Flight-Sim-2028.git
 ```
 
 ## 🚀 Build
@@ -44,7 +44,7 @@ Voici les objectifs :
 
 ✈️ Pouvoir bouger la caméra dans le monde.
 
-⚙️ Avoir une interfaçe qui permet de changer les paramètres de la génération.
+⚙️ Avoir une interface qui permet de changer les paramètres de la génération.
   
 🔍 Pouvoir voir le nombre de primitives et le frame rate.
 

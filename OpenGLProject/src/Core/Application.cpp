@@ -6,8 +6,8 @@
 #include "../Levels/3D/Level3D.h"
 #include "../Camera/Camera.h"
 #include "../OpenGL/Shader/Shader.h"
-#include "../Managers/ShaderManager.h"
-#include "../Managers/BatchRenderer.h"
+#include "../Managers/ShaderManager/ShaderManager.h"
+#include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "Vendor/stb_image/stb_image.h"
 
 #include <imgui.h>
@@ -24,6 +24,13 @@ Application::Application() : m_AppIcon(nullptr)
 
 Application::~Application() = default;
 
+void Application::UpdateDeltaTime(float& lastTime, float& deltaTime)
+{
+    const float currentTime = glfwGetTime();
+    deltaTime =  currentTime - lastTime;
+    lastTime = currentTime;
+}
+
 void Application::Run()
 {
     GLFWwindow* window = CreateWindow(AppName, WindowHeight, WindowWidth);
@@ -34,6 +41,7 @@ void Application::Run()
     InitImGui(window);
     
     SetFaceCulling(true);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MaxSlotForTextures);
 
     m_Renderer = std::make_unique<Renderer>();
     m_ShaderManager = std::make_unique<ShaderManager>();
@@ -46,11 +54,16 @@ void Application::Run()
 
     m_CurrentLevel->BeginPlay();
 
+    float lastTime = 0.0f;
+    float deltaTime = 0.0f;
+
     while (!glfwWindowShouldClose(window))
     {
+        UpdateDeltaTime(lastTime, deltaTime);
+
         m_Renderer->Clear();
 
-        m_Camera->Update(window);
+        m_Camera->Update(window,deltaTime);
         m_CurrentLevel->OnRender();
         
         OnImGuiRender();
@@ -232,4 +245,9 @@ void Application::SetStencilTest(const bool enable)
         glStencilMask(0x00);
         glDisable(GL_STENCIL_TEST);
     }
+}
+
+int Application::GetMaxSlotForTextures()
+{
+    return MaxSlotForTextures;
 }
