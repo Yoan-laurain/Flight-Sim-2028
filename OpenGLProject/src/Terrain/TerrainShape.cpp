@@ -1,115 +1,71 @@
 ﻿#include "TerrainShape.h"
-#include "../OpenGL/VertexBuffer/VertexBuffer.h"
-#include "../OpenGL/Textures/Texture.h"
 #include "../OpenGL/Mesh/Mesh.h"
-#include <memory>
-#include <vector>
+#include "../OpenGL/VertexBuffer/VertexBuffer.h"
+#include "../Core/Application.h"
+#include "../Library/Math.h"
+#include "Managers/BatchRenderer/BatchRenderer.h"
 
-#include "Library/Math.h"
-
-Terrain::Terrain(float size, int subdivisions, ShaderType shaderType) :
-    m_Rotation(Vec3<float>(0.0f))
-    , m_Translation(Vec3<float>(0.0f))
-    , m_Scale(Vec3<float>(1.0f)),
-    m_Size(size), m_Subdivisions(subdivisions),m_ShaderType(shaderType)
+TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderType shaderType)
+    : Model({}, shaderType), m_Width(width), m_Depth(depth), m_Subdivisions(subdivisions)
 {
-    std::vector<Vertex> vertices = GenerateVertices(size, subdivisions);
-    std::vector<unsigned int> indices = GenerateIndices(subdivisions);
+    // Calculate step size between vertices
+    float stepSizeX = m_Width / m_Subdivisions;
+    float stepSizeZ = m_Depth / m_Subdivisions;
 
-    std::vector<Texture> textures = {};
+    // Generate vertices and indices for the terrain plane
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    std::vector<Texture> textures; // Empty texture vector for now
+    Mat4<float> matrix(1.0f);
 
-    Mat4<float> model = Mat4<float>(1.0f);
+    Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", "texture_diffuse", m_ShaderType);
+    textures.push_back(*defaultTexture);
+    
+    for (int i = 0; i <= m_Subdivisions; ++i)
+    {
+        for (int j = 0; j <= m_Subdivisions; ++j)
+        {
+            float x = j * stepSizeX - m_Width / 2.0f;
+            float z = i * stepSizeZ - m_Depth / 2.0f;
+            float y = 0.0f; // Initial height is 0
 
-    m_Mesh = std::make_unique<Mesh>(vertices, indices, textures, model);
+            vertices.push_back(Vertex({ x, y, z }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
+        }
+    }
+
+    for (int i = 0; i < m_Subdivisions; ++i)
+    {
+        for (int j = 0; j < m_Subdivisions; ++j)
+        {
+            int topLeft = i * (m_Subdivisions + 1) + j;
+            int topRight = topLeft + 1;
+            int bottomLeft = (i + 1) * (m_Subdivisions + 1) + j;
+            int bottomRight = bottomLeft + 1;
+
+            indices.push_back(topLeft);
+            indices.push_back(bottomLeft);
+            indices.push_back(topRight);
+            indices.push_back(topRight);
+            indices.push_back(bottomLeft);
+            indices.push_back(bottomRight);
+        }
+    }
+
+    Mesh* terrainMesh = new Mesh(vertices, indices,textures, matrix);
+    m_Meshes.push_back(std::unique_ptr<Mesh>(terrainMesh));
+
+    SendDataRender();
 }
 
-Terrain::~Terrain() = default;
+TerrainModel::~TerrainModel() = default;
 
-void Terrain::SetVertexHeight(int x, int z, float height)
+void TerrainModel::SetVertexHeight(int x, int z, float height)
 {
-    // Assurez-vous que les coordonnées x et z sont dans les limites du terrain
     if (x >= 0 && x <= m_Subdivisions && z >= 0 && z <= m_Subdivisions)
     {
-        // Calculez l'index du sommet dans le tableau en fonction des coordonnées x et z
         int index = z * (m_Subdivisions + 1) + x;
-
-        // Accédez aux données des sommets dans le mesh et modifiez la hauteur du sommet à l'index spécifié
-        //auto& vertices = m_Mesh->m_VBO->m_Vertices;
-        //vertices[index].position.y = height;
-
-        // Après avoir modifié les données des sommets, mettez à jour le Vertex Buffer avec les nouvelles données
-        //m_Mesh->m_VBO->Bind();
-        //glBufferSubData(GL_ARRAY_BUFFER, index * sizeof(Vertex), sizeof(Vertex), &vertices[index]);
+        m_Meshes[0]->m_Vertices[index].m_Position.y = height;
+        // Recalculate normals or other mesh properties if necessary
+        SendDataRender();
     }
-}
-
-void Terrain::SetTexture(const std::vector<Texture>& textures)
-{
-    
-    m_Mesh->m_Textures = textures;
-}
-
-void Terrain::Update()
-{
-    m_Mesh->m_Transform = m_Translation;
-    m_Mesh->m_Rotation = Quaternion(Math::radians(m_Rotation));
-    m_Mesh->m_Scale = m_Scale;
-}
-
-int Terrain::GetNumberOfTriangles()
-{
-    // Le nombre total de quads est (subdivisions * subdivisions)
-    int numQuads = m_Subdivisions * m_Subdivisions;
-
-    // Chaque quad est formé de deux triangles
-    return numQuads * 2;
-}
-
-std::vector<Vertex> Terrain::GenerateVertices(float size, int subdivisions)
-{
-    std::vector<Vertex> vertices;
-
-    float step = size / subdivisions;
-    float halfSize = size / 2.0f;
-
-    for (int i = 0; i <= subdivisions; ++i)
-    {
-        for (int j = 0; j <= subdivisions; ++j)
-        {
-            float x = -halfSize + j * step;
-            float z = -halfSize + i * step;
-            float y = 0.0f;
-
-            Vec3<float> position(x, y, z);
-            Vec3<float> normal(0.0f, 1.0f, 0.0f);
-            Vec3<float> color(1.0f); // Default white color
-            Vec2<float> texUV(static_cast<float>(j) / subdivisions, static_cast<float>(i) / subdivisions);
-
-            vertices.emplace_back(position, normal, color, texUV);
-        }
-    }
-
-    return vertices;
-}
-
-std::vector<unsigned int> Terrain::GenerateIndices(int subdivisions)
-{
-    std::vector<unsigned int> indices;
-
-    for (int i = 0; i < subdivisions; ++i)
-    {
-        for (int j = 0; j < subdivisions; ++j)
-        {
-            int start = i * (subdivisions + 1) + j;
-            indices.push_back(start);
-            indices.push_back(start + 1);
-            indices.push_back(start + subdivisions + 1);
-
-            indices.push_back(start + 1);
-            indices.push_back(start + subdivisions + 2);
-            indices.push_back(start + subdivisions + 1);
-        }
-    }
-
-    return indices;
 }

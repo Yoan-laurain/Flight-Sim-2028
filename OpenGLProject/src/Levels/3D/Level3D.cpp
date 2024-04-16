@@ -5,6 +5,7 @@
 Level3D::Level3D() 
 {
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
+	AddTerrain(100.0f, 100.0f, 10,ShaderType::BASIC);
 }
 
 void Level3D::OnImGuiRender()
