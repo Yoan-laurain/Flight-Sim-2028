@@ -58,9 +58,26 @@ void ShadersBuffer::Init()
     m_IBO = std::make_unique<IndexBuffer>(m_Indices);
     m_SSBO = std::make_unique<ShaderStorageBufferObject>();
     
-    ExtractTransformData();
+    for (const auto& model : m_Models)
+    {
+        ExtractModelTransformData(model);
+    }
     
     InitTextureUniform();
+}
+
+std::vector<TransformData>& ShadersBuffer::GetAllTransformsData()
+{
+    if ( m_NeedToRegroupTransformsAgain )
+    {
+        m_TransformsData.clear();
+        for (const auto& [model, transforms] : m_ModelsTransforms)
+        {
+            m_TransformsData.insert(m_TransformsData.end(), transforms.begin(), transforms.end());
+        }
+        m_NeedToRegroupTransformsAgain = false;
+    }
+    return m_TransformsData;
 }
 
 void ShadersBuffer::AddTexture(std::unordered_map<std::string, Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture)
@@ -75,23 +92,34 @@ void ShadersBuffer::AddTexture(std::unordered_map<std::string, Texture>& texture
     }
 }
 
-void ShadersBuffer::ExtractTransformData()
+void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_type& model)
 {
-    for (const auto& model : m_Models)
+    if (m_ModelsTransforms.contains(model))
     {
-        for (const auto& mesh : model->m_Meshes)
+        m_ModelsTransforms[model].clear();
+    }
+    
+    for (const auto& mesh : model->m_Meshes)
+    {
+        TransformData transformData 
         {
-            TransformData transformData 
-            {
-                Math::translate(Mat4(1.0f), model->GetTranslation()),
-                Math::mat4_cast(Quaternion(model->GetRotation())),
-                Math::Scale(Mat4(1.0f), model->GetScale()),
-                mesh->m_Matrix
-            };
+            Math::translate(Mat4(1.0f), model->GetTranslation()),
+            Math::mat4_cast(Quaternion(model->GetRotation())),
+            Math::Scale(Mat4(1.0f), model->GetScale()),
+            mesh->m_Matrix
+        };
 
-            transformsDatas.push_back(transformData);
+        if (m_ModelsTransforms.contains(model))
+        {
+            m_ModelsTransforms[model].push_back(transformData); 
+        }
+        else
+        {
+            m_ModelsTransforms[model] = { transformData }; 
         }
     }
+
+    m_NeedToRegroupTransformsAgain = true;
 }
 
 void ShadersBuffer::InitTextureUniform()

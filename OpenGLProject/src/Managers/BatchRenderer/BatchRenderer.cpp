@@ -52,8 +52,8 @@ int BatchRenderer::Draw()
             {
                currentBuffer->Init();
             }
-
-            currentBuffer->m_SSBO->SetData( currentBuffer->transformsDatas.data(), sizeof(TransformData) * currentBuffer->transformsDatas.size(), 7);
+            
+            currentBuffer->m_SSBO->SetData( currentBuffer->GetAllTransformsData().data(), sizeof(TransformData) * currentBuffer->GetAllTransformsData().size(), 7);
             currentBuffer->BindTexturesToShader(shaderData.first, shader);
        
             currentBuffer->m_VAO->Bind(); 
@@ -98,6 +98,20 @@ Texture* BatchRenderer::CreateOrGetTexture(const char* image, const char* texTyp
     }
 
     return new Texture(image, texType, shaderType);
+}
+
+void BatchRenderer::UpdateModelDatas(Model* model,ShaderType shaderType)
+{
+    for (const auto& shaderData : m_ShadersData[shaderType])
+    {
+        if ( shaderData->m_ModelsTransforms.contains(model))
+        {
+            shaderData->ExtractModelTransformData(model);
+            return;
+        }
+    }
+    
+    throw std::exception("Model Not founded for update transform ! ");
 }
 
 int BatchRenderer::GetNextIndexToBindTextureTo(const ShaderType shaderType)

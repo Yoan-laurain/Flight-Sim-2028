@@ -1,15 +1,19 @@
 #include "Level3D.h"
 #include "../../Model/SkyBox/SkyBox.h"
 #include "../../Managers/ShaderManager/ShaderManager.h"
+#include "Library/MyImGui/MyImGui.h"
 
 Level3D::Level3D() 
 {
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
+	m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 }
 
 void Level3D::OnImGuiRender()
 {
 	Level::OnImGuiRender();
-
-	// ImGui::Checkbox("Plane mode", &Application::Get()->GetCamera()->m_PlaneMode);
+	
+	MyImGui::SliderFloat3(m_Plane->GetTranslation(), -10.0f, 10.0f, [this](const Vec3<float>& newPosition) {
+		m_Plane->SetTranslation(newPosition);
+	});
 }

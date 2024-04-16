@@ -13,4 +13,5 @@ class Level3D : public Level
 	private:
 
 		Model* m_SkyBox;
+	    Model* m_Plane;
 };
