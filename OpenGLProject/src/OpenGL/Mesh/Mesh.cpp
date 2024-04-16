@@ -6,9 +6,9 @@
 #include "Config.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const Mat4<float>& matrix)
-	: m_Transform(Vec3<float>(0.0f) )
-	, m_Rotation( Quaternion<float>(1.0f, 0.0f, 0.0f, 0.0f) )
-	, m_Scale(Vec3<float>(1.0f) )
+	: m_Transform(Vec3(0.0f) )
+	, m_Rotation( Quaternion(1.0f, 0.0f, 0.0f, 0.0f) )
+	, m_Scale(Vec3(1.0f) )
 	, m_Matrix(matrix)
 	, m_TriangleCount(0)
 	, m_Vertices(std::move(vertices))
@@ -35,11 +35,11 @@ void Mesh::FillTexturesArrays()
 	{
 		if (texture.GetType() == Specular)
 		{
-			m_TextureSpecular = std::make_unique<Texture>(texture);
+			m_TextureSpecular.emplace_back(std::make_unique<Texture>(texture));
 		}
 		else if (texture.GetType() == Diffuse)
 		{
-			m_TextureDiffuse = std::make_unique<Texture>(texture);
+			m_TextureDiffuse.emplace_back(std::make_unique<Texture>(texture));
 		}
 	}
 }

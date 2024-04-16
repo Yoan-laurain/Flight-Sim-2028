@@ -1,7 +1,7 @@
 #include "SkyBox.h"
-#include "../OpenGL/VertexBuffer/VertexBuffer.h"
-#include "../OpenGL/Textures/CubeMap/CubeMapTexture.h"
-#include "../Config.h"
+#include "../../OpenGL/VertexBuffer/VertexBuffer.h"
+#include "../../OpenGL/Textures/CubeMap/CubeMapTexture.h"
+#include "../../Config.h"
 
 SkyBox::SkyBox()
 {

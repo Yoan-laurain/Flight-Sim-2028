@@ -2,8 +2,8 @@
 #include "../Model/Model.h"
 #include "../Core/Application.h"
 #include "../Terrain/TerrainShape.h"
-#include "../Managers/BatchRenderer.h"
-#include "../Managers/ModelLoader.h"
+#include "../Managers/BatchRenderer/BatchRenderer.h"
+#include "../Managers/ModelLoader/ModelLoader.h"
 
 #include <imgui.h>
 

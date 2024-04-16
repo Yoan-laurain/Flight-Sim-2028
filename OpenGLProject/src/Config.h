@@ -7,7 +7,7 @@ constexpr float BaseNearPlane = 0.1f;
 constexpr float BaseFarPlane = 10000.f;
 
 constexpr float BaseFOV = 45.f;
-constexpr float BaseCameraSpeed = 10.f;
+constexpr float BaseCameraSpeed = 50.f;
 
 constexpr float gamma = 2.2f;
 

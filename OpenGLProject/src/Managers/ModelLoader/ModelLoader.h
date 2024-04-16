@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../Library/coreMinimal.h"
+#include "../../Library/coreMinimal.h"
 #include "Vendor/json/json.h"
 
 #include <GL/glew.h>

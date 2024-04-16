@@ -1,10 +1,10 @@
 #include "Texture.h"
 #include "Vendor/stb_image/stb_image.h"
 #include "Core/Application.h"
-#include "Managers/BatchRenderer.h"
+#include "Managers/BatchRenderer/BatchRenderer.h"
 #include <stdexcept>
 
-Texture::Texture(const char* image,const char* texType)
+Texture::Texture(const char* image,const char* texType, const ShaderType shaderType)
 	: m_FilePath( image )
 	, m_Index(0)
 	, m_ID(0)
@@ -14,7 +14,7 @@ Texture::Texture(const char* image,const char* texType)
 	, m_Height(0)
 	, m_BPP(0)
 {
-	m_Slot = Application::Get()->GetBatchRenderer()->GetNextIndexToBindTextureTo();
+	m_Slot = Application::Get()->GetBatchRenderer()->GetNextIndexToBindTextureTo(shaderType);
 	
 	//Flip the texture vertically
 	stbi_set_flip_vertically_on_load(1);
@@ -48,6 +48,12 @@ Texture::Texture(const char* image,const char* texType)
 void Texture::Bind() const
 {
 	glActiveTexture(GL_TEXTURE0 + m_Slot);
+	glBindTexture(GL_TEXTURE_2D, m_ID);
+}
+
+void Texture::Bind(int slot) const
+{
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, m_ID);
 }
 

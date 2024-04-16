@@ -17,9 +17,9 @@ Camera::Camera(const int width, const int height, const Vec3<float>& position)
 	Reset();
 }
 
-void Camera::Update(GLFWwindow* window)
+void Camera::Update(GLFWwindow* window,float deltaTime)
 {
-	Inputs(window);
+	Inputs(window,deltaTime);
 	UpdateMatrix();
 }
 
@@ -38,12 +38,12 @@ void Camera::UpdateMatrix()
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window)
+void Camera::Inputs(GLFWwindow* window,float deltaTime)
 {
 	if(m_PlaneMode)
 	{
 		HandleRotation(window);
-		m_Position += m_Speed * m_Rotation;
+		m_Position += m_Speed * m_Rotation * deltaTime;
 	}
 	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
@@ -53,22 +53,22 @@ void Camera::Inputs(GLFWwindow* window)
 		// Move forward
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			m_Position += m_Speed * Math::radians(m_Rotation);
+			m_Position += m_Speed * deltaTime * Math::radians(m_Rotation);
 		}
 		// Move left
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			m_Position += m_Speed * -Math::Normalize(Math::cross(Math::radians(m_Rotation), Math::radians(m_Up)));
+			m_Position += m_Speed * deltaTime * -Math::Normalize(Math::cross(Math::radians(m_Rotation), Math::radians(m_Up)));
 		}
 		// Move back
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			m_Position += m_Speed * -Math::radians(m_Rotation);
+			m_Position += m_Speed * deltaTime * -Math::radians(m_Rotation);
 		}
 		// Move right
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			m_Position += m_Speed * Math::Normalize(Math::cross(Math::radians(m_Rotation), Math::radians(m_Up)));
+			m_Position += m_Speed * deltaTime * Math::Normalize(Math::cross(Math::radians(m_Rotation), Math::radians(m_Up)));
 		}
 	}
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE && !m_FirstClick)
@@ -78,8 +78,11 @@ void Camera::Inputs(GLFWwindow* window)
 		// Makes sure the next time the camera looks around it doesn't jump
 		m_FirstClick = true;
 
-		// set the cursor back to the base position
-		glfwSetCursorPos(window, m_BaseMouseX, m_BaseMouseY);
+		if ( m_BaseMouseX != 0.0 && m_BaseMouseY != 0.0)
+		{
+			// set the cursor back to the base position
+			glfwSetCursorPos(window, m_BaseMouseX, m_BaseMouseY);
+		}
 	}
 }
 
