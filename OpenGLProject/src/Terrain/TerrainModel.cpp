@@ -1,11 +1,12 @@
 ﻿#include "TerrainModel.h"
 
 #include "Config.h"
-#include "../OpenGL/Mesh/Mesh.h"
-#include "../OpenGL/VertexBuffer/VertexBuffer.h"
-#include "../Core/Application.h"
-#include "../Library/Math.h"
+#include "OpenGL/Mesh/Mesh.h"
+#include "OpenGL/VertexBuffer/VertexBuffer.h"
+#include "Core/Application.h"
+#include "Library/Math.h"
 #include "Managers/BatchRenderer/BatchRenderer.h"
+#include "OpenGL/Textures/Texture.h"
 
 TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderType shaderType)
     : Model({}, shaderType), m_Width(width), m_Depth(depth), m_Subdivisions(subdivisions)
@@ -37,17 +38,17 @@ TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderTyp
             const int topRight = topLeft + 1;
             const int bottomLeft = (i + 1) * (m_Subdivisions + 1) + j;
             const int bottomRight = bottomLeft + 1;
-            indices.emplace_back(topLeft);
-            indices.emplace_back(topRight);
-            indices.emplace_back(bottomLeft);
-            indices.emplace_back(topRight);
-            indices.emplace_back(bottomRight);
-            indices.emplace_back(bottomLeft);
+            indices.push_back(topLeft);
+            indices.push_back(topRight);
+            indices.push_back(bottomLeft);
+            indices.push_back(topRight);
+            indices.push_back(bottomRight);
+            indices.push_back(bottomLeft);
         }
     }
 
     std::vector<Texture> textures;
-    const Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
+    Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
     textures.push_back(*defaultTexture);
     Mesh* terrainMesh = new Mesh(vertices, indices,textures, matrix);
     m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
