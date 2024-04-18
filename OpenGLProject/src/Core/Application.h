@@ -55,7 +55,7 @@ class Application
 		 * Wireframe mode
 		 */
 		void SetPolygoneMode();
-        bool* GetPolygoneMode();
+        bool& GetPolygoneMode();
 
         int GetMaxSlotForTextures();
 		

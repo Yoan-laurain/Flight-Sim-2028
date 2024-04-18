@@ -1,12 +1,10 @@
 #include "Level3D.h"
-
-#include <imgui.h>
-
 #include "../../Model/SkyBox/SkyBox.h"
 #include "../../Managers/ShaderManager/ShaderManager.h"
 #include "Core/Application.h"
 #include "Library/MyImGui/MyImGui.h"
 #include "Managers/ModelLoader/ModelLoader.h"
+#include <imgui.h>
 
 Level3D::Level3D() 
 {
@@ -24,7 +22,7 @@ void Level3D::OnImGuiRender()
 	});
 
 	//SetPolygoneMode bool in imgui checkbox
-	if (ImGui::Checkbox("Wireframe Mode", Application::Get()->GetPolygoneMode()))
+	if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 	{
 		Application::Get()->SetPolygoneMode();
 	}

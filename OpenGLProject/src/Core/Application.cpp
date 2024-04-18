@@ -255,9 +255,9 @@ void Application::SetPolygoneMode()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-bool* Application::GetPolygoneMode()
+bool& Application::GetPolygoneMode()
 {
-	return &m_polygoneMode;
+	return m_polygoneMode;
 }
 
 int Application::GetMaxSlotForTextures()
