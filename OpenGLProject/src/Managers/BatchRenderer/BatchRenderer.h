@@ -10,7 +10,7 @@ class Shader;
 class Model;
 class Mesh;
 class Texture;
-class ShadersBuffer;
+struct ShadersBuffer;
 
 enum class ShaderType;
 

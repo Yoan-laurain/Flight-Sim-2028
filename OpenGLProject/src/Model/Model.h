@@ -15,7 +15,7 @@ class Model
 		Model(const std::vector<Mesh*>& meshes, ShaderType shaderType);
 		virtual ~Model();
 
-		int GetNumberOfTriangles();
+		int GetNumberOfTriangles() const;
 
 		/*
 		 * Update all the meshes in the model
@@ -40,6 +40,4 @@ class Model
 		Vec3<float> m_Rotation;
 		Vec3<float> m_Translation;
 		Vec3<float> m_Scale;
-	
-		const char* m_File;
 };

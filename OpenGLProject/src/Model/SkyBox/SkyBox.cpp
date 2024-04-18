@@ -52,7 +52,7 @@ SkyBox::SkyBox()
 
     const CubeMapTexture textureCubemap(facesCubemap, 6, Diffuse);
 
-    m_Textures.push_back(textureCubemap); 
+    m_Textures.emplace_back(textureCubemap); 
 
     m_Vertices = vertices;
     m_Indices = indices;

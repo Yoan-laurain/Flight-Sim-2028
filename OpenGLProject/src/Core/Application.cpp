@@ -24,9 +24,9 @@ Application::Application() : m_AppIcon(nullptr), m_polygoneMode(false)
 
 Application::~Application() = default;
 
-void Application::UpdateDeltaTime(float& lastTime, float& deltaTime)
+void Application::UpdateDeltaTime(double& lastTime, double& deltaTime)
 {
-    const float currentTime = glfwGetTime();
+    const double currentTime = glfwGetTime();
     deltaTime =  currentTime - lastTime;
     lastTime = currentTime;
 }
@@ -46,7 +46,7 @@ void Application::Run()
     m_Renderer = std::make_unique<Renderer>();
     m_ShaderManager = std::make_unique<ShaderManager>();
     m_BatchRenderer = std::make_unique<BatchRenderer>();
-    m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3<float>(0.0f, 0.0f, 100.0f));
+    m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3(0.0f, 0.0f, 100.0f));
 
     SetCurrentLevel(new Level3D());
 
@@ -54,8 +54,8 @@ void Application::Run()
 
     m_CurrentLevel->BeginPlay();
 
-    float lastTime = 0.0f;
-    float deltaTime = 0.0f;
+    double lastTime = 0.0f;
+    double deltaTime = 0.0f;
 
     while (!glfwWindowShouldClose(window))
     {

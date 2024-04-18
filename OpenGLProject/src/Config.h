@@ -1,7 +1,7 @@
 #pragma once
 
-constexpr float WindowWidth = 1280.f;
-constexpr float WindowHeight = 720.f;
+constexpr int WindowWidth = 1280;
+constexpr int WindowHeight = 720;
 
 constexpr float BaseNearPlane = 0.1f;
 constexpr float BaseFarPlane = 10000.f;

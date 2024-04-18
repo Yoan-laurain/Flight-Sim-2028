@@ -17,7 +17,7 @@ Camera::Camera(const int width, const int height, const Vec3<float>& position)
 	Reset();
 }
 
-void Camera::Update(GLFWwindow* window,float deltaTime)
+void Camera::Update(GLFWwindow* window,double deltaTime)
 {
 	Inputs(window,deltaTime);
 	UpdateMatrix();
@@ -34,11 +34,11 @@ void Camera::Reset()
 void Camera::UpdateMatrix()
 {
 	m_ViewMatrix = Math::lookAtM4(m_Position, m_Position + Math::radians(m_Rotation), Math::radians(m_Up));
-	m_ProjectionMatrix = Math::perspective<float>(Math::radians(m_Fov), (float)m_Width / m_Height, m_NearPlane, m_FarPlane);
+	m_ProjectionMatrix = Math::perspective<float>(Math::radians(m_Fov), (float)m_Width / (float)m_Height, m_NearPlane, m_FarPlane);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window,float deltaTime)
+void Camera::Inputs(GLFWwindow* window,double deltaTime)
 {
 	if(m_PlaneMode)
 	{

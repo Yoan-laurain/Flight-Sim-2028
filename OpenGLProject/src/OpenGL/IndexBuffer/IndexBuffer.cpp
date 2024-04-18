@@ -4,7 +4,7 @@
 IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices) 
 	: m_Indices(indices)
 	, m_ID(0)
-	, m_NumberOfIndices(indices.size())
+	, m_NumberOfIndices(static_cast<unsigned int>(indices.size()))
 {
 	glGenBuffers(1, &m_ID);
 	

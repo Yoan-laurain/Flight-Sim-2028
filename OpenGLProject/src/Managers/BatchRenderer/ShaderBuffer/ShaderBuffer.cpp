@@ -43,9 +43,9 @@ void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
     m_Vertices.insert(m_Vertices.end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
     
     // if the model is not already in the list, add it ( Since a model can have multiple meshes )
-    if (std::ranges::find_if(m_Models, [model](Model* m) { return m == model; }) == m_Models.end())
+    if (std::ranges::find_if(m_Models, [model](const Model* m) { return m == model; }) == m_Models.end())
     {
-        m_Models.push_back(model);
+        m_Models.emplace_back(model);
     }
 
     AddTexture(m_TexturesDiffuse, mesh->m_TextureDiffuse);
@@ -82,12 +82,13 @@ std::vector<TransformData>& ShadersBuffer::GetAllTransformsData()
 
 void ShadersBuffer::AddTexture(std::unordered_map<std::string, Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture)
 {
-    for (const auto& texture : texture)
+    const int size = static_cast<int>(textures.size());
+    for (const auto& tex : texture)
     {
-        if (texture && !textures.contains(texture->m_FilePath))
+        if (tex && !textures.contains(tex->m_FilePath))
         {
-            texture->m_Index = textures.size();
-            textures[texture->m_FilePath] = *texture;
+            tex->m_Index = size;
+            textures[tex->m_FilePath] = *tex;
         }
     }
 }
@@ -111,7 +112,7 @@ void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_t
 
         if (m_ModelsTransforms.contains(model))
         {
-            m_ModelsTransforms[model].push_back(transformData); 
+            m_ModelsTransforms[model].emplace_back(transformData); 
         }
         else
         {
@@ -134,7 +135,7 @@ void ShadersBuffer::CreateTextureUniforms(const std::unordered_map<std::string, 
 {
     for (const auto& texture : texturesMap)
     {
-        textureUniforms.push_back(texture.second.m_Slot - maxSlotForTextures * m_IndexBuffer);
+        textureUniforms.emplace_back(texture.second.m_Slot - maxSlotForTextures * m_IndexBuffer);
     }
 }
 
@@ -151,12 +152,12 @@ int ShadersBuffer::GetSlotForTexture(const Mesh* mesh, bool isSpecular)
         }
     }
 
-    return isSpecular ? m_TexturesSpecular.size() : m_TexturesDiffuse.size(); // Retrieve the next available index for the texture
+    return isSpecular ? static_cast<int>(m_TexturesSpecular.size()) : static_cast<int>(m_TexturesDiffuse.size()); // Retrieve the next available index for the texture
 }
 
 void ShadersBuffer::InsertIndices(const Mesh* mesh) 
 {
-    const int size = m_Vertices.size();
+    const int size = static_cast<int>(m_Vertices.size());
     
     m_Indices.reserve(m_Indices.size() + mesh->m_Indices.size());
     
@@ -166,9 +167,9 @@ void ShadersBuffer::InsertIndices(const Mesh* mesh)
     }
 }
 
-void ShadersBuffer::SetModelIndexForVertexBuffers(Mesh* mesh)
+void ShadersBuffer::SetModelIndexForVertexBuffers(Mesh* mesh) const
 {
-    const int index = m_Models.size();
+    const int index = static_cast<int>(m_Models.size());
 
     if( index > 0)
     {
@@ -187,7 +188,7 @@ void ShadersBuffer::BindTexturesToShader(ShaderType, Shader* shader)
     SetUniformAndBind( shader, "u_Specular", m_Specular, m_TexturesSpecular );
 }
 
-void ShadersBuffer::SetUniformAndBind(Shader* shader, const std::string& uniformName, const std::vector<int>& arraySlot, const std::unordered_map<std::string, Texture>& textures)
+void ShadersBuffer::SetUniformAndBind(Shader* shader, const std::string& uniformName, const std::vector<int>& arraySlot, const std::unordered_map<std::string, Texture>& textures) const
 {
     const int MaxSlotForTextures = Application::Get()->GetMaxSlotForTextures();
     

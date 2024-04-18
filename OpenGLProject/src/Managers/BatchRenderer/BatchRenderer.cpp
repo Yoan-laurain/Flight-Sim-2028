@@ -53,7 +53,7 @@ int BatchRenderer::Draw()
                currentBuffer->Init();
             }
             
-            currentBuffer->m_SSBO->SetData( currentBuffer->GetAllTransformsData().data(), sizeof(TransformData) * currentBuffer->GetAllTransformsData().size(), 7);
+            currentBuffer->m_SSBO->SetData( currentBuffer->GetAllTransformsData().data(), sizeof(TransformData) * static_cast<unsigned int>(currentBuffer->GetAllTransformsData().size()), 7);
             currentBuffer->BindTexturesToShader(shaderData.first, shader);
        
             currentBuffer->m_VAO->Bind(); 
@@ -133,10 +133,10 @@ bool BatchRenderer::CreateNewBufferIfNeed(const ShaderType shaderType, Mesh* mes
     // if the number of textures is greater than the max slot for textures, create a new buffer
     for (const auto& texture : mesh->m_Textures)
     {
-        const int index = texture.m_Slot - Application::Get()->GetMaxSlotForTextures() * size;
+        const int index = texture.m_Slot - Application::Get()->GetMaxSlotForTextures() * static_cast<int>(size);
         if ( index >= 0 )
         {
-            m_ShadersData[shaderType].emplace_back(std::make_unique<ShadersBuffer>(ShadersBuffer(mesh, model, m_ShadersData[shaderType].size())));
+            m_ShadersData[shaderType].emplace_back(std::make_unique<ShadersBuffer>(ShadersBuffer(mesh, model, static_cast<int>(m_ShadersData[shaderType].size()))));
             return true;
         }
     }
@@ -157,7 +157,7 @@ bool BatchRenderer::AddToBufferIfAlreadyExisting(Model* model, Mesh* mesh)
     if (m_ShadersData[model->m_ShaderType].size() > 1 )
     {
         // if this mesh is already in another buffer, add it to this one
-        for (auto& array : m_ShadersData[model->m_ShaderType])
+        for (const auto& array : m_ShadersData[model->m_ShaderType])
         {
             bool bIsAlreadyInBuffer = true;
         
@@ -193,11 +193,11 @@ bool BatchRenderer::AddToBufferIfAlreadyExisting(Model* model, Mesh* mesh)
 
 void BatchRenderer::AddToFirstBufferWhoCanHoldIt(Model* model, Mesh* mesh)
 {
-    const int nbTextureSlotRequired = mesh->m_Textures.size();
+    const int nbTextureSlotRequired = static_cast<int>(mesh->m_Textures.size());
     
-    for (auto& array : m_ShadersData[model->m_ShaderType])
+    for (const auto& array : m_ShadersData[model->m_ShaderType])
     {
-        const int nbSlotAvailable = Application::Get()->GetMaxSlotForTextures() - array->m_TexturesDiffuse.size() - array->m_TexturesSpecular.size();
+        const int nbSlotAvailable = Application::Get()->GetMaxSlotForTextures() - static_cast<int>(array->m_TexturesDiffuse.size()) - static_cast<int>(array->m_TexturesSpecular.size());
         if ( nbTextureSlotRequired <= nbSlotAvailable )
         {
             array->AddNewMesh(mesh, model); 

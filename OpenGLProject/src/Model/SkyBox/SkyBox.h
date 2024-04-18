@@ -2,7 +2,7 @@
 
 #include "../../OpenGL/Mesh/Mesh.h"
 
-class SkyBox : public Mesh
+class SkyBox final : public Mesh
 {
 	public : 
 		SkyBox();

@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstring>
-
 #include "Vec3.h"
+#include <cstring>
 
 template <typename T>
 struct Mat3

@@ -30,7 +30,8 @@ class Level
 
 			return model;
 		}
-		Terrain* AddTerrain(float size,int subdivision,ShaderType shaderType);
+		Model* AddTerrain(float width, float depth, int subdivisions, ShaderType shaderType);
+
 
 		void UpdateTrianglesCount(); 
 
@@ -40,5 +41,4 @@ class Level
 
 	protected:
 		std::vector<std::unique_ptr<Model>> m_Models;
-		std::vector<std::unique_ptr<Terrain>> m_Terrains;
 };

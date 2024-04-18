@@ -12,7 +12,7 @@ ShaderManager::ShaderManager()
 
 void ShaderManager::RegisterShader(const ShaderType shaderType, Shader* shader)
 {
-    if (m_Shaders.find(shaderType) == m_Shaders.end())
+    if (!m_Shaders.contains(shaderType))
     {
         m_Shaders[shaderType] = std::unique_ptr<Shader>(shader);
     }
@@ -24,7 +24,7 @@ void ShaderManager::RegisterShader(const ShaderType shaderType, Shader* shader)
 
 Shader* ShaderManager::GetShader(const ShaderType shaderType)
 {
-    if (m_Shaders.find(shaderType) != m_Shaders.end())
+    if (m_Shaders.contains(shaderType))
     {
         return m_Shaders[shaderType].get();
     }
