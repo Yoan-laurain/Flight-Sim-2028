@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "../Model/Model.h"
 #include "../Core/Application.h"
-#include "../Terrain/TerrainShape.h"
+#include "../Terrain/TerrainModel.h"
 #include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "../Managers/ModelLoader/ModelLoader.h"
 
