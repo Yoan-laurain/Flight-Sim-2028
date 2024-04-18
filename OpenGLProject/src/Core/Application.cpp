@@ -17,7 +17,7 @@
 
 Application* Application::m_Instance = nullptr;
 
-Application::Application() : m_AppIcon(nullptr)
+Application::Application() : m_AppIcon(nullptr), m_polygoneMode(false)
 {
     m_Instance = this;
 }
@@ -245,6 +245,19 @@ void Application::SetStencilTest(const bool enable)
         glStencilMask(0x00);
         glDisable(GL_STENCIL_TEST);
     }
+}
+
+void Application::SetPolygoneMode()
+{
+    if (m_polygoneMode)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+bool& Application::GetPolygoneMode()
+{
+	return m_polygoneMode;
 }
 
 int Application::GetMaxSlotForTextures()

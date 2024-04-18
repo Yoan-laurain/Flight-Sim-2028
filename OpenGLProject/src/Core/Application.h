@@ -51,7 +51,14 @@ class Application
         */
         void SetStencilTest( bool enable );
 
+		/*
+		 * Wireframe mode
+		 */
+		void SetPolygoneMode();
+        bool& GetPolygoneMode();
+
         int GetMaxSlotForTextures();
+		
 
     private:
     
@@ -72,8 +79,11 @@ class Application
         std::unique_ptr<Camera> m_Camera;
         std::unique_ptr<BatchRenderer> m_BatchRenderer;
 
+
         const char* m_AppIcon;
         int MaxSlotForTextures;
+
+		bool m_polygoneMode; // Wireframe mode
 
         static Application* m_Instance;
 };
