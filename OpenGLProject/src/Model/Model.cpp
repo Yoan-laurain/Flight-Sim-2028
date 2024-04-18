@@ -57,6 +57,8 @@ void Model::Update()
 		Mesh->m_Rotation = Quaternion(Math::radians(m_Rotation));
 		Mesh->m_Scale = m_Scale;
 	}
+
+	Application::Get()->GetBatchRenderer()->UpdateModelDatas(this, m_ShaderType);
 }
 
 void Model::SendDataRender()
@@ -85,17 +87,17 @@ void Model::SetScale(const Vec3<float>& scale)
 	Update();
 }
 
-Vec3<float>& Model::GetRotation()
+Vec3<float> Model::GetRotation() const
 {
 	return m_Rotation;
 }
 
-Vec3<float>& Model::GetTranslation()
+Vec3<float> Model::GetTranslation() const
 {
 	return m_Translation;
 }
 
-Vec3<float>& Model::GetScale()
+Vec3<float> Model::GetScale() const
 {
 	return m_Scale;
 }

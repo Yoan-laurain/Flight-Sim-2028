@@ -40,6 +40,11 @@ class BatchRenderer
          */
         Texture* CreateOrGetTexture( const char* image, const char* texType, ShaderType shaderType);
 
+        /*
+         * Method to call when an object is moved,scaled or rotated to update the model matrix
+         */
+        void UpdateModelDatas(Model* model, ShaderType shaderType);
+
     private:
 
         /* Keep track of the current available texture slot for each shader */
