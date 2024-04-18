@@ -51,8 +51,8 @@ flat in int v_IndexSpecular;
 
 #define MAX_TEXTURE_UNITS X
 
-uniform sampler2D u_Diffuse[MAX_TEXTURE_UNITS];
-uniform sampler2D u_Specular[MAX_TEXTURE_UNITS];
+uniform sampler2D u_Diffuse[MAX_TEXTURE_UNITS/2];
+uniform sampler2D u_Specular[MAX_TEXTURE_UNITS/2];
 
 uniform vec3 u_CamPos;
 

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "Core/Application.h"
+
 Shader::Shader(const std::string& filepath) : m_ID(0)
 {
 	SetShader(filepath);
@@ -34,9 +36,8 @@ void Shader::Unbind() const
 
 void Shader::SetMaxImageUnit(ShaderProgramSource& source)
 {
-	int total_units;
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &total_units);
-	
+	int total_units = Application::Get()->GetMaxSlotForTextures();
+
 	std::string& fragment_source = source.FragmentSource;
 	const std::string max_texture_units = "MAX_TEXTURE_UNITS X";
 	const std::string max_texture_units_value = "MAX_TEXTURE_UNITS " + std::to_string(total_units);
