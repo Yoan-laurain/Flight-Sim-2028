@@ -22,7 +22,8 @@ class Shader
 
 		void Bind() const;
 		void Unbind() const;
-	
+		void SetMaxImageUnit(ShaderProgramSource& source);
+
 		void SetUniform1i(const std::string& name, int value);
 		void SetUniform1f(const std::string& name, float value);
 		void SetUniform1iv(const std::string& name, const std::vector<int>& value);
