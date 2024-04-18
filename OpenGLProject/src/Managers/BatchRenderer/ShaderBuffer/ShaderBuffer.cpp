@@ -45,7 +45,7 @@ void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
     // if the model is not already in the list, add it ( Since a model can have multiple meshes )
     if (std::ranges::find_if(m_Models, [model](Model* m) { return m == model; }) == m_Models.end())
     {
-        m_Models.push_back(model);
+        m_Models.emplace_back(model);
     }
 
     AddTexture(m_TexturesDiffuse, mesh->m_TextureDiffuse);
@@ -111,7 +111,7 @@ void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_t
 
         if (m_ModelsTransforms.contains(model))
         {
-            m_ModelsTransforms[model].push_back(transformData); 
+            m_ModelsTransforms[model].emplace_back(transformData); 
         }
         else
         {
@@ -134,7 +134,7 @@ void ShadersBuffer::CreateTextureUniforms(const std::unordered_map<std::string, 
 {
     for (const auto& texture : texturesMap)
     {
-        textureUniforms.push_back(texture.second.m_Slot - maxSlotForTextures * m_IndexBuffer);
+        textureUniforms.emplace_back(texture.second.m_Slot - maxSlotForTextures * m_IndexBuffer);
     }
 }
 

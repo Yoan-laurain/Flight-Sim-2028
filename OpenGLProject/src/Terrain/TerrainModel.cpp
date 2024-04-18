@@ -26,7 +26,7 @@ TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderTyp
             float z = i * stepSizeZ - m_Depth / 2.0f;
             float y = 0.0f; // Initial height is 0
 
-            vertices.push_back(Vertex({ x, y, z }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
+            vertices.emplace_back(Vertex({ x, y, z }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
         }
     }
     for (int i = 0; i < m_Subdivisions; ++i)
@@ -37,12 +37,12 @@ TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderTyp
             const int topRight = topLeft + 1;
             const int bottomLeft = (i + 1) * (m_Subdivisions + 1) + j;
             const int bottomRight = bottomLeft + 1;
-            indices.push_back(topLeft);
-            indices.push_back(topRight);
-            indices.push_back(bottomLeft);
-            indices.push_back(topRight);
-            indices.push_back(bottomRight);
-            indices.push_back(bottomLeft);
+            indices.emplace_back(topLeft);
+            indices.emplace_back(topRight);
+            indices.emplace_back(bottomLeft);
+            indices.emplace_back(topRight);
+            indices.emplace_back(bottomRight);
+            indices.emplace_back(bottomLeft);
         }
     }
 
@@ -50,7 +50,7 @@ TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderTyp
     const Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
     textures.push_back(*defaultTexture);
     Mesh* terrainMesh = new Mesh(vertices, indices,textures, matrix);
-    m_Meshes.push_back(std::unique_ptr<Mesh>(terrainMesh));
+    m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
 }
 
 TerrainModel::~TerrainModel() = default;

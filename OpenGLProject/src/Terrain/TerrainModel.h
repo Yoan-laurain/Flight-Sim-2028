@@ -1,8 +1,5 @@
 ﻿#pragma once
-
-#include <vector>
 #include "Model/Model.h"
-#include "OpenGL/Textures/Texture.h"
 
 struct Vertex;
 enum class ShaderType;

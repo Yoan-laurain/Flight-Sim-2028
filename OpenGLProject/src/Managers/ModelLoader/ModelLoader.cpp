@@ -76,7 +76,7 @@ void ModelLoader::LoadMesh(const unsigned int indMesh)
 	 if (textures.empty())
 	 {
 		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/default.jpg", Diffuse, m_ShaderType);
-	 	 textures.push_back(*defaultTex);
+	 	 textures.emplace_back(*defaultTex);
 	 	 delete defaultTex;
 	 }
 	
