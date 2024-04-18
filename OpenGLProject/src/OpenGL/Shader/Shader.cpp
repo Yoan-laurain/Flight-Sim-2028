@@ -42,7 +42,7 @@ void Shader::SetShader(const std::string& filepath)
 int Shader::GetUniformLocation(const std::string& name)
 {
 	// Check if the uniform location is already stored in the cache
-	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+	if (m_UniformLocationCache.contains(name))
 		return m_UniformLocationCache[name];
 
 	// If it's not stored in the cache, get the location of the uniform
@@ -57,7 +57,7 @@ int Shader::GetUniformLocation(const std::string& name)
 	return location;
 }
 
-ShaderProgramSource Shader::ParseShader(const std::string& filepath)
+ShaderProgramSource Shader::ParseShader(const std::string& filepath) const
 {
 	// Open the file where the shaders are stored
 	std::ifstream stream(filepath);
@@ -86,7 +86,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 		else
 		{
 			// If the line doesn't contain the word "#shader", add it to the stringstream
-			ss[(int)type] << line << '\n';
+			ss[static_cast<int>(type)] << line << '\n';
 		}
 	}
 
@@ -97,7 +97,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
 	// Create a shader object and get its ID
-	unsigned int id = glCreateShader(type);
+	const unsigned int id = glCreateShader(type);
 
 	const char* src = source.c_str();
 
@@ -121,7 +121,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 
 		// Allocate memory on the stack to store the error message
-		char* message = (char*)alloca(length * sizeof(char));
+		const auto message = static_cast<char*>(alloca(length * sizeof(char)));
 
 		// Get the error message
 		glGetShaderInfoLog(id, length, &length, message);
@@ -141,9 +141,9 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
 	// We need to create a program that will link the shaders together
-	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	const unsigned int program = glCreateProgram();
+	const unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+	const unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
 	// Then we attach the shaders to the program
 	glAttachShader(program, vs);
@@ -187,7 +187,7 @@ void Shader::SetUniform1f(const std::string& name, const float value)
 
 void Shader::SetUniform1iv(const std::string& name, const std::vector<int>& value)
 {
-	glUniform1iv(GetUniformLocation(name), value.size(), value.data());
+	glUniform1iv(GetUniformLocation(name), static_cast<int>(value.size()), value.data());
 }
 
 void Shader::SetUniformMat4fv(const std::string& name, const Mat4<float>& matrix)

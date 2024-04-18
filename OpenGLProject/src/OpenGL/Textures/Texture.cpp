@@ -7,8 +7,8 @@
 Texture::Texture(const char* image,const char* texType, const ShaderType shaderType)
 	: m_FilePath( image )
 	, m_Index(0)
-	, m_ID(0)
 	, m_Type(texType)
+	, m_ID(0)
 	, m_LocalBuffer(nullptr)
 	, m_Width(0)
 	, m_Height(0)
@@ -67,7 +67,7 @@ const char* Texture::GetType() const
 	return m_Type;
 }
 
-void Texture::HandleFormat()
+void Texture::HandleFormat() const
 {
 	if (m_BPP == 4)
 		glTexImage2D

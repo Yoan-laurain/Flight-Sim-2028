@@ -10,7 +10,6 @@ Model::Model(const char* file, const ShaderType shaderType)
 	, m_Rotation(Vec3<float>(0))
 	, m_Translation(Vec3<float>(0))
 	, m_Scale(Vec3<float>(1))
-	, m_File(file)
 {
 }
 
@@ -19,7 +18,6 @@ Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 	, m_Rotation(Vec3(0.0f))
 	, m_Translation(Vec3(0.0f))
 	, m_Scale(Vec3(1.0f))
-	, m_File(nullptr)
 {
 
 	std::vector<Vertex> vertices;
@@ -37,7 +35,7 @@ Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 
 Model::~Model() = default;
 
-int Model::GetNumberOfTriangles()
+int Model::GetNumberOfTriangles() const
 {
 	int numTriangles = 0;
 	
@@ -54,7 +52,7 @@ void Model::Update()
 	for (const auto& Mesh : m_Meshes)
 	{
 		Mesh->m_Transform = m_Translation;
-		Mesh->m_Rotation = Quaternion(Math::radians(m_Rotation));
+		Mesh->m_Rotation = Quaternion(m_Rotation);
 		Mesh->m_Scale = m_Scale;
 	}
 
@@ -71,7 +69,7 @@ void Model::SendDataRender()
 
 void Model::SetRotation(const Vec3<float>& rotation)
 {
-	m_Rotation = rotation;
+	m_Rotation = Math::radians(rotation);
 	Update();
 }
 

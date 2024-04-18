@@ -12,7 +12,7 @@ ShaderStorageBufferObject::~ShaderStorageBufferObject()
     glDeleteBuffers(1, &m_RendererID);
 }
 
-void ShaderStorageBufferObject::Bind(const unsigned index)
+void ShaderStorageBufferObject::Bind(const unsigned index) const
 {
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, m_RendererID);
 }
@@ -22,13 +22,13 @@ void ShaderStorageBufferObject::Unbind()
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
-void ShaderStorageBufferObject::SetData(const void* data, const unsigned size, const unsigned index)
+void ShaderStorageBufferObject::SetData(const void* data, const unsigned size, const unsigned index) const
 {
     Bind(index);
     glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STATIC_DRAW);
 }
 
-void ShaderStorageBufferObject::SetSubData(const void* data, const unsigned size, const unsigned offset)
+void ShaderStorageBufferObject::SetSubData(const void* data, const unsigned size, const unsigned offset) const
 {
     Bind();
     glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data);
