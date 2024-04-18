@@ -36,7 +36,7 @@ class Application
 
         /*
             * Deactivate VSync and uncap the frame rate
-            * Be careful : Inputs will be based on the frame rate youll need to implement a deltaTime system
+            * Be careful : Inputs will be based on the frame rate you'll need to implement a deltaTime system
         */
         void SetVSync( bool enable );
 
@@ -64,7 +64,7 @@ class Application
 
         void ApplyAppIcon();
 
-        void UpdateDeltaTime(float& lastTime, float& deltaTime);
+        void UpdateDeltaTime(double& lastTime, double& deltaTime);
 
         std::unique_ptr<Level> m_CurrentLevel;
         std::unique_ptr<Renderer> m_Renderer;

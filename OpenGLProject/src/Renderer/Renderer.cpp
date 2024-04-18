@@ -27,9 +27,6 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 
 void Renderer::HandleError(GLenum source, const GLenum type, GLuint id, const GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-		return;
-
     std::cout << "Type: ";
     switch (type)
     {

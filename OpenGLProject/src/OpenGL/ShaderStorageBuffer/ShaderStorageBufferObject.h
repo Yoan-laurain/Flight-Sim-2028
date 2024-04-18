@@ -6,11 +6,11 @@ class ShaderStorageBufferObject
         ShaderStorageBufferObject();
         ~ShaderStorageBufferObject();
     
-        void Bind( unsigned index = 0);
+        void Bind( unsigned index = 0) const;
         void Unbind();
     
-        void SetData(const void* data, unsigned int size, unsigned index);
-        void SetSubData(const void* data, unsigned int size, unsigned int offset);
+        void SetData(const void* data, unsigned int size, unsigned index) const;
+        void SetSubData(const void* data, unsigned int size, unsigned int offset) const;
     
         unsigned int m_RendererID;
 };

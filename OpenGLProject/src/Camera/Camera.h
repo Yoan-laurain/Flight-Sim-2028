@@ -13,7 +13,7 @@ class Camera
 	public:
 		Camera( int width, int height, const Vec3<float>& position);
 
-		void Update(GLFWwindow* window,float deltaTime );
+		void Update(GLFWwindow* window,double deltaTime );
 
 		/*
 		 * Reset the camera to the initial position, rotation and speed
@@ -45,7 +45,7 @@ class Camera
 
 		bool m_FirstClick{};
 
-		void Inputs( GLFWwindow* window,float deltaTime );
+		void Inputs( GLFWwindow* window,double deltaTime );
 		void HandleRotation( GLFWwindow* window );
 		void UpdateMatrix();
 };
