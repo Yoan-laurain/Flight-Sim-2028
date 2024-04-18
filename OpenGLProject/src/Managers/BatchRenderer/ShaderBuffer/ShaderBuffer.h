@@ -122,14 +122,14 @@ struct ShadersBuffer
         /*
         * Set the index of the model associated to this mesh to allow shader to determine which values to use in the arrays
         */
-        void SetModelIndexForVertexBuffers(Mesh* mesh);
+        void SetModelIndexForVertexBuffers(Mesh* mesh) const;
 
         /*
          * Set the textures uniforms and bind the textures to the shader for the specified array of textures
          */
         void SetUniformAndBind(Shader* shader, const std::string& uniformName,
                                const std::vector<int>& arraySlot,
-                               const std::unordered_map<std::string, Texture>& textures);
+                               const std::unordered_map<std::string, Texture>& textures) const;
 
         /* List of slot used by the shader to bind the diffuses textures */
         std::vector<int> m_Diffuse;

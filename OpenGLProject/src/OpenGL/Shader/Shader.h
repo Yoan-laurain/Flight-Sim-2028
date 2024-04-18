@@ -40,5 +40,5 @@ class Shader
 		unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 		unsigned int CompileShader(unsigned int type, const std::string& source);
 	
-		ShaderProgramSource ParseShader(const std::string& filepath);
+		ShaderProgramSource ParseShader(const std::string& filepath) const;
 };

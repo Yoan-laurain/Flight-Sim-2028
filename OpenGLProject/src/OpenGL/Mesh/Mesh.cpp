@@ -15,14 +15,13 @@ Mesh::Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indice
 	, m_Indices(indices)
 	, m_Textures(std::move(textures))
 {
-	m_TriangleCount = indices.size() / 3;
+	m_TriangleCount = static_cast<int>(indices.size()) / 3;
 	
 	FillTexturesArrays();
 }
 
-Mesh::Mesh(const Mesh&)
+Mesh::Mesh(const Mesh&): m_TriangleCount(0)
 {
-	
 }
 
 Mesh::Mesh():m_TriangleCount(0){}

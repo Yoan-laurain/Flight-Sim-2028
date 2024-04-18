@@ -54,18 +54,18 @@ ModelLoader::~ModelLoader() = default;
 void ModelLoader::LoadMesh(const unsigned int indMesh)
 {
 	// Get all accessor indices
-	unsigned int posAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
-	unsigned int normalAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
-	unsigned int texAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
-	unsigned int indAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["indices"];
+	const unsigned int posAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
+	const unsigned int normalAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
+	const unsigned int texAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
+	const unsigned int indAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["indices"];
 
 	// Use accessor indices to get all vertices components
-	std::vector<float> posVec = GetFloats(m_JSON["accessors"][posAccInd]);
-	std::vector<Vec3<float>> positions = GroupFloatsVec3(posVec);
-	std::vector<float> normalVec = GetFloats(m_JSON["accessors"][normalAccInd]);
-	std::vector<Vec3<float>> normals = GroupFloatsVec3(normalVec);
-	std::vector<float> texVec = GetFloats(m_JSON["accessors"][texAccInd]);
-	std::vector<Vec2<float>> texUVs = GroupFloatsVec2(texVec);
+	const std::vector<float> posVec = GetFloats(m_JSON["accessors"][posAccInd]);
+	const std::vector<Vec3<float>> positions = GroupFloatsVec3(posVec);
+	const std::vector<float> normalVec = GetFloats(m_JSON["accessors"][normalAccInd]);
+	const std::vector<Vec3<float>> normals = GroupFloatsVec3(normalVec);
+	const std::vector<float> texVec = GetFloats(m_JSON["accessors"][texAccInd]);
+	const std::vector<Vec2<float>> texUVs = GroupFloatsVec2(texVec);
 	
 	// Combine all the vertex components and also get the indices and textures
 	std::vector<Vertex> vertices = AssembleVertices(positions, normals, texUVs);
@@ -77,6 +77,7 @@ void ModelLoader::LoadMesh(const unsigned int indMesh)
 	 {
 		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/default.jpg", Diffuse, m_ShaderType);
 	 	 textures.emplace_back(*defaultTex);
+
 	 	 delete defaultTex;
 	 }
 	
@@ -120,7 +121,7 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& m
 		scale = Math::make_vec3(scaleValues);
 	}
 	// Get matrix if it exists
-	Mat4<float> matNode = Mat4<float>(1.0f);
+	auto matNode = Mat4(1.0f);
 	if (node.find("matrix") != node.end())
 	{
 		float matValues[16];
@@ -192,11 +193,11 @@ std::vector<float> ModelLoader::GetFloats(json accessor)
 	else throw std::invalid_argument("Type is invalid (not SCALAR, VEC2, VEC3, or VEC4)");
 
 	// Go over all the bytes in the data at the correct place using the properties from above
-	unsigned int beginningOfData = byteOffset + accByteOffset;
-	unsigned int lengthOfData = count * 4 * numPerVert;
-	for (unsigned int i = beginningOfData; i < beginningOfData + lengthOfData; i)
+	const unsigned int beginningOfData = byteOffset + accByteOffset;
+	const unsigned int lengthOfData = count * 4 * numPerVert;
+	for (unsigned int i = beginningOfData; i < beginningOfData + lengthOfData;)
 	{
-		unsigned char bytes[] = { m_Data[i++], m_Data[i++], m_Data[i++], m_Data[i++] };
+		const unsigned char bytes[] = { m_Data[i++], m_Data[i++], m_Data[i++], m_Data[i++] };
 		float value;
 		std::memcpy(&value, bytes, sizeof(float));
 		floatVec.push_back(value);
@@ -223,7 +224,7 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	const unsigned int beginningOfData = byteOffset + accByteOffset;
 	if (componentType == 5125)
 	{
-		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 4; i)
+		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 4;)
 		{
 			const unsigned char bytes[] = { m_Data[i++], m_Data[i++], m_Data[i++], m_Data[i++] };
 			unsigned int value;
@@ -233,7 +234,7 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	}
 	else if (componentType == 5123)
 	{
-		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2; i)
+		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2;)
 		{
 			const unsigned char bytes[] = { m_Data[i++], m_Data[i++] };
 			unsigned short value;
@@ -243,12 +244,12 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	}
 	else if (componentType == 5122)
 	{
-		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2; i)
+		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2; )
 		{
 			const unsigned char bytes[] = { m_Data[i++], m_Data[i++] };
 			short value;
 			std::memcpy(&value, bytes, sizeof(short));
-			indices.push_back((GLuint)value);
+			indices.push_back(static_cast<GLuint>(value));
 		}
 	}
 
@@ -286,7 +287,7 @@ std::vector<Texture> ModelLoader::GetTextures()
 			// Load diffuse texture
 			if (texPath.find("baseColor") != std::string::npos || texPath.find("diffuse") != std::string::npos)
 			{
-				Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
+				const Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
 				textures.push_back(*defaultTex);
 				m_LoadedTex.push_back(*defaultTex);
 				m_LoadedTexName.push_back(texPath);
@@ -297,7 +298,7 @@ std::vector<Texture> ModelLoader::GetTextures()
 			// Load specular texture
 			else if (texPath.find("metallicRoughness") != std::string::npos || texPath.find("specular") != std::string::npos)
 			{
-				Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Specular, m_ShaderType);
+				const Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Specular, m_ShaderType);
 				textures.push_back(*defaultTex);
 				m_LoadedTex.push_back(*defaultTex);
 				m_LoadedTexName.push_back(texPath);
@@ -312,7 +313,7 @@ std::vector<Texture> ModelLoader::GetTextures()
 std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<Vec3<float>>& positions, const std::vector<Vec3<float>>& normals, const std::vector<Vec2<float>>& texUVs )
 {
 	std::vector<Vertex> vertices;
-	for (int i = 0; i < positions.size(); i++)
+	for (int i = 0; i < static_cast<int>(positions.size()); i++)
 	{
 		vertices.emplace_back(positions[i], normals[i], Vec3(1.0f, 1.0f, 1.0f), texUVs[i]
 		);
@@ -323,7 +324,7 @@ std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<Vec3<float>>
 std::vector<Vec2<float>> ModelLoader::GroupFloatsVec2(const std::vector<float>& floatVec)
 {
 	std::vector<Vec2<float>> vectors;
-	for (int i = 0; i < floatVec.size(); i)
+	for (int i = 0; i < static_cast<int>(floatVec.size());)
 	{
 		vectors.emplace_back(floatVec[i++], floatVec[i++]);
 	}
@@ -333,7 +334,7 @@ std::vector<Vec2<float>> ModelLoader::GroupFloatsVec2(const std::vector<float>& 
 std::vector<Vec3<float>> ModelLoader::GroupFloatsVec3(const std::vector<float>& floatVec)
 {
 	std::vector<Vec3<float>> vectors;
-	for (int i = 0; i < floatVec.size(); i)
+	for (int i = 0; i < static_cast<int>(floatVec.size());)
 	{
 		vectors.emplace_back(floatVec[i++], floatVec[i++], floatVec[i++]);
 	}
@@ -343,7 +344,7 @@ std::vector<Vec3<float>> ModelLoader::GroupFloatsVec3(const std::vector<float>& 
 std::vector<Vec4<float>> ModelLoader::GroupFloatsVec4(const std::vector<float>& floatVec)
 {
 	std::vector<Vec4<float>> vectors;
-	for (int i = 0; i < floatVec.size(); i)
+	for (int i = 0; i < static_cast<int>(floatVec.size()); )
 	{
 		vectors.emplace_back(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]);
 	}

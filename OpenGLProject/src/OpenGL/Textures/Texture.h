@@ -25,7 +25,7 @@ class Texture
 		const char* m_Type;
 
 	private:
-		void HandleFormat();
+		void HandleFormat() const;
 	
 	protected:
 		unsigned int m_ID;
