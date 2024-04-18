@@ -49,8 +49,10 @@ in vec2 v_TexCoord;
 flat in int v_IndexDiffuse;
 flat in int v_IndexSpecular;
 
-uniform sampler2D u_Diffuse[32];
-uniform sampler2D u_Specular[32];
+#define MAX_TEXTURE_UNITS X
+
+uniform sampler2D u_Diffuse[MAX_TEXTURE_UNITS];
+uniform sampler2D u_Specular[MAX_TEXTURE_UNITS];
 
 uniform vec3 u_CamPos;
 

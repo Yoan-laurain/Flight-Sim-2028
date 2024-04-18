@@ -32,9 +32,29 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
+void Shader::SetMaxImageUnit(const ShaderProgramSource& source)
+{
+	int total_units;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &total_units);
+	
+	std::string fragment_source = source.FragmentSource;
+	const std::string max_texture_units = "MAX_TEXTURE_UNITS X";
+	const std::string max_texture_units_value = "MAX_TEXTURE_UNITS " + std::to_string(total_units);
+	size_t pos = 0;
+	
+	while ((pos = fragment_source.find(max_texture_units, pos)) != std::string::npos)
+	{
+		fragment_source.replace(pos, max_texture_units.length(), max_texture_units_value);
+		pos += max_texture_units_value.length();
+	}
+}
+
 void Shader::SetShader(const std::string& filepath)
 {
 	const ShaderProgramSource source = ParseShader(filepath);
+
+	SetMaxImageUnit(source);
+	
 	m_ID = CreateShader(source.VertexSource, source.FragmentSource);
 	Bind();
 }
