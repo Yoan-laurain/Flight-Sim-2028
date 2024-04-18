@@ -21,7 +21,6 @@ void Level3D::OnImGuiRender()
 		m_Plane->SetTranslation(newPosition);
 	});
 
-	//SetPolygoneMode bool in imgui checkbox
 	if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 	{
 		Application::Get()->SetPolygoneMode();
