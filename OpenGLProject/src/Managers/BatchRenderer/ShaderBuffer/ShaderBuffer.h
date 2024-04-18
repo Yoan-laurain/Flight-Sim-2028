@@ -52,6 +52,11 @@ struct ShadersBuffer
         void InitTextureUniform();
 
         /*
+        * Fill the transform data array for the buffer to be used by SSBO to send data to the shader for the specified model
+        */
+         void ExtractModelTransformData(const std::vector<Model*>::value_type& model);
+
+        /*
          * Set the textures uniforms and bind the textures to the shader
          * Need to be called for each draw since we can have multiple draw with the same shader
          */
@@ -76,22 +81,22 @@ struct ShadersBuffer
         std::unique_ptr<ShaderStorageBufferObject> m_SSBO;
 
         /* List of transform data for each mesh of the buffer that will be send to the shader by the SSBO */
-        std::vector<TransformData> transformsDatas;
+        std::unordered_map<Model*, std::vector<TransformData>> m_ModelsTransforms;
 
+        std::vector<TransformData>& GetAllTransformsData();
+ 
         /* Index of the buffer for the current shader type */
         int m_IndexBuffer = 0;
 
     private:
 
+       std::vector<TransformData> m_TransformsData;
+       bool m_NeedToRegroupTransformsAgain = false;
+
        /*
        * Add the textures of the mesh to the list of textures of the buffer
        */
        void AddTexture(std::unordered_map<std::string,Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture);
-
-       /*
-        * Fill the transform data array for the buffer to be used by SSBO to send data to the shader
-        */
-        void ExtractTransformData();
 
         /*
          * Fill the array of texture slot to use for this buffer for the specified array of textures
