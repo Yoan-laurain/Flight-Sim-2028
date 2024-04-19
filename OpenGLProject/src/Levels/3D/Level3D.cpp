@@ -10,7 +10,7 @@
 Level3D::Level3D() 
 {
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
-	static_cast<TerrainModel*>(AddTerrain(100.0f, 100.0f, 100,ShaderType::BASIC))->ValidateTerrain();
+	m_Models.push_back(m_generator.GenerateTerrain(100,100,100,ShaderType::BASIC));
 	m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 }
 

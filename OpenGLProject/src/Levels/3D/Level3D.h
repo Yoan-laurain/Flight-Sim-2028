@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Level.h"
+#include "Terrain/TerrainGenerator.h"
 
 class Level3D : public Level
 {
@@ -14,4 +15,5 @@ class Level3D : public Level
 
 		Model* m_SkyBox;
 	    Model* m_Plane;
+		TerrainGenerator m_generator;
 };
