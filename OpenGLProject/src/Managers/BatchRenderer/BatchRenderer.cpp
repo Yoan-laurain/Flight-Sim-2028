@@ -112,6 +112,21 @@ void BatchRenderer::UpdateModelDatas(Model* model,ShaderType shaderType)
     }
 }
 
+void BatchRenderer::UpdateVerticesDatas(Model* model, ShaderType shaderType)
+{
+    for (const auto& shaderData : m_ShadersData[shaderType])
+    {
+        for (const auto& modelD : shaderData->m_Models)
+        {
+            if (model == modelD)
+            {
+                shaderData->UpdateModelVerticesDatas(model);
+                return;
+            }
+        }
+    }
+}
+
 int BatchRenderer::GetNextIndexToBindTextureTo(const ShaderType shaderType)
 {
     const int index = m_IndexTextures[shaderType];

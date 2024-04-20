@@ -26,6 +26,7 @@ class VertexBuffer
 
 		void Bind() const;
 		void Unbind() const;
+		void SetDatas(const std::vector<Vertex>& vertices);
 
 		std::vector<Vertex> m_Vertices;
 	
