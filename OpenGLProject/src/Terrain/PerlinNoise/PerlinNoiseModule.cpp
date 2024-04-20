@@ -1,8 +1,8 @@
 ﻿#include "PerlinNoiseModule.h"
-
 #include <random>
-
 #include "PerlinNoise.h"
+
+PerlinNoiseModule::PerlinNoiseModule(float frequency):_frequency(frequency){}
 
 void PerlinNoiseModule::Process(std::vector<std::vector<float>>& heighmap)
 {
