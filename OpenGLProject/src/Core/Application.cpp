@@ -9,6 +9,7 @@
 #include "../Managers/ShaderManager/ShaderManager.h"
 #include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "Vendor/stb_image/stb_image.h"
+#include "Terrain/TerrainGenerator.h"
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -46,6 +47,7 @@ void Application::Run()
     m_Renderer = std::make_unique<Renderer>();
     m_ShaderManager = std::make_unique<ShaderManager>();
     m_BatchRenderer = std::make_unique<BatchRenderer>();
+    m_TerrainGenerator = std::make_unique<TerrainGenerator>();
     m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3(0.0f, 0.0f, 100.0f));
 
     SetCurrentLevel(new Level3D());
@@ -107,6 +109,11 @@ Camera* Application::GetCamera()
 BatchRenderer* Application::GetBatchRenderer()
 {
     return m_BatchRenderer.get();
+}
+
+TerrainGenerator* Application::GetTerrainGenerator()
+{
+    return m_TerrainGenerator.get();
 }
 
 void Application::OnImGuiRender()

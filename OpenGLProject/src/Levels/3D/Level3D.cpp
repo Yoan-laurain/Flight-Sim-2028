@@ -5,30 +5,72 @@
 #include "Library/MyImGui/MyImGui.h"
 #include "Terrain/TerrainModel.h"
 #include "Managers/ModelLoader/ModelLoader.h"
+#include "Managers/BatchRenderer/BatchRenderer.h"
+#include "Terrain/TerrainGenerator.h"
 #include <imgui.h>
 
-Level3D::Level3D() 
+void Level3D::GenerateHeightMap()
+{
+	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	terrainGenerator->Init( m_Terrain->m_Width, m_Terrain->m_Depth);
+
+	m_Terrain->SetHeight( terrainGenerator->m_HeightMap );
+}
+
+void Level3D::OnTerrainSettingsChanged()
+{
+	GenerateHeightMap();
+	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(m_Terrain, ShaderType::BASIC);
+}
+
+Level3D::Level3D()  
 {
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
-	static_cast<TerrainModel*>(AddTerrain(100.0f, 100.0f, 100,ShaderType::BASIC))->ValidateTerrain();
-	m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+	//m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+
+	m_Terrain = dynamic_cast<TerrainModel*>(AddTerrain(255.0f, 255.0f, 50,ShaderType::BASIC));
+	
+	GenerateHeightMap();
+	m_Terrain->ValidateTerrain();
 }
 
 void Level3D::OnImGuiRender()
 {
 	Level::OnImGuiRender();
+
+	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	
-	MyImGui::SliderFloat3("Translation : ",m_Plane->GetTranslation(), -10.0f, 10.0f, [this](const Vec3<float>& newPosition) {
-		m_Plane->SetTranslation(newPosition);
+	// octaves
+	MyImGui::SliderInt("Octaves", Application::Get()->GetTerrainGenerator()->m_NumOctaves, 1, 8, [=](const int newValue) {
+		terrainGenerator->m_NumOctaves = newValue;
+		OnTerrainSettingsChanged();
+	});
+
+	// persistence
+	MyImGui::SliderFloat("Persistence", Application::Get()->GetTerrainGenerator()->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
+		terrainGenerator->m_Persistence = newValue;
+		OnTerrainSettingsChanged();
+	});
+
+	// lacunarity
+	MyImGui::SliderFloat("Lacunarity", Application::Get()->GetTerrainGenerator()->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
+		terrainGenerator->m_Lacunarity = newValue;
+		OnTerrainSettingsChanged();
+	});
+	
+	// initial scale
+	// MyImGui::SliderFloat("Scale", Application::Get()->GetTerrainGenerator()->m_InitialScale, 0.1f, 4.0f, [=](const float newValue) {
+	// 	terrainGenerator->m_InitialScale = newValue;
+	// 	OnTerrainSettingsChanged();
+	// });
+	
+	MyImGui::SliderFloat("Height", Application::Get()->GetTerrainGenerator()->m_ElevationScale, 0.0f, 18.0f, [=](const float newValue) {
+		terrainGenerator->m_ElevationScale = newValue;
+		OnTerrainSettingsChanged();
 	});
 
 	if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 	{
 		Application::Get()->SetPolygoneMode();
 	}
-
-	MyImGui::SliderFloat3("Rotation : ",m_Plane->GetRotation(), -180.F, 180.f, [this](const Vec3<float>& newRotation) {
-		m_Plane->SetRotation(newRotation);
-	});
 }
-

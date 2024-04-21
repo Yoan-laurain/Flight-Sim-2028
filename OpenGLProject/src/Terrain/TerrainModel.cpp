@@ -1,6 +1,6 @@
 ﻿#include "TerrainModel.h"
-
 #include "Config.h"
+#include "TerrainGenerator.h"
 #include "OpenGL/Mesh/Mesh.h"
 #include "OpenGL/VertexBuffer/VertexBuffer.h"
 #include "Core/Application.h"
@@ -11,25 +11,41 @@
 TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderType shaderType)
     : Model({}, shaderType), m_Width(width), m_Depth(depth), m_Subdivisions(subdivisions)
 {
+    Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
+    
+    CreateVertices();
+    CalculIndices();
+
+    Mesh* terrainMesh = new Mesh(vertices, indices,{*defaultTexture}, Mat4(1.0f));
+    m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
+}
+
+TerrainModel::~TerrainModel() = default;
+
+void TerrainModel::CreateVertices() 
+{
+    vertices.clear();
+    
     float stepSizeX = m_Width / m_Subdivisions;
     float stepSizeZ = m_Depth / m_Subdivisions;
-
-    std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
-   
-    Mat4<float> matrix(1.0f);
     
     for (int i = 0; i <= m_Subdivisions; ++i)
     {
         for (int j = 0; j <= m_Subdivisions; ++j)
         {
-            float x = j * stepSizeX - m_Width / 2.0f;
-            float z = i * stepSizeZ - m_Depth / 2.0f;
-            float y = 0.0f; // Initial height is 0
+            Vec3<float> position;
+            position.x = j * stepSizeX - m_Width / 2.0f;
+            position.z = i * stepSizeZ - m_Depth / 2.0f;
+            position.y = 0.0f; // Initial height is 0
 
-            vertices.emplace_back(Vertex({ x, y, z }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
+            vertices.emplace_back(Vertex({ position }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
+            baseVertices.emplace_back(Vertex({ position }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
         }
     }
+}
+
+void TerrainModel::CalculIndices()
+{
     for (int i = 0; i < m_Subdivisions; ++i)
     {
         for (int j = 0; j < m_Subdivisions; ++j)
@@ -46,26 +62,28 @@ TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderTyp
             indices.push_back(bottomLeft);
         }
     }
-
-    std::vector<Texture> textures;
-    Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
-    textures.push_back(*defaultTexture);
-    Mesh* terrainMesh = new Mesh(vertices, indices,textures, matrix);
-    m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
 }
 
-TerrainModel::~TerrainModel() = default;
+void TerrainModel::SetHeight(const std::vector<float>& heightMap)
+{
+    TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+    
+    for (const auto& m_Mesh : m_Meshes)
+    {
+        for (int i = 0; i < m_Mesh->m_Vertices.size(); ++i)
+        {
+            m_Mesh->m_Vertices[i].m_Position = baseVertices[i].m_Position;
+
+            const float normalizedHeight = heightMap[i];
+
+            m_Mesh->m_Vertices[i].m_Position *= terrainGenerator->m_Scale;
+        
+            m_Mesh->m_Vertices[i].m_Position.y += normalizedHeight * terrainGenerator->m_ElevationScale;
+        }
+    }
+}
 
 void TerrainModel::ValidateTerrain()
 {
     SendDataRender();
-}
-
-void TerrainModel::SetVertexHeight(int x, int z, float height) const
-{
-    if (x >= 0 && x <= m_Subdivisions && z >= 0 && z <= m_Subdivisions)
-    {
-        const int index = z * (m_Subdivisions + 1) + x;
-        m_Meshes[0]->m_Vertices[index].m_Position.y = height;
-    }
 }

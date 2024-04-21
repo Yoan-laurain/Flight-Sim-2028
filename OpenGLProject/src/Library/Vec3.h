@@ -26,6 +26,14 @@ struct Vec3
         return Vec3(x * scalar, y * scalar, z * scalar);
     }
     
+    friend Vec3 operator*= (Vec3& vec, const float scalar)
+    {
+        vec.x *= scalar;
+        vec.y *= scalar;
+        vec.z *= scalar;
+        return vec;
+    }
+    
     friend Vec3 operator*(const float scalar, const Vec3& vec)
     {
         return Vec3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
@@ -34,6 +42,16 @@ struct Vec3
     T& operator[](int index)
     {
         return (&x)[index];
+    }
+    
+    Vec3 operator+(const float val) const
+    {
+        return Vec3(x + val, y + val, z + val);
+    }
+    
+    static Vec3<T> Up()
+    {
+        return Vec3<T>(0, 1, 0);
     }
     
     Vec3& operator+=(const Vec3& other)
