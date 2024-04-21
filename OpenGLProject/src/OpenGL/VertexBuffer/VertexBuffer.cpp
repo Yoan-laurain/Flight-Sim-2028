@@ -23,13 +23,18 @@ Vertex::Vertex(const Vec3<float>& position)
 {
 }
 
-VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices) : m_Vertices(vertices), m_ID(0)
+void VertexBuffer::SetDatas(const std::vector<Vertex>& vertices)
 {
     glGenBuffers(1, &m_ID);
     
     Bind();
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+}
+
+VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices) : m_Vertices(vertices), m_ID(0)
+{
+    SetDatas(vertices);
 }
 
 VertexBuffer::~VertexBuffer()

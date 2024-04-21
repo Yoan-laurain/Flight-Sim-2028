@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../Level.h"
-#include "Terrain/TerrainGenerator.h"
+
+class TerrainModel;
 
 class Level3D : public Level
 {
@@ -10,10 +11,12 @@ class Level3D : public Level
 		~Level3D() override = default;
 	
 		void OnImGuiRender() override;
+		void GenerateHeightMap();
+		void OnTerrainSettingsChanged();
 
 	private:
 
 		Model* m_SkyBox;
 	    Model* m_Plane;
-		TerrainGenerator m_generator;
+		TerrainModel* m_Terrain;
 };

@@ -45,6 +45,11 @@ class BatchRenderer
          */
         void UpdateModelDatas(Model* model, ShaderType shaderType);
 
+        /*
+         * Method to call when the vertices of a model are updated
+         */
+        void UpdateVerticesDatas(Model* model, ShaderType shaderType);
+
     private:
 
         /* Keep track of the current available texture slot for each shader */

@@ -56,7 +56,7 @@ void Shader::SetShader(const std::string& filepath)
 
 	SetMaxImageUnit(source);
 	
-	m_ID = CreateShader(source.VertexSource, source.FragmentSource);
+	m_ID = source.ComputeSource.empty() ? CreateShader(source.VertexSource, source.FragmentSource) : CreateShader(source.ComputeSource);
 	Bind();
 }
 
@@ -85,11 +85,11 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath) const
 
 	enum class ShaderType
 	{
-		NONE = -1, VERTEX = 0, FRAGMENT = 1
+		NONE = -1, VERTEX = 0, FRAGMENT = 1, COMPUTE = 2
 	};
 
 	std::string line;
-	std::stringstream ss[2];
+	std::stringstream ss[3];
 	ShaderType type = ShaderType::NONE;
 
 	// Read the file line by line
@@ -103,6 +103,8 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath) const
 				type = ShaderType::VERTEX;
 			else if (line.find("fragment") != std::string::npos)
 				type = ShaderType::FRAGMENT;
+			else if (line.find("compute") != std::string::npos)
+				type = ShaderType::COMPUTE;
 		}
 		else
 		{
@@ -112,7 +114,38 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath) const
 	}
 
 	// Return the source code of the vertex and fragment shaders
-	return { ss[0].str(), ss[1].str() };
+	return { ss[0].str(), ss[1].str(), ss[2].str() };
+}
+
+void Shader::HandleLinkError(GLuint Program)
+{
+	// display error message if linking failed
+	GLint linkStatus;
+	glGetProgramiv(Program, GL_LINK_STATUS, &linkStatus);
+	if (linkStatus != GL_TRUE) {
+		// Linking failed, retrieve and display the error message
+		GLint infoLogLength;
+		glGetProgramiv(Program, GL_INFO_LOG_LENGTH, &infoLogLength);
+		std::vector<GLchar> infoLog(infoLogLength + 1); // Using vector for dynamic memory allocation
+		glGetProgramInfoLog(Program, 512, NULL, infoLog.data());
+		std::cerr << "Shader program linking error:\n" << infoLog.data() << std::endl;
+	}
+}
+
+unsigned Shader::CreateShader(const std::string& computeShader)
+{
+	unsigned int cs;
+	GLuint computeProgram = glCreateProgram(); 
+	cs = CompileShader(GL_COMPUTE_SHADER, computeShader);
+	glAttachShader(computeProgram, cs);
+	glLinkProgram(computeProgram);
+	glValidateProgram(computeProgram);
+
+	HandleLinkError(computeProgram);
+
+	glDeleteShader(cs);
+
+	return computeProgram;
 }
 
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
@@ -148,7 +181,21 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 		glGetShaderInfoLog(id, length, &length, message);
 
 		// Print the error message
-		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+		std::cout << "Failed to compile ";
+
+		switch ( type )
+		{
+			case GL_VERTEX_SHADER:
+				std::cout << "vertex shader!";
+				break;
+			case GL_FRAGMENT_SHADER:
+				std::cout << "fragment shader!";
+				break;
+			case GL_COMPUTE_SHADER:
+				std::cout << "compute shader!";
+				break;
+		}
+		
 		std::cout << message << std::endl;
 
 		// Delete the shader
@@ -177,16 +224,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	glValidateProgram(program);
 
 	// display error message if linking failed
-	GLint linkStatus;
-	glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-	if (linkStatus != GL_TRUE) {
-		// Linking failed, retrieve and display the error message
-		GLint infoLogLength;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
-		std::vector<GLchar> infoLog(infoLogLength + 1); // Using vector for dynamic memory allocation
-		glGetProgramInfoLog(program, infoLogLength, NULL, infoLog.data());
-		std::cerr << "Shader program linking error:\n" << infoLog.data() << std::endl;
-	}
+	HandleLinkError(program);
 
 	// We can delete the shaders now that they are linked to the program
 	glDeleteShader(vs);

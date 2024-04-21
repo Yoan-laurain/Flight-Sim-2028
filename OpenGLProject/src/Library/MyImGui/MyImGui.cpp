@@ -19,3 +19,32 @@ bool MyImGui::SliderFloat3(const char* label,const Vec3<float>& position, const 
 
     return valueChanged;
 }
+
+bool MyImGui::SliderFloat(const char* label, const float& value, float minVal, float maxVal,
+    const std::function<void(float)>& callback)
+{
+    float newValue = value;
+    
+    bool valueChanged = ImGui::SliderFloat(label, &newValue, minVal, maxVal);
+    if (valueChanged)
+    {
+        callback(newValue);
+    }
+
+    return valueChanged;
+}
+
+
+bool MyImGui::SliderInt(const char* label, const int& value, int minVal, int maxVal,
+    const std::function<void(int)>& callback)
+{
+    int newValue = value;
+    
+    bool valueChanged = ImGui::SliderInt(label, &newValue, minVal, maxVal);
+    if (valueChanged)
+    {
+        callback(newValue);
+    }
+
+    return valueChanged;
+}

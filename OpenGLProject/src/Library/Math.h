@@ -38,6 +38,14 @@ namespace Math
     {
         return vec.normalize();
     }
+
+    static float InverseLerp(float a, float b, float value)
+    {
+        if (a != b)
+            return (value - a) / (b - a);
+        
+        return 0.0f;
+    }
     
     template<typename T>
     Vec3<T> rotate( Vec3<T>& v, T angle, Vec3<T>& normal)

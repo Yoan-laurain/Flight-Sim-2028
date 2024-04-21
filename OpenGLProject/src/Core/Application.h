@@ -9,6 +9,7 @@ class Renderer;
 class ShaderManager;
 class Level;
 class Camera;
+class TerrainGenerator;
 
 class Application
 {
@@ -27,7 +28,8 @@ class Application
         ShaderManager* GetShaderManager();
         Camera* GetCamera();
         BatchRenderer* GetBatchRenderer();
-
+		TerrainGenerator* GetTerrainGenerator();
+	
         /* 
            * Enable face culling it improves performance by not rendering the back of the faces
            * You will see performance improvement on complex models or large scenes
@@ -78,7 +80,7 @@ class Application
         std::unique_ptr<ShaderManager> m_ShaderManager;
         std::unique_ptr<Camera> m_Camera;
         std::unique_ptr<BatchRenderer> m_BatchRenderer;
-
+		std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
 
         const char* m_AppIcon;
         int MaxSlotForTextures;
