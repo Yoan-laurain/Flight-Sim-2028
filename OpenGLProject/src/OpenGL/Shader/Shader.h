@@ -3,42 +3,46 @@
 #include "../../Library/coreMinimal.h"
 #include <string>
 #include <unordered_map>
+#include <GL/glew.h>
 
 struct ShaderProgramSource
 {
 	std::string VertexSource;
 	std::string FragmentSource;
+	std::string ComputeSource;
 };
 
 class Shader
 {
-	public:
+public:
 
-		Shader( const std::string& filepath );
-		virtual ~Shader();
+	Shader( const std::string& filepath );
+	virtual ~Shader();
 	
-		virtual void OnBeforeDraw();
-		virtual void OnAfterDraw();
+	virtual void OnBeforeDraw();
+	virtual void OnAfterDraw();
 
-		void Bind() const;
-		void Unbind() const;
-		void SetMaxImageUnit(ShaderProgramSource& source);
+	void Bind() const;
+	void Unbind() const;
+	void SetMaxImageUnit(ShaderProgramSource& source);
 
-		void SetUniform1i(const std::string& name, int value);
-		void SetUniform1f(const std::string& name, float value);
-		void SetUniform1iv(const std::string& name, const std::vector<int>& value);
-		void SetUniformMat4fv(const std::string& name, const Mat4<float>& matrix);
+	void SetUniform1i(const std::string& name, int value);
+	void SetUniform1f(const std::string& name, float value);
+	void SetUniform1iv(const std::string& name, const std::vector<int>& value);
+	void SetUniformMat4fv(const std::string& name, const Mat4<float>& matrix);
 	
-		int GetUniformLocation(const std::string& name);
+	int GetUniformLocation(const std::string& name);
 
-	private:
-		std::unordered_map<std::string, int> m_UniformLocationCache;
-
-		unsigned int m_ID;
-
-		void SetShader(const std::string& filepath);
-		unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
-		unsigned int CompileShader(unsigned int type, const std::string& source);
+	unsigned int m_ID;
+private:
 	
-		ShaderProgramSource ParseShader(const std::string& filepath) const;
+	std::unordered_map<std::string, int> m_UniformLocationCache;
+
+	void SetShader(const std::string& filepath);
+	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+	unsigned int CreateShader(const std::string& computeShader);
+	unsigned int CompileShader(unsigned int type, const std::string& source);
+	
+	ShaderProgramSource ParseShader(const std::string& filepath) const;
+	void HandleLinkError(GLuint Program);
 };

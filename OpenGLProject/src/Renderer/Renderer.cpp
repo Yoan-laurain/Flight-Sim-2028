@@ -27,7 +27,9 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 
 void Renderer::HandleError(GLenum source, const GLenum type, GLuint id, const GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    std::cout << "Type: ";
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION || type == GL_DEBUG_TYPE_PERFORMANCE)
+        return;
+    
     switch (type)
     {
         case GL_DEBUG_TYPE_ERROR:
@@ -46,7 +48,6 @@ void Renderer::HandleError(GLenum source, const GLenum type, GLuint id, const GL
             std::cout << "PERFORMANCE";
             break;
         case GL_DEBUG_TYPE_OTHER:
-            std::cout << "OTHER";
             return;
         default:
                 break;
