@@ -41,6 +41,7 @@ void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
     InsertIndices(mesh);
     
     m_Vertices.insert(m_Vertices.end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
+    m_ModelsVertices[model].insert(m_ModelsVertices[model].end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
     
     // if the model is not already in the list, add it ( Since a model can have multiple meshes )
     if (std::ranges::find_if(m_Models, [model](const Model* m) { return m == model; }) == m_Models.end())
@@ -64,7 +65,7 @@ void ShadersBuffer::Init()
     }
     
     InitTextureUniform();
-}
+} 
 
 std::vector<TransformData>& ShadersBuffer::GetAllTransformsData()
 {
@@ -121,6 +122,35 @@ void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_t
     }
 
     m_NeedToRegroupTransformsAgain = true;
+}
+
+void ShadersBuffer::UpdateModelVerticesDatas(Model* model)
+{
+    if (m_ModelsVertices.contains(model))
+    {
+        m_ModelsVertices[model].clear();
+    }
+    
+    for (const auto& mesh : model->m_Meshes)
+    {
+        if (m_ModelsVertices.contains(model))
+        {
+            m_ModelsVertices[model].insert(m_ModelsVertices[model].end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
+        }
+        else
+        {
+            m_ModelsVertices[model] = mesh->m_Vertices;
+        }
+    }
+    
+    m_Vertices.clear();
+
+    for (const auto& [model, vertices] : m_ModelsVertices)
+    {
+        m_Vertices.insert(m_Vertices.end(), vertices.begin(), vertices.end());
+    }
+
+    m_VBO->SetDatas(m_Vertices);
 }
 
 void ShadersBuffer::InitTextureUniform()

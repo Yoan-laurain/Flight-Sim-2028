@@ -57,6 +57,11 @@ struct ShadersBuffer
          void ExtractModelTransformData(const std::vector<Model*>::value_type& model);
 
         /*
+         * Update the vertices of the model in the buffer
+         */
+        void UpdateModelVerticesDatas(Model* model);
+ 
+        /*
          * Set the textures uniforms and bind the textures to the shader
          * Need to be called for each draw since we can have multiple draw with the same shader
          */
@@ -82,6 +87,8 @@ struct ShadersBuffer
 
         /* List of transform data for each mesh of the buffer that will be send to the shader by the SSBO */
         std::unordered_map<Model*, std::vector<TransformData>> m_ModelsTransforms;
+
+        std::unordered_map<Model*, std::vector<Vertex>> m_ModelsVertices;
 
         std::vector<TransformData>& GetAllTransformsData();
  
