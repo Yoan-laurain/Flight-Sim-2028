@@ -20,6 +20,7 @@ class TerrainModel : public Model
     private:
         void CreateVertices();
         void CalculIndices();
+        void ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::value_type& m_Mesh);
 
         std::vector<Vertex> vertices;
         std::vector<Vertex> baseVertices;

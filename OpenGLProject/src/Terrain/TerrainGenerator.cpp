@@ -56,7 +56,7 @@ void TerrainGenerator::GenerateHeightMap()
     
     const bool randomizeSeed = true;
 
-    const int seed = randomizeSeed ? rand() % 20001 - 10000 : 42;
+    const int seed = randomizeSeed ? std::random_device()() : 0;
     std::mt19937 prng(seed);
     std::uniform_int_distribution distribution(-10000, 10000);
 
