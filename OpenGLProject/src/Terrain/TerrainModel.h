@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "Model/Model.h"
 
 struct Vertex;

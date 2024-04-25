@@ -5,16 +5,9 @@
 #include "PerlinNoise/PerlinNoiseModuleGPU.h"
 #include "Terrain/TerrainGenerationModule.h"
 
-TerrainGenerator::TerrainGenerator():m_subdivision(0)
+TerrainGenerator::TerrainGenerator() : m_subdivision(0)
 {
-    if(m_GenerateGPU)
-    {
-        m_modules.emplace_back(std::make_unique<PerlinNoiseModuleGPU>());   
-    }
-    else
-    {
-        m_modules.emplace_back(std::make_unique<PerlinNoiseModuleCPU>());
-    }
+    UpdateGenerationMode();
 }
 
 TerrainGenerator::~TerrainGenerator() = default;
@@ -33,7 +26,6 @@ void TerrainGenerator::CalculateTerrain()
     for(const auto& module : m_modules){
         module->Process(heightMap);
     }
-    
     
     m_terrain->SetHeight(heightMap);
 }

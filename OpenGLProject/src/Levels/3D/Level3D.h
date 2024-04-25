@@ -4,7 +4,6 @@
 
 class PerlinNoiseModuleGPU;
 class PerlinNoiseModuleCPU;
-class TerrainModel;
 
 class Level3D : public Level
 {
@@ -13,11 +12,10 @@ class Level3D : public Level
 		~Level3D() override = default;
 	
 		void OnImGuiRender() override;
-		void UpdateImGuiModulesParameters();
-		void GenerateHeightMap();
-		void OnTerrainSettingsChanged();
 
 	private:
+		void UpdateImGuiModulesParameters();
+		void OnTerrainSettingsChanged();
 
 		Model* m_SkyBox;
 	    Model* m_Plane;

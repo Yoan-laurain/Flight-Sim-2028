@@ -7,24 +7,16 @@
 #include "Managers/ModelLoader/ModelLoader.h"
 #include "Managers/BatchRenderer/BatchRenderer.h"
 #include "Terrain/TerrainGenerator.h"
-#include <imgui.h>
-
 #include "Terrain/PerlinNoise/PerlinNoiseModuleCPU.h"
 #include "Terrain/PerlinNoise/PerlinNoiseModuleGPU.h"
-
-void Level3D::GenerateHeightMap()
-{
-	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->CalculateTerrain();
-}
+#include <imgui.h>
 
 void Level3D::OnTerrainSettingsChanged()
 {
-	GenerateHeightMap();
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	terrainGenerator->CalculateTerrain();
 	
 	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::BASIC);
-	
 }
 
 Level3D::Level3D()  
@@ -37,7 +29,6 @@ Level3D::Level3D()
 	terrainGenerator->GetTerrain()->ValidateTerrain();
 
 	UpdateImGuiModulesParameters();
-	
 }
 
 void Level3D::OnImGuiRender()
@@ -89,9 +80,6 @@ void Level3D::OnImGuiRender()
 			 OnTerrainSettingsChanged();
 		 });
 	}
-	
-	
-	
 
 	if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 	{

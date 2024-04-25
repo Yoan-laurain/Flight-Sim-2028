@@ -1,13 +1,12 @@
 #include "PerlinNoiseModuleGPU.h"
 
-#include <random>
-
 #include "Core/Application.h"
 #include "Library/Math.h"
 #include "Library/Vec3.h"
 #include "Managers/ShaderManager/ShaderManager.h"
 #include "OpenGL/Shader/Shader.h"
 #include "OpenGL/ShaderStorageBuffer/ShaderStorageBufferObject.h"
+#include <random>
 
 PerlinNoiseModuleGPU::PerlinNoiseModuleGPU()
 {
@@ -20,7 +19,6 @@ PerlinNoiseModuleGPU::~PerlinNoiseModuleGPU() = default;
 
 void PerlinNoiseModuleGPU::Process(std::vector<float>& heighmap)
 {
-
     StartProcess(heighmap);
     
     Shader* heightMapShader = Application::Get()->GetShaderManager()->GetShader(ShaderType::HEIGHTMAP);
@@ -39,7 +37,7 @@ void PerlinNoiseModuleGPU::Process(std::vector<float>& heighmap)
     glDispatchCompute(workGroupCountX, workGroupCountY, workGroupCountZ);
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     
-    FnishProcess(heighmap);
+    FinishProcess(heighmap);
     
 }
 
@@ -77,7 +75,7 @@ void PerlinNoiseModuleGPU::StartProcess(std::vector<float>& heighmap)
     heightMapShader->SetUniform1f("scaleFactor", m_InitialScale);
 }
 
-void PerlinNoiseModuleGPU::FnishProcess(std::vector<float>& heighmap)
+void PerlinNoiseModuleGPU::FinishProcess(std::vector<float>& heighmap)
 {
     const int floatToIntMultiplier = 1000;
     std::vector minMaxHeight = { floatToIntMultiplier * m_NumOctaves, 0 };

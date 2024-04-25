@@ -3,38 +3,37 @@
 #include <vector>
 #include <memory>
 
-#include "Model/Model.h"
-
 class TerrainGenerationModule;
-class ShaderStorageBufferObject;
 class TerrainModel;
+enum class ShaderType;
 
 class TerrainGenerator
 {
     public:
-    TerrainGenerator();
-    ~TerrainGenerator();
-    void GenerateTerrain(float width, float depth, int subdivisions, ShaderType shaderType);
-    void CalculateTerrain();
-    TerrainModel* GetTerrain();
+        TerrainGenerator();
+        ~TerrainGenerator();
     
-    template<typename ModuleType>
-    ModuleType* GetModule()
-    {
-        for (const auto& module : m_modules)
+        void GenerateTerrain(float width, float depth, int subdivisions, ShaderType shaderType);
+        void CalculateTerrain();
+        TerrainModel* GetTerrain();
+        
+        template<typename ModuleType>
+        ModuleType* GetModule()
         {
-            ModuleType* castedModule = dynamic_cast<ModuleType*>(module.get());
-            if (castedModule)
+            for (const auto& module : m_modules)
             {
-                return castedModule;
+                ModuleType* castedModule = dynamic_cast<ModuleType*>(module.get());
+                if (castedModule)
+                {
+                    return castedModule;
+                }
             }
+            return nullptr;
         }
-        return nullptr;
-    }
-    void UpdateGenerationMode();
+        void UpdateGenerationMode();
 
-    float m_ElevationScale = 100.f;
-    bool m_GenerateGPU = false;
+        float m_ElevationScale = 100.f;
+        bool m_GenerateGPU = false;
     
     private:
         int m_subdivision;

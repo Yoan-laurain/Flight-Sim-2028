@@ -1,11 +1,9 @@
 ﻿#include "PerlinNoiseModuleCPU.h"
-#include <random>
 #include "PerlinNoise.h"
 #include "Library/Math.h"
-
+#include <random>
 
 PerlinNoiseModuleCPU::PerlinNoiseModuleCPU(){}
-
 
 void PerlinNoiseModuleCPU::Process(std::vector<float>& heighmap)
 {
@@ -26,4 +24,3 @@ void PerlinNoiseModuleCPU::Process(std::vector<float>& heighmap)
         }
     }
 }
-
