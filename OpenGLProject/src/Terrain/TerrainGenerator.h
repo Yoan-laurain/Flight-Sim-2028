@@ -3,38 +3,40 @@
 #include <vector>
 #include <memory>
 
-class ShaderStorageBufferObject;
+class TerrainGenerationModule;
 class TerrainModel;
+enum class ShaderType;
 
 class TerrainGenerator
 {
     public:
         TerrainGenerator();
         ~TerrainGenerator();
-            
-        void Init(int width, int height);
-        void Run();
-
-        std::vector<float> m_HeightMap;
-
-        float m_Scale = 2;
-            
-        // --------------- HeightMap ---------------
-
-        int m_NumOctaves = 7;
-        float m_Persistence = .5f;
-        float m_Lacunarity = 4;
-        float m_InitialScale = 20;
-        float m_ElevationScale = 1;
-
-        int m_Width;
-        int m_Height;
-
-    private:
     
-        void GenerateHeightMap();
+        void GenerateTerrain(float width, float depth, int subdivisions, ShaderType shaderType);
+        void CalculateTerrain();
+        TerrainModel* GetTerrain();
         
-        std::unique_ptr<ShaderStorageBufferObject> m_OffsetsBuffer;
-        std::unique_ptr<ShaderStorageBufferObject> m_MapBuffer;
-        std::unique_ptr<ShaderStorageBufferObject> m_MinMaxBuffer;
+        template<typename ModuleType>
+        ModuleType* GetModule()
+        {
+            for (const auto& module : m_modules)
+            {
+                ModuleType* castedModule = dynamic_cast<ModuleType*>(module.get());
+                if (castedModule)
+                {
+                    return castedModule;
+                }
+            }
+            return nullptr;
+        }
+        void UpdateGenerationMode();
+
+        float m_ElevationScale = 100.f;
+        bool m_GenerateGPU = false;
+    
+    private:
+        int m_subdivision;
+        std::unique_ptr<TerrainModel> m_terrain;
+        std::vector<std::unique_ptr<TerrainGenerationModule>> m_modules;
 };

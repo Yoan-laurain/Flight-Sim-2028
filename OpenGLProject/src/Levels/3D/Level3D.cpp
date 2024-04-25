@@ -7,20 +7,16 @@
 #include "Managers/ModelLoader/ModelLoader.h"
 #include "Managers/BatchRenderer/BatchRenderer.h"
 #include "Terrain/TerrainGenerator.h"
+#include "Terrain/PerlinNoise/PerlinNoiseModuleCPU.h"
+#include "Terrain/PerlinNoise/PerlinNoiseModuleGPU.h"
 #include <imgui.h>
-
-void Level3D::GenerateHeightMap()
-{
-	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->Init( m_Terrain->m_Width, m_Terrain->m_Depth);
-
-	m_Terrain->SetHeight( terrainGenerator->m_HeightMap );
-}
 
 void Level3D::OnTerrainSettingsChanged()
 {
-	GenerateHeightMap();
-	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(m_Terrain, ShaderType::BASIC);
+	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	terrainGenerator->CalculateTerrain();
+	
+	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::BASIC);
 }
 
 Level3D::Level3D()  
@@ -28,10 +24,11 @@ Level3D::Level3D()
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
 	//m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 
-	m_Terrain = dynamic_cast<TerrainModel*>(AddTerrain(255.0f, 255.0f, 50,ShaderType::BASIC));
-	
-	GenerateHeightMap();
-	m_Terrain->ValidateTerrain();
+	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	terrainGenerator->GenerateTerrain(100, 100, 50,ShaderType::BASIC);
+	terrainGenerator->GetTerrain()->ValidateTerrain();
+
+	UpdateImGuiModulesParameters();
 }
 
 void Level3D::OnImGuiRender()
@@ -39,38 +36,61 @@ void Level3D::OnImGuiRender()
 	Level::OnImGuiRender();
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	
-	// octaves
-	MyImGui::SliderInt("Octaves", Application::Get()->GetTerrainGenerator()->m_NumOctaves, 1, 8, [=](const int newValue) {
-		terrainGenerator->m_NumOctaves = newValue;
+	if (ImGui::Checkbox("Generate with GPU",&terrainGenerator->m_GenerateGPU))
+	{
+		terrainGenerator->UpdateGenerationMode();
+		UpdateImGuiModulesParameters();
 		OnTerrainSettingsChanged();
-	});
+	}
+	
+	MyImGui::SliderFloat("Height", terrainGenerator->m_ElevationScale, 0.0f, 200.0f, [=](const float newValue) {
+				terrainGenerator->m_ElevationScale = newValue;
+				OnTerrainSettingsChanged();
+			});
+	if(tmp_perlinGPU)
+	{
+		// octaves
+		MyImGui::SliderInt("Octaves", tmp_perlinGPU->m_NumOctaves, 1, 10, [=](const int newValue) {
+			tmp_perlinGPU->m_NumOctaves = newValue;
+			OnTerrainSettingsChanged();
+		});
 
-	// persistence
-	MyImGui::SliderFloat("Persistence", Application::Get()->GetTerrainGenerator()->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
-		terrainGenerator->m_Persistence = newValue;
-		OnTerrainSettingsChanged();
-	});
+		// persistence
+		MyImGui::SliderFloat("Persistence", tmp_perlinGPU->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
+			tmp_perlinGPU->m_Persistence = newValue;
+			OnTerrainSettingsChanged();
+		});
 
-	// lacunarity
-	MyImGui::SliderFloat("Lacunarity", Application::Get()->GetTerrainGenerator()->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
-		terrainGenerator->m_Lacunarity = newValue;
-		OnTerrainSettingsChanged();
-	});
+		// lacunarity
+		MyImGui::SliderFloat("Lacunarity", tmp_perlinGPU->m_Lacunarity, 0.0f, 10.0f, [=](const float newValue) {
+			tmp_perlinGPU->m_Lacunarity = newValue;
+			OnTerrainSettingsChanged();
+		});
 	
-	// initial scale
-	// MyImGui::SliderFloat("Scale", Application::Get()->GetTerrainGenerator()->m_InitialScale, 0.1f, 4.0f, [=](const float newValue) {
-	// 	terrainGenerator->m_InitialScale = newValue;
-	// 	OnTerrainSettingsChanged();
-	// });
-	
-	MyImGui::SliderFloat("Height", Application::Get()->GetTerrainGenerator()->m_ElevationScale, 0.0f, 18.0f, [=](const float newValue) {
-		terrainGenerator->m_ElevationScale = newValue;
-		OnTerrainSettingsChanged();
-	});
+		// initial scale
+		MyImGui::SliderFloat("Scale", tmp_perlinGPU->m_InitialScale, 0.1f, 50.0f, [=](const float newValue) {
+			 tmp_perlinGPU->m_InitialScale = newValue;
+			 OnTerrainSettingsChanged();
+		 });
+	}
+	if(tmp_perlinCPU)
+	{
+		MyImGui::SliderFloat("Frequency", tmp_perlinCPU->m_Frequency, 0.05f, 1.0f, [=](const float newValue) {
+			 tmp_perlinCPU->m_Frequency = newValue;
+			 OnTerrainSettingsChanged();
+		 });
+	}
 
 	if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 	{
 		Application::Get()->SetPolygoneMode();
 	}
+}
+
+void Level3D::UpdateImGuiModulesParameters()
+{
+	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	//TMP -> To remove
+	tmp_perlinGPU = terrainGenerator->GetModule<PerlinNoiseModuleGPU>();
+	tmp_perlinCPU = terrainGenerator->GetModule<PerlinNoiseModuleCPU>();
 }
