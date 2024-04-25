@@ -2,6 +2,8 @@
 
 #include "../Level.h"
 
+class PerlinNoiseModuleGPU;
+class PerlinNoiseModuleCPU;
 class TerrainModel;
 
 class Level3D : public Level
@@ -11,6 +13,7 @@ class Level3D : public Level
 		~Level3D() override = default;
 	
 		void OnImGuiRender() override;
+		void UpdateImGuiModulesParameters();
 		void GenerateHeightMap();
 		void OnTerrainSettingsChanged();
 
@@ -18,5 +21,7 @@ class Level3D : public Level
 
 		Model* m_SkyBox;
 	    Model* m_Plane;
-		TerrainModel* m_Terrain;
+
+		PerlinNoiseModuleGPU* tmp_perlinGPU;
+		PerlinNoiseModuleCPU* tmp_perlinCPU;
 };

@@ -66,13 +66,14 @@ void TerrainModel::CalculIndices()
 
 void TerrainModel::ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::value_type& m_Mesh)
 {
+    /*
     std::vector normals(m_Mesh->m_Vertices.size(), Vec3(0.0f));
-    
     for (size_t i = 0; i < m_Mesh->m_Indices.size(); i += 3)
     {
         const size_t idx1 = m_Mesh->m_Indices[i];
         const size_t idx2 = m_Mesh->m_Indices[i + 1];
         const size_t idx3 = m_Mesh->m_Indices[i + 2];
+
         
         Vec3<float> v1 = m_Mesh->m_Vertices[idx1].m_Position;
         Vec3<float> v2 = m_Mesh->m_Vertices[idx2].m_Position;
@@ -88,6 +89,9 @@ void TerrainModel::ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::
     {
         m_Mesh->m_Vertices[i].m_Normal = normals[i].normalize();
     }
+
+    */
+    
 }
 
 void TerrainModel::SetHeight(const std::vector<float>& heightMap)
@@ -104,7 +108,7 @@ void TerrainModel::SetHeight(const std::vector<float>& heightMap)
 
             const float normalizedHeight = heightMap[i];
             
-            m_Mesh->m_Vertices[i].m_Position.y += normalizedHeight * terrainGenerator->m_ElevationScale * terrainGenerator->m_Scale;
+            m_Mesh->m_Vertices[i].m_Position.y += normalizedHeight * terrainGenerator->m_ElevationScale;
         }
     }
 }

@@ -88,12 +88,12 @@ void main()
     float scale = scaleFactor;
     float weight = 1.0;
     for (int i = 0; i < octaves; i++) {
-        heightMap.Data[id] += snoise(vec2(float(x), float(y)) / mapSize * scale + offsets.Data[i]) * weight;
+        heightMap.Data[id] += snoise(vec2(float(x), float(y))/mapSize * scale + offsets.Data[i]) * weight;
         scale *= lacunarity;
         weight *= persistence;
     }
 
-int val = int(heightMap.Data[id] * floatToIntMultiplier);
+    int val = int(heightMap.Data[id] * floatToIntMultiplier);
     atomicMin(minMax.Data[0], val);
     atomicMax(minMax.Data[1], val); 
 }
