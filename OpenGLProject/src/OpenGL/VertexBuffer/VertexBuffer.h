@@ -6,6 +6,7 @@
 struct Vertex
 {
 	Vertex(const Vec3<float>& position, const Vec3<float>& normal, const Vec3<float>& color, const Vec2<float>& texUV);
+	Vertex(){};
 	explicit Vertex(const Vec3<float>& position);
 
 	Vec3<float> m_Position;

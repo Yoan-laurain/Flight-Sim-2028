@@ -6,6 +6,7 @@
 class TerrainGenerationModule;
 class TerrainModel;
 enum class ShaderType;
+class Shader;
 
 class TerrainGenerator
 {
@@ -13,8 +14,9 @@ class TerrainGenerator
         TerrainGenerator();
         ~TerrainGenerator();
     
-        void GenerateTerrain(float width, float depth, int subdivisions, ShaderType shaderType);
+        void GenerateTerrain(float width, int subdivisions, ShaderType shaderType);
         void CalculateTerrain();
+        void Run(const Shader* shader, int numIterations = 0, float wGroupSize = 64);
         TerrainModel* GetTerrain();
         
         template<typename ModuleType>
@@ -32,8 +34,10 @@ class TerrainGenerator
         }
         void UpdateGenerationMode();
 
-        float m_ElevationScale = 100.f;
-        bool m_GenerateGPU = false;
+        float m_ElevationScale = 10.f;
+        bool m_GenerateGPU = true;
+
+        int GetSubdivisions() const;
     
     private:
         int m_subdivision;

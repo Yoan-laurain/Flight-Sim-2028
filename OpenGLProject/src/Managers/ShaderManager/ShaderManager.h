@@ -9,7 +9,8 @@ enum class ShaderType
     NONE = -1,
     BASIC = 0,
     HEIGHTMAP = 1,
-    SKYBOX = 2
+    SKYBOX = 2,
+    EROSION = 3,
 };
 
 class Shader;

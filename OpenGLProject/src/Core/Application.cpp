@@ -41,14 +41,14 @@ void Application::Run()
 
     InitImGui(window);
     
-    SetFaceCulling(true);
+    //SetFaceCulling(true);
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MaxSlotForTextures);
 
     m_Renderer = std::make_unique<Renderer>();
     m_ShaderManager = std::make_unique<ShaderManager>();
     m_BatchRenderer = std::make_unique<BatchRenderer>();
     m_TerrainGenerator = std::make_unique<TerrainGenerator>();
-    m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3(0.0f, 0.0f, 100.0f));
+    m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3(150.0f, 80.0f, 20.0f));
 
     SetCurrentLevel(new Level3D());
 

@@ -9,6 +9,7 @@ ShaderManager::ShaderManager()
     CreateShader<BasicShader>(ShaderType::BASIC, "../../OpenGLProject/src/Shaders/Basic.shader");
     CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "../../OpenGLProject/src/Shaders/Skybox.shader");
     CreateShader<Shader>(ShaderType::HEIGHTMAP, "../../OpenGLProject/src/Shaders/HeightMap.shader");
+    CreateShader<Shader>(ShaderType::EROSION, "../../OpenGLProject/src/Shaders/Erosion.shader");
 }
 
 void ShaderManager::RegisterShader(const ShaderType shaderType, Shader* shader)

@@ -2,6 +2,7 @@
 
 #include "../Level.h"
 
+class ErosionModuleGPU;
 class PerlinNoiseModuleGPU;
 class PerlinNoiseModuleCPU;
 
@@ -22,4 +23,5 @@ class Level3D : public Level
 
 		PerlinNoiseModuleGPU* tmp_perlinGPU;
 		PerlinNoiseModuleCPU* tmp_perlinCPU;
+		ErosionModuleGPU* tmp_erosionGPU;
 };

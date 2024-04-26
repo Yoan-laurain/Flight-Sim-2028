@@ -30,7 +30,7 @@ class Level
 
 			return model;
 		}
-		Model* AddTerrain(float width, float depth, int subdivisions, ShaderType shaderType);
+		Model* AddTerrain(float width, int subdivisions, ShaderType shaderType);
 
 
 		void UpdateTrianglesCount(); 

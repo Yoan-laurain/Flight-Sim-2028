@@ -8,10 +8,10 @@
 #include "Managers/BatchRenderer/BatchRenderer.h"
 #include "OpenGL/Textures/Texture.h"
 
-TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderType shaderType)
-    : Model({}, shaderType), m_Width(width), m_Depth(depth), m_Subdivisions(subdivisions)
+TerrainModel::TerrainModel(int width, float subdivisions, ShaderType shaderType)
+    : Model({}, shaderType), m_Width(width), m_Subdivisions(subdivisions)
 {
-    Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
+    Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/Dirt.jpg", Diffuse, m_ShaderType);
     
     CreateVertices();
     CalculIndices();
@@ -25,22 +25,20 @@ TerrainModel::~TerrainModel() = default;
 void TerrainModel::CreateVertices() 
 {
     vertices.clear();
+
+    const float stepSize = m_Width / m_Subdivisions;
     
-    float stepSizeX = m_Width / m_Subdivisions;
-    float stepSizeZ = m_Depth / m_Subdivisions;
-    
-    for (int i = 0; i <= m_Subdivisions; ++i)
+    for (int i = 0; i < m_Subdivisions; ++i)
     {
-        for (int j = 0; j <= m_Subdivisions; ++j)
+        for (int j = 0; j < m_Subdivisions; ++j)
         {
             Vec3<float> position;
-            position.x = j * stepSizeX - m_Width / 2.0f;
-            position.z = i * stepSizeZ - m_Depth / 2.0f;
+            position.x = j * stepSize - m_Width / 2.0f;
+            position.z = i * stepSize - m_Width / 2.0f;
             position.y = 0.0f; // Initial height is 0
-
+            
             vertices.emplace_back(Vertex({ position }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
-            baseVertices.emplace_back(Vertex({ position }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { (float)j / m_Subdivisions, (float)i / m_Subdivisions }));
-        }
+       }
     }
 }
 
@@ -66,51 +64,78 @@ void TerrainModel::CalculIndices()
 
 void TerrainModel::ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::value_type& m_Mesh)
 {
-    /*
-    std::vector normals(m_Mesh->m_Vertices.size(), Vec3(0.0f));
-    for (size_t i = 0; i < m_Mesh->m_Indices.size(); i += 3)
+    // Clear existing normals
+    for (auto& vertex : m_Mesh->m_Vertices)
     {
-        const size_t idx1 = m_Mesh->m_Indices[i];
-        const size_t idx2 = m_Mesh->m_Indices[i + 1];
-        const size_t idx3 = m_Mesh->m_Indices[i + 2];
-
-        
-        Vec3<float> v1 = m_Mesh->m_Vertices[idx1].m_Position;
-        Vec3<float> v2 = m_Mesh->m_Vertices[idx2].m_Position;
-        Vec3<float> v3 = m_Mesh->m_Vertices[idx3].m_Position;
-        const Vec3<float> faceNormal = Math::cross(v2 - v1, v3 - v1);
-        
-        normals[idx1] += faceNormal;
-        normals[idx2] += faceNormal;
-        normals[idx3] += faceNormal;
+        vertex.m_Normal = {0.0f, 0.0f, 0.0f};
     }
     
-    for (size_t i = 0; i < normals.size(); ++i)
+    for (int i = 0; i < m_Mesh->m_Indices.size(); i += 3)
     {
-        m_Mesh->m_Vertices[i].m_Normal = normals[i].normalize();
+        const int index1 = m_Mesh->m_Indices[i];
+        const int index2 = m_Mesh->m_Indices[i + 1];
+        const int index3 = m_Mesh->m_Indices[i + 2];
+
+        Vec3<float> pos1 = m_Mesh->m_Vertices[index1].m_Position;
+        Vec3<float> pos2 = m_Mesh->m_Vertices[index2].m_Position;
+        Vec3<float> pos3 = m_Mesh->m_Vertices[index3].m_Position;
+        const Vec3<float> faceNormal = Math::cross(pos2 - pos1, pos3 - pos1);
+
+        m_Mesh->m_Vertices[index1].m_Normal += faceNormal;
+        m_Mesh->m_Vertices[index2].m_Normal += faceNormal;
+        m_Mesh->m_Vertices[index3].m_Normal += faceNormal;
     }
 
-    */
-    
+    // Normalize vertex normals
+    for (auto& vertex : m_Mesh->m_Vertices)
+    {
+        vertex.m_Normal = Math::Normalize(vertex.m_Normal);
+    }
 }
 
 void TerrainModel::SetHeight(const std::vector<float>& heightMap)
 {
-    TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-    
-    for (const auto& m_Mesh : m_Meshes)
-    {
-        ReCalculateNormals(m_Mesh);
-        
-        for (int i = 0; i < m_Mesh->m_Vertices.size(); ++i)
-        {
-            m_Mesh->m_Vertices[i].m_Position = baseVertices[i].m_Position;
+    const TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 
-            const float normalizedHeight = heightMap[i];
-            
-            m_Mesh->m_Vertices[i].m_Position.y += normalizedHeight * terrainGenerator->m_ElevationScale;
+    int scale = 20;
+    int t = 0;
+    
+    m_Meshes[0]->m_Indices.resize((m_Subdivisions - 1) * (m_Subdivisions - 1) * 6);
+    m_Meshes[0]->m_Vertices.resize(m_Subdivisions * m_Subdivisions);
+    
+    for (int i = 0; i < m_Subdivisions * m_Subdivisions; ++i)
+    {
+        int x = i % (int)m_Subdivisions;
+        int y = i / (int)m_Subdivisions;
+        int m_MapSizeWithBorder = Application::Get()->GetTerrainGenerator()->GetSubdivisions() + 2 * 2;
+        int brushRadius = 2;
+        int borderedMapIndex = (y + brushRadius) * m_MapSizeWithBorder + x + brushRadius;
+        int meshMapIndex = y * (int)m_Subdivisions + x;
+
+        Vec2<float> percent = { (float)x / (m_Subdivisions-1.f), (float)y / (m_Subdivisions -1.f) };
+        Vec3<float> pos = { percent.x * 2 - 1, 0, percent.y * 2 - 1 };
+        pos *= scale;
+
+        float normalizedHeight = heightMap[borderedMapIndex];
+        pos += Vec3<float>::Up() * normalizedHeight * terrainGenerator->m_ElevationScale;
+        m_Meshes[0]->m_Vertices[meshMapIndex].m_Position = pos;
+
+        if (x != m_Subdivisions - 1 && y != m_Subdivisions - 1)
+        {
+            t = (y * (m_Subdivisions - 1) + x) * 3 * 2;
+
+            m_Meshes[0]->m_Indices[t + 0] = meshMapIndex + m_Subdivisions;
+            m_Meshes[0]->m_Indices[t + 1] = meshMapIndex + m_Subdivisions + 1;
+            m_Meshes[0]->m_Indices[t + 2] = meshMapIndex;
+
+            m_Meshes[0]->m_Indices[t + 3] = meshMapIndex + m_Subdivisions + 1;
+            m_Meshes[0]->m_Indices[t + 4] = meshMapIndex + 1;
+            m_Meshes[0]->m_Indices[t + 5] = meshMapIndex;
+            t += 6;
         }
     }
+
+    ReCalculateNormals(m_Meshes[0]);
 }
 
 void TerrainModel::ValidateTerrain()

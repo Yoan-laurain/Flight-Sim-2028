@@ -17,6 +17,8 @@ class IndexBuffer
 		void Bind() const;
 		void Unbind() const;
 
+		void SetDatas(const std::vector<unsigned int>& indices);
+
 		unsigned int GetNumberOfIndices() const;
 
 		std::vector<unsigned int> m_Indices;

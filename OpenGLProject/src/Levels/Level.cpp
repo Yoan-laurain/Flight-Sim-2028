@@ -40,9 +40,9 @@ Model* Level::AddModel(const char* file, const ShaderType shaderType)
 	m_Models.push_back( std::unique_ptr<Model>(loader.m_Model.release()) );
 	return m_Models.back().get();
 }
-Model* Level::AddTerrain(float width, float depth, int subdivisions, ShaderType shaderType)
+Model* Level::AddTerrain(float width, int subdivisions, ShaderType shaderType)
 {
-	TerrainModel* terrain = new TerrainModel(width, depth, subdivisions, shaderType);
+	TerrainModel* terrain = new TerrainModel(width, subdivisions, shaderType);
 	m_Models.push_back(std::unique_ptr<Model>(terrain));
 
 	return terrain;

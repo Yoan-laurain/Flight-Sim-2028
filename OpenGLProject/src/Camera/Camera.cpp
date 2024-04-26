@@ -25,7 +25,7 @@ void Camera::Update(GLFWwindow* window,double deltaTime)
 
 void Camera::Reset()
 {
-	m_Rotation = Vec3(0.f, 0.0f, -90.f);
+	m_Rotation = Vec3(-300.f, -150.0f, -90.f);
 	m_Up = Vec3(0.0f, 90.0f, 0.0f);
 	m_Speed = BaseCameraSpeed;
 	m_Sensitivity = 60.f;
