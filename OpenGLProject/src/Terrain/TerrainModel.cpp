@@ -12,11 +12,11 @@ TerrainModel::TerrainModel(float width, float depth, int subdivisions, ShaderTyp
     : Model({}, shaderType), m_Width(width), m_Depth(depth), m_Subdivisions(subdivisions)
 {
     Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
-    
+    Texture* rockTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/stone.jpg", Diffuse, m_ShaderType);
     CreateVertices();
     CalculIndices();
 
-    Mesh* terrainMesh = new Mesh(vertices, indices,{*defaultTexture}, Mat4(1.0f));
+    Mesh* terrainMesh = new Mesh(vertices, indices,{*defaultTexture,*rockTexture}, Mat4(1.0f));
     m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
 }
 
@@ -66,33 +66,34 @@ void TerrainModel::CalculIndices()
 
 void TerrainModel::ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::value_type& m_Mesh)
 {
-    /*
-    std::vector normals(m_Mesh->m_Vertices.size(), Vec3(0.0f));
-    for (size_t i = 0; i < m_Mesh->m_Indices.size(); i += 3)
+    for (auto& vertex : m_Mesh->m_Vertices)
     {
-        const size_t idx1 = m_Mesh->m_Indices[i];
-        const size_t idx2 = m_Mesh->m_Indices[i + 1];
-        const size_t idx3 = m_Mesh->m_Indices[i + 2];
-
-        
-        Vec3<float> v1 = m_Mesh->m_Vertices[idx1].m_Position;
-        Vec3<float> v2 = m_Mesh->m_Vertices[idx2].m_Position;
-        Vec3<float> v3 = m_Mesh->m_Vertices[idx3].m_Position;
-        const Vec3<float> faceNormal = Math::cross(v2 - v1, v3 - v1);
-        
-        normals[idx1] += faceNormal;
-        normals[idx2] += faceNormal;
-        normals[idx3] += faceNormal;
+        vertex.m_Normal = Vec3<float>(0.0f, 0.0f, 0.0f);
     }
     
-    for (size_t i = 0; i < normals.size(); ++i)
+    for (int i = 0; i < m_Mesh->m_Indices.size(); i += 3)
     {
-        m_Mesh->m_Vertices[i].m_Normal = normals[i].normalize();
-    }
+        int index1 = m_Mesh->m_Indices[i];
+        int index2 = m_Mesh->m_Indices[i + 1];
+        int index3 = m_Mesh->m_Indices[i + 2];
 
-    */
+
+        Vec3<float> pos1 = m_Mesh->m_Vertices[index1].m_Position;
+        Vec3<float> pos2 = m_Mesh->m_Vertices[index2].m_Position;
+        Vec3<float> pos3 = m_Mesh->m_Vertices[index3].m_Position;
+        Vec3<float> faceNormal = Math::cross(pos2 - pos1, pos3 - pos1);
+        
+        m_Mesh->m_Vertices[index1].m_Normal += faceNormal;
+        m_Mesh->m_Vertices[index2].m_Normal += faceNormal;
+        m_Mesh->m_Vertices[index3].m_Normal += faceNormal;
+    }
     
+    for (auto& vertex : m_Mesh->m_Vertices)
+    {
+        vertex.m_Normal = Math::Normalize(vertex.m_Normal);
+    }
 }
+
 
 void TerrainModel::SetHeight(const std::vector<float>& heightMap)
 {

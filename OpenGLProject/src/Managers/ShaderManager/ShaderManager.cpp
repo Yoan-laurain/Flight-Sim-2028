@@ -7,6 +7,7 @@
 ShaderManager::ShaderManager()
 {
     CreateShader<BasicShader>(ShaderType::BASIC, "../../OpenGLProject/src/Shaders/Basic.shader");
+    CreateShader<BasicShader>(ShaderType::TERRAIN, "../../OpenGLProject/src/Shaders/Terrain.shader");
     CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "../../OpenGLProject/src/Shaders/Skybox.shader");
     CreateShader<Shader>(ShaderType::HEIGHTMAP, "../../OpenGLProject/src/Shaders/HeightMap.shader");
 }

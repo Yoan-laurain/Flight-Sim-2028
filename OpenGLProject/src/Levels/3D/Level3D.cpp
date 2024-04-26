@@ -16,16 +16,16 @@ void Level3D::OnTerrainSettingsChanged()
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	terrainGenerator->CalculateTerrain();
 	
-	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::BASIC);
+	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::TERRAIN);
 }
 
 Level3D::Level3D()  
 {
 	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
-	//m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+	m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->GenerateTerrain(100, 100, 50,ShaderType::BASIC);
+	terrainGenerator->GenerateTerrain(100, 100, 50,ShaderType::TERRAIN);
 	terrainGenerator->GetTerrain()->ValidateTerrain();
 
 	UpdateImGuiModulesParameters();
