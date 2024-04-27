@@ -13,12 +13,16 @@ class TerrainGenerator
     public:
         TerrainGenerator();
         ~TerrainGenerator();
-    
+
+        /* Generate the terrain with the given width and subdivisions */
         void GenerateTerrain(float width, int subdivisions, ShaderType shaderType);
-        void CalculateTerrain();
-        void Run(const Shader* shader, int numIterations = 0, float wGroupSize = 64);
-        TerrainModel* GetTerrain();
-        
+
+        /*  Update the terrain by processing all the modules generating the new heightmap and updating the terrain model */
+        void UpdateTerrain() const;
+
+        /*  Update the generation modules based on the current settings */
+        void UpdateGenerationModules();
+    
         template<typename ModuleType>
         ModuleType* GetModule()
         {
@@ -32,12 +36,12 @@ class TerrainGenerator
             }
             return nullptr;
         }
-        void UpdateGenerationMode();
+    
+        TerrainModel* GetTerrain() const;
+        int GetSubdivisions() const;
 
         float m_ElevationScale = 10.f;
         bool m_GenerateGPU = true;
-
-        int GetSubdivisions() const;
     
     private:
         int m_subdivision;

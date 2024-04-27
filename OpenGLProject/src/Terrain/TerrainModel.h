@@ -9,9 +9,8 @@ class TerrainModel : public Model
 {
     public:
         TerrainModel(int width, float subdivisions, ShaderType shaderType);
-        virtual ~TerrainModel();
-
-        void ValidateTerrain();
+        ~TerrainModel() override;
+    
         void SetHeight(const std::vector<float>& heightMap);
         
         int m_Width;

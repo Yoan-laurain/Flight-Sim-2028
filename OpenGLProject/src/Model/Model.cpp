@@ -5,7 +5,7 @@
 #include "../Core/Application.h"
 #include "Library/Math.h"
 
-Model::Model(const char* file, const ShaderType shaderType)
+Model::Model(const ShaderType shaderType)
 	: m_ShaderType(shaderType)
 	, m_Rotation(Vec3<float>(0))
 	, m_Translation(Vec3<float>(0))
@@ -19,15 +19,9 @@ Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 	, m_Translation(Vec3(0.0f))
 	, m_Scale(Vec3(1.0f))
 {
-
-	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
-
 	for (const auto mesh : meshes)
 	{
 		m_Meshes.emplace_back(std::unique_ptr<Mesh>(mesh));
-		vertices.insert(vertices.end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
-		indices.insert(indices.end(), mesh->m_Indices.begin(), mesh->m_Indices.end());
 	}
 
 	SendDataRender();

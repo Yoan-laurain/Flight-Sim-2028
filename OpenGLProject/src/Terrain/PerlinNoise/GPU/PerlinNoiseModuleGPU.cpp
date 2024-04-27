@@ -5,9 +5,10 @@
 #include "OpenGL/Shader/Shader.h"
 #include "OpenGL/ShaderStorageBuffer/ShaderStorageBufferObject.h"
 #include "Terrain/TerrainGenerator.h"
+#include "Config.h"
 #include <random>
 
-PerlinNoiseModuleGPU::PerlinNoiseModuleGPU()
+PerlinNoiseModuleGPU::PerlinNoiseModuleGPU() : m_MapSizeWithBorder(0)
 {
     m_OffsetsBuffer = std::make_unique<ShaderStorageBufferObject>();
     m_MapBuffer = std::make_unique<ShaderStorageBufferObject>();
@@ -20,16 +21,16 @@ PerlinNoiseModuleGPU::~PerlinNoiseModuleGPU() = default;
 void PerlinNoiseModuleGPU::Process(std::vector<float>& heighmap)
 {
     heighmap.clear();
-    
-    int m_MapSizeWithBorder = Application::Get()->GetTerrainGenerator()->GetSubdivisions() + 2 * 2;   // int m_MapSizeWithBorder = size + m_ErosionBrushRadius * 2; // TODO : HERE
+
+    m_MapSizeWithBorder = Application::Get()->GetTerrainGenerator()->GetSubdivisions() + ErosionBrushRadius * 2;
     heighmap.resize(m_MapSizeWithBorder * m_MapSizeWithBorder);  
     
     GenerateOffsets();
     
-    SetDatas(heighmap);
-    SetUniforms(heighmap, m_MapSizeWithBorder);
+    SetSSBODatas(heighmap);
+    SetUniforms(heighmap);
 
-    Application::Get()->GetTerrainGenerator()->Run(m_HeightMapShader, heighmap.size());
+    Application::Get()->GetShaderManager()->RunComputeShader(m_HeightMapShader, heighmap.size());
     
     m_MapBuffer->GetData(heighmap.data(), heighmap.size() * sizeof(float), 0,12);
     m_MinMaxBuffer->GetData(m_MinMaxHeight.data(), m_MinMaxHeight.size() * sizeof(int), 0,13);
@@ -39,7 +40,7 @@ void PerlinNoiseModuleGPU::Process(std::vector<float>& heighmap)
     ScaleHeightmapValues(heighmap);
 }
 
-void PerlinNoiseModuleGPU::SetDatas(const std::vector<float>& heighmap)
+void PerlinNoiseModuleGPU::SetSSBODatas(const std::vector<float>& heighmap)
 {
     m_OffsetsBuffer->SetData(m_Offsets.data(), m_Offsets.size() * sizeof(Vec2<int>),14);
     m_MapBuffer->SetData(heighmap.data(), heighmap.size() * sizeof(float),12);
@@ -49,7 +50,7 @@ void PerlinNoiseModuleGPU::SetDatas(const std::vector<float>& heighmap)
     m_MinMaxBuffer->SetData(m_MinMaxHeight.data(), m_MinMaxHeight.size() * sizeof(int),13);
 }
 
-void PerlinNoiseModuleGPU::ScaleHeightmapValues(std::vector<float>& heightmap)
+void PerlinNoiseModuleGPU::ScaleHeightmapValues(std::vector<float>& heightmap) const
 {
     const float minValue = static_cast<float>(m_MinMaxHeight[0]) / m_FloatToIntMultiplier;
     const float maxValue = static_cast<float>(m_MinMaxHeight[1]) / m_FloatToIntMultiplier;
@@ -60,7 +61,7 @@ void PerlinNoiseModuleGPU::ScaleHeightmapValues(std::vector<float>& heightmap)
     }
 }
 
-void PerlinNoiseModuleGPU::SetUniforms(std::vector<float>& heighmap, int m_MapSizeWithBorder)
+void PerlinNoiseModuleGPU::SetUniforms(std::vector<float>& heighmap) const
 {
     m_HeightMapShader->Bind();
     m_HeightMapShader->SetUniform1i("mapSize", m_MapSizeWithBorder);
@@ -74,29 +75,19 @@ void PerlinNoiseModuleGPU::SetUniforms(std::vector<float>& heighmap, int m_MapSi
 
 void PerlinNoiseModuleGPU::GenerateOffsets()
 {
-    // const int seed = randomizeSeed ? std::random_device()() : -6981;
-    // std::mt19937 prng(seed);
-    // std::uniform_int_distribution distribution(-10000, 10000);
-    //
-    // m_Offsets = std::vector<Vec2<int>>(m_NumOctaves);
-    //
-    // for (int i = 0; i < m_NumOctaves; i++)
-    // {
-    //     m_Offsets[i] = Vec2(distribution(prng), distribution(prng));
-    // }
-
-    m_Offsets.resize(m_NumOctaves); 
-    m_Offsets[0] = Vec2<int>(5547, -6547);
-    m_Offsets[1] = Vec2<int>(-1937,2065);
-    m_Offsets[2] = Vec2<int>(-9441,-5211);
-    m_Offsets[3] = Vec2<int>(5796,4019);
-    m_Offsets[4] = Vec2<int>(2876,502);
-    m_Offsets[5] = Vec2<int>(-1846,2697);
-    m_Offsets[6] = Vec2<int>(4570,-2570);
-    m_Offsets[7] = Vec2<int>(-286,6214);
+    const int seed = randomizeSeed ? std::random_device()() : 0;
+    std::mt19937 prng(seed);
+    std::uniform_int_distribution distribution(-10000, 10000);
+    
+    m_Offsets = std::vector<Vec2<int>>(m_NumOctaves);
+    
+    for (int i = 0; i < m_NumOctaves; i++)
+    {
+        m_Offsets[i] = Vec2(distribution(prng), distribution(prng));
+    }
 }
 
-void PerlinNoiseModuleGPU::Unbind()
+void PerlinNoiseModuleGPU::Unbind() const
 {
     m_MapBuffer->Unbind();
     m_MinMaxBuffer->Unbind();

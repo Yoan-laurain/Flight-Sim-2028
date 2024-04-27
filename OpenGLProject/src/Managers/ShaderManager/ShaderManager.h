@@ -21,6 +21,8 @@ class ShaderManager
 
         ShaderManager();
         ~ShaderManager() = default;
+    
+        void RunComputeShader(const Shader* shader, int numIterations = 0, float wGroupSize = 64) const;
 
         template <typename T>
         Shader* CreateShader(ShaderType shaderType, const std::string& filepath)
@@ -38,4 +40,3 @@ class ShaderManager
     
         void RegisterShader(ShaderType shaderType, Shader* shader);
 };
-

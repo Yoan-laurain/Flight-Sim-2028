@@ -1,7 +1,6 @@
 #include "Level.h"
 #include "../Model/Model.h"
 #include "../Core/Application.h"
-#include "../Terrain/TerrainModel.h"
 #include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "../Managers/ModelLoader/ModelLoader.h"
 
@@ -40,21 +39,11 @@ Model* Level::AddModel(const char* file, const ShaderType shaderType)
 	m_Models.push_back( std::unique_ptr<Model>(loader.m_Model.release()) );
 	return m_Models.back().get();
 }
-Model* Level::AddTerrain(float width, int subdivisions, ShaderType shaderType)
-{
-	TerrainModel* terrain = new TerrainModel(width, subdivisions, shaderType);
-	m_Models.push_back(std::unique_ptr<Model>(terrain));
-
-	return terrain;
-}
-
 
 void Level::UpdateTrianglesCount()
 {
-	// TODO : Clean this up
 	for (auto& shape : m_Models)
 	{
 		m_TriangleCount += shape.get()->GetNumberOfTriangles();
 	}
-	
 }

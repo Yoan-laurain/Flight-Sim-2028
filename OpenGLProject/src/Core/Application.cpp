@@ -1,8 +1,6 @@
 #include "Application.h"
-
 #include "../Renderer/Renderer.h"
 #include "../Config.h"
-
 #include "../Levels/3D/Level3D.h"
 #include "../Camera/Camera.h"
 #include "../OpenGL/Shader/Shader.h"
@@ -10,7 +8,6 @@
 #include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "Vendor/stb_image/stb_image.h"
 #include "Terrain/TerrainGenerator.h"
-
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -18,7 +15,7 @@
 
 Application* Application::m_Instance = nullptr;
 
-Application::Application() : m_AppIcon(nullptr), m_polygoneMode(false)
+Application::Application() : m_AppIcon(nullptr), m_MaxSlotForTextures(0), m_polygoneMode(false)
 {
     m_Instance = this;
 }
@@ -41,14 +38,14 @@ void Application::Run()
 
     InitImGui(window);
     
-    //SetFaceCulling(true);
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MaxSlotForTextures);
+    //SetFaceCulling(true); // Ne fonctionne pas avec le terrain
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &m_MaxSlotForTextures);
 
     m_Renderer = std::make_unique<Renderer>();
     m_ShaderManager = std::make_unique<ShaderManager>();
     m_BatchRenderer = std::make_unique<BatchRenderer>();
     m_TerrainGenerator = std::make_unique<TerrainGenerator>();
-    m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3(150.0f, 80.0f, 20.0f));
+    m_Camera = std::make_unique<Camera>(WindowWidth, WindowHeight, Vec3(50.0f, 40.0f, 40.0f));
 
     SetCurrentLevel(new Level3D());
 
@@ -91,32 +88,32 @@ Application* Application::Get()
     return m_Instance;
 }
 
-const Renderer* Application::GetRenderer()
+const Renderer* Application::GetRenderer() const
 {
     return m_Renderer.get();
 }
 
-ShaderManager* Application::GetShaderManager()
+ShaderManager* Application::GetShaderManager() const
 {
     return m_ShaderManager.get();
 }
 
-Camera* Application::GetCamera()
+Camera* Application::GetCamera() const
 {
     return m_Camera.get();
 }
 
-BatchRenderer* Application::GetBatchRenderer()
+BatchRenderer* Application::GetBatchRenderer() const
 {
     return m_BatchRenderer.get();
 }
 
-TerrainGenerator* Application::GetTerrainGenerator()
+TerrainGenerator* Application::GetTerrainGenerator() const
 {
     return m_TerrainGenerator.get();
 }
 
-void Application::OnImGuiRender()
+void Application::OnImGuiRender() const
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -132,7 +129,7 @@ void Application::OnImGuiRender()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Application::ApplyAppIcon()
+void Application::ApplyAppIcon() const
 {
     if (!m_AppIcon)
         return;
@@ -267,7 +264,7 @@ bool& Application::GetPolygoneMode()
 	return m_polygoneMode;
 }
 
-int Application::GetMaxSlotForTextures()
+int Application::GetMaxSlotForTextures() const
 {
-    return MaxSlotForTextures;
+    return m_MaxSlotForTextures;
 }

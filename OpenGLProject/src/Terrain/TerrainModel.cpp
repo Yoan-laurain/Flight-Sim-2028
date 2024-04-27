@@ -25,7 +25,7 @@ TerrainModel::~TerrainModel() = default;
 void TerrainModel::CreateVertices() 
 {
     vertices.clear();
-
+    
     const float stepSize = m_Width / m_Subdivisions;
     
     for (int i = 0; i < m_Subdivisions; ++i)
@@ -136,9 +136,4 @@ void TerrainModel::SetHeight(const std::vector<float>& heightMap)
     }
 
     ReCalculateNormals(m_Meshes[0]);
-}
-
-void TerrainModel::ValidateTerrain()
-{
-    SendDataRender();
 }

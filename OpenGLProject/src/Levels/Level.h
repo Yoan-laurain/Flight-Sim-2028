@@ -5,7 +5,6 @@
 #include <vector>
 #include <memory>
 
-class Terrain;
 class Mesh;
 enum class ShaderType;
 
@@ -30,12 +29,10 @@ class Level
 
 			return model;
 		}
-		Model* AddTerrain(float width, int subdivisions, ShaderType shaderType);
-
-
-		void UpdateTrianglesCount(); 
 
 	private:
+		void UpdateTrianglesCount(); 
+	
 		int m_CountDraws = 0;
 		int m_TriangleCount = 0;
 

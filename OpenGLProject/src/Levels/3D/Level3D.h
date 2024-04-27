@@ -18,10 +18,7 @@ class Level3D : public Level
 		void UpdateImGuiModulesParameters();
 		void OnTerrainSettingsChanged();
 
-		Model* m_SkyBox;
-	    Model* m_Plane;
-
-		PerlinNoiseModuleGPU* tmp_perlinGPU;
-		PerlinNoiseModuleCPU* tmp_perlinCPU;
-		ErosionModuleGPU* tmp_erosionGPU;
+		PerlinNoiseModuleGPU* m_PerlinGPU;
+		PerlinNoiseModuleCPU* m_PerlinCPU;
+		ErosionModuleGPU* m_ErosionGPU;
 };

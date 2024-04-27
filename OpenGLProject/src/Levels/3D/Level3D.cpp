@@ -9,38 +9,37 @@
 #include "Terrain/TerrainGenerator.h"
 #include "Terrain/PerlinNoise/CPU/PerlinNoiseModuleCPU.h"
 #include "Terrain/PerlinNoise/GPU/PerlinNoiseModuleGPU.h"
+#include "Terrain/Erosion/ErosionModuleGPU.h"
 #include <imgui.h>
 
-#include "Terrain/Erosion/ErosionModuleGPU.h"
-
-void Level3D::OnTerrainSettingsChanged()
+Level3D::Level3D() : m_PerlinGPU(nullptr), m_PerlinCPU(nullptr), m_ErosionGPU(nullptr)
 {
-	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->CalculateTerrain();
-	
-	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::BASIC);
-}
-
-Level3D::Level3D()  
-{
-	m_SkyBox = AddModel<SkyBox,Model>(ShaderType::SKYBOX);
-	//m_Plane = AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+	AddModel<SkyBox,Model>(ShaderType::SKYBOX);
+	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::BASIC);
-	terrainGenerator->GetTerrain()->ValidateTerrain();
+	terrainGenerator->GetTerrain()->SendDataRender();
 
 	UpdateImGuiModulesParameters();
 }
 
-void Level3D::OnImGuiRender()
+void Level3D::OnTerrainSettingsChanged()
+{
+	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	terrainGenerator->UpdateTerrain();
+	
+	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::BASIC);
+}
+
+void Level3D::OnImGuiRender() // TODO : Refactor
 {
 	Level::OnImGuiRender();
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	if (ImGui::Checkbox("Generate with GPU",&terrainGenerator->m_GenerateGPU))
 	{
-		terrainGenerator->UpdateGenerationMode();
+		terrainGenerator->UpdateGenerationModules();
 		UpdateImGuiModulesParameters();
 		OnTerrainSettingsChanged();
 	}
@@ -49,23 +48,23 @@ void Level3D::OnImGuiRender()
 				terrainGenerator->m_ElevationScale = newValue;
 				OnTerrainSettingsChanged();
 			});
-	if(tmp_perlinGPU)
+	if(m_PerlinGPU)
 	{
 		// octaves
-		MyImGui::SliderInt("Octaves", tmp_perlinGPU->m_NumOctaves, 1, 8, [=](const int newValue) {
-			tmp_perlinGPU->m_NumOctaves = newValue;
+		MyImGui::SliderInt("Octaves", m_PerlinGPU->m_NumOctaves, 1, 8, [=](const int newValue) {
+			m_PerlinGPU->m_NumOctaves = newValue;
 			OnTerrainSettingsChanged();
 		});
 
 		// persistence
-		MyImGui::SliderFloat("Persistence", tmp_perlinGPU->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
-			tmp_perlinGPU->m_Persistence = newValue;
+		MyImGui::SliderFloat("Persistence", m_PerlinGPU->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
+			m_PerlinGPU->m_Persistence = newValue;
 			OnTerrainSettingsChanged();
 		});
 
 		// lacunarity
-		MyImGui::SliderFloat("Lacunarity", tmp_perlinGPU->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
-			tmp_perlinGPU->m_Lacunarity = newValue;
+		MyImGui::SliderFloat("Lacunarity", m_PerlinGPU->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
+			m_PerlinGPU->m_Lacunarity = newValue;
 			OnTerrainSettingsChanged();
 		});
 	
@@ -75,10 +74,10 @@ void Level3D::OnImGuiRender()
 		// 	 OnTerrainSettingsChanged();
 		//  });
 	}
-	if(tmp_perlinCPU)
+	if(m_PerlinCPU)
 	{
-		MyImGui::SliderFloat("Frequency", tmp_perlinCPU->m_Frequency, 0.05f, 1.0f, [=](const float newValue) {
-			 tmp_perlinCPU->m_Frequency = newValue;
+		MyImGui::SliderFloat("Frequency", m_PerlinCPU->m_Frequency, 0.05f, 1.0f, [=](const float newValue) {
+			 m_PerlinCPU->m_Frequency = newValue;
 			 OnTerrainSettingsChanged();
 		 });
 	}
@@ -91,32 +90,26 @@ void Level3D::OnImGuiRender()
 	// --------------- EROSION ---------------
 
 	// num iterations
-	MyImGui::SliderInt("Iterations", tmp_erosionGPU->m_NumErosionIterations, 0, 250000, [=](const int newValue) {
-		tmp_erosionGPU->m_NumErosionIterations = newValue;
+	MyImGui::SliderInt("Iterations", m_ErosionGPU->m_NumErosionIterations, 0, 250000, [=](const int newValue) {
+		m_ErosionGPU->m_NumErosionIterations = newValue;
 		OnTerrainSettingsChanged();
 	});
 	
 	// carry capacity
-	MyImGui::SliderFloat("Sediment Capacity Factor", tmp_erosionGPU->m_SedimentCapacityFactor, 0.0f, 10.0f, [=](const float newValue) {
-		tmp_erosionGPU->m_SedimentCapacityFactor = newValue;
+	MyImGui::SliderFloat("Sediment Capacity Factor", m_ErosionGPU->m_SedimentCapacityFactor, 0.0f, 10.0f, [=](const float newValue) {
+		m_ErosionGPU->m_SedimentCapacityFactor = newValue;
 		OnTerrainSettingsChanged();
 	});
 	
 	// evaporation
-	MyImGui::SliderFloat("Evaporate Speed", tmp_erosionGPU->m_EvaporateSpeed, 0.01f, 1.0f, [=](const float newValue) {
-		tmp_erosionGPU->m_EvaporateSpeed = newValue;
+	MyImGui::SliderFloat("Evaporate Speed", m_ErosionGPU->m_EvaporateSpeed, 0.01f, 1.0f, [=](const float newValue) {
+		m_ErosionGPU->m_EvaporateSpeed = newValue;
 		OnTerrainSettingsChanged();
 	});
 	
 	//inertia
-	MyImGui::SliderFloat("Inertia", tmp_erosionGPU->m_Inertia, 0.0f, 0.2f, [=](const float newValue) {
-		tmp_erosionGPU->m_Inertia = newValue;
-		OnTerrainSettingsChanged();
-	});
-	
-	//radius brush
-	MyImGui::SliderInt("Brush Radius", tmp_erosionGPU->m_ErosionBrushRadius, 1, 5, [=](const int newValue) {
-		tmp_erosionGPU->m_ErosionBrushRadius = newValue;
+	MyImGui::SliderFloat("Inertia", m_ErosionGPU->m_Inertia, 0.0f, 0.2f, [=](const float newValue) {
+		m_ErosionGPU->m_Inertia = newValue;
 		OnTerrainSettingsChanged();
 	});
 }
@@ -124,8 +117,8 @@ void Level3D::OnImGuiRender()
 void Level3D::UpdateImGuiModulesParameters()
 {
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	//TMP -> To remove
-	tmp_perlinGPU = terrainGenerator->GetModule<PerlinNoiseModuleGPU>();
-	tmp_perlinCPU = terrainGenerator->GetModule<PerlinNoiseModuleCPU>();
-	tmp_erosionGPU = terrainGenerator->GetModule<ErosionModuleGPU>();
+	//TODO To remove
+	m_PerlinGPU = terrainGenerator->GetModule<PerlinNoiseModuleGPU>();
+	m_PerlinCPU = terrainGenerator->GetModule<PerlinNoiseModuleCPU>();
+	m_ErosionGPU = terrainGenerator->GetModule<ErosionModuleGPU>();
 }

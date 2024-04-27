@@ -24,7 +24,7 @@ Mesh::Mesh(const Mesh&): m_TriangleCount(0)
 {
 }
 
-Mesh::Mesh():m_TriangleCount(0){}
+Mesh::Mesh() : m_TriangleCount(0) {}
 
 Mesh::~Mesh() = default;
 
@@ -32,11 +32,11 @@ void Mesh::FillTexturesArrays()
 {
 	for (auto& texture : m_Textures)
 	{
-		if (texture.GetType() == Specular)
+		if (texture.m_Type == Specular)
 		{
 			m_TextureSpecular.emplace_back(std::make_unique<Texture>(texture));
 		}
-		else if (texture.GetType() == Diffuse)
+		else if (texture.m_Type == Diffuse)
 		{
 			m_TextureDiffuse.emplace_back(std::make_unique<Texture>(texture));
 		}

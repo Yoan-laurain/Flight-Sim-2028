@@ -11,6 +11,8 @@ constexpr float BaseCameraSpeed = 50.f;
 
 constexpr float gamma = 2.2f;
 
+constexpr int ErosionBrushRadius = 2;
+
 constexpr const char* Diffuse = "Diffuse";
 constexpr const char* Specular = "Specular";
 

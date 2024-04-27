@@ -62,11 +62,6 @@ void Texture::Unbind() const
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-const char* Texture::GetType() const
-{
-	return m_Type;
-}
-
 void Texture::HandleFormat() const
 {
 	if (m_BPP == 4)

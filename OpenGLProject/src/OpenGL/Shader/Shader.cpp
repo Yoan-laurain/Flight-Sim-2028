@@ -1,10 +1,9 @@
 #include "Shader.h"
+#include "Core/Application.h"
 #include <GL/glew.h>
 #include <sstream>
 #include <fstream>
 #include <iostream>
-
-#include "Core/Application.h"
 
 Shader::Shader(const std::string& filepath) : m_ID(0)
 {
@@ -34,9 +33,9 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
-void Shader::SetMaxImageUnit(ShaderProgramSource& source)
+void Shader::SetMaxImageUnit(ShaderProgramSource& source) const
 {
-	int total_units = Application::Get()->GetMaxSlotForTextures();
+	const int total_units = Application::Get()->GetMaxSlotForTextures();
 
 	std::string& fragment_source = source.FragmentSource;
 	const std::string max_texture_units = "MAX_TEXTURE_UNITS X";
@@ -56,7 +55,7 @@ void Shader::SetShader(const std::string& filepath)
 
 	SetMaxImageUnit(source);
 	
-	m_ID = source.ComputeSource.empty() ? CreateShader(source.VertexSource, source.FragmentSource) : CreateShader(source.ComputeSource);
+	m_ID = source.ComputeSource.empty() ? CreateShader(source.VertexSource, source.FragmentSource) : CreateComputeShader(source.ComputeSource);
 	Bind();
 }
 
@@ -132,11 +131,10 @@ void Shader::HandleLinkError(GLuint Program)
 	}
 }
 
-unsigned Shader::CreateShader(const std::string& computeShader)
+unsigned Shader::CreateComputeShader(const std::string& computeShader)
 {
-	unsigned int cs;
-	GLuint computeProgram = glCreateProgram(); 
-	cs = CompileShader(GL_COMPUTE_SHADER, computeShader);
+	const GLuint computeProgram = glCreateProgram();
+	const unsigned int cs = CompileShader(GL_COMPUTE_SHADER, computeShader);
 	glAttachShader(computeProgram, cs);
 	glLinkProgram(computeProgram);
 	glValidateProgram(computeProgram);

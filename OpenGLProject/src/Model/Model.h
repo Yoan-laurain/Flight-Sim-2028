@@ -11,7 +11,7 @@ class Mesh;
 class Model
 {
 	public:
-		Model(const char* file, ShaderType shaderType);
+		Model(ShaderType shaderType);
 		Model(const std::vector<Mesh*>& meshes, ShaderType shaderType);
 		virtual ~Model();
 

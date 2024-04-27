@@ -35,7 +35,7 @@ ModelLoader::ModelLoader(const char* file, const ShaderType shaderType)
 	, m_ShaderType(shaderType)
 	, m_File(file)
 {
-	m_Model = std::make_unique<Model>(file, shaderType);
+	m_Model = std::make_unique<Model>(shaderType);
 	
 	// Make a JSON object
 	std::string text = Get_file_contents(file);
