@@ -8,7 +8,7 @@
 #include "Config.h"
 #include <random>
 
-PerlinNoiseModuleGPU::PerlinNoiseModuleGPU() : m_MapSizeWithBorder(0)
+PerlinNoiseModuleGPU::PerlinNoiseModuleGPU() 
 {
     m_OffsetsBuffer = std::make_unique<ShaderStorageBufferObject>();
     m_MapBuffer = std::make_unique<ShaderStorageBufferObject>();
@@ -21,9 +21,8 @@ PerlinNoiseModuleGPU::~PerlinNoiseModuleGPU() = default;
 void PerlinNoiseModuleGPU::Process(std::vector<float>& heighmap)
 {
     heighmap.clear();
-
-    m_MapSizeWithBorder = Application::Get()->GetTerrainGenerator()->GetSubdivisions() + ErosionBrushRadius * 2;
-    heighmap.resize(m_MapSizeWithBorder * m_MapSizeWithBorder);  
+    
+    heighmap.resize(Application::Get()->GetTerrainGenerator()->m_BorderedMapSize * Application::Get()->GetTerrainGenerator()->m_BorderedMapSize);  
     
     GenerateOffsets();
     
@@ -64,7 +63,7 @@ void PerlinNoiseModuleGPU::ScaleHeightmapValues(std::vector<float>& heightmap) c
 void PerlinNoiseModuleGPU::SetUniforms(std::vector<float>& heighmap) const
 {
     m_HeightMapShader->Bind();
-    m_HeightMapShader->SetUniform1i("mapSize", m_MapSizeWithBorder);
+    m_HeightMapShader->SetUniform1i("mapSize", Application::Get()->GetTerrainGenerator()->m_BorderedMapSize);
     m_HeightMapShader->SetUniform1i("octaves", m_NumOctaves);
     m_HeightMapShader->SetUniform1i("floatToIntMultiplier", m_FloatToIntMultiplier);
     m_HeightMapShader->SetUniform1i("heightMapSize", static_cast<int>(heighmap.size()));

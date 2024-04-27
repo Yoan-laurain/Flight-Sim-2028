@@ -20,7 +20,7 @@ Level3D::Level3D() : m_PerlinGPU(nullptr), m_PerlinCPU(nullptr), m_ErosionGPU(nu
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::BASIC);
 	terrainGenerator->GetTerrain()->SendDataRender();
-
+	
 	UpdateImGuiModulesParameters();
 }
 

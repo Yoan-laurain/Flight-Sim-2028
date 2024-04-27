@@ -17,10 +17,12 @@ class TerrainModel : public Model
         float m_Subdivisions;
 
     private:
-        void CreateVertices();
-        void CalculIndices();
-        void ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::value_type& m_Mesh);
 
-        std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
+        void ReCalculateNormals();
+        void UpdateOrCreateNewMesh();
+        void GenerateIndices(int x, int y, int meshMapIndex);
+        void UpdateVertexProperties(int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex);
+
+        std::vector<Vertex> m_Vertices;
+        std::vector<unsigned int> m_Indices;
 };

@@ -42,6 +42,7 @@ class TerrainGenerator
 
         float m_ElevationScale = 10.f;
         bool m_GenerateGPU = true;
+        int m_BorderedMapSize;
     
     private:
         int m_subdivision;

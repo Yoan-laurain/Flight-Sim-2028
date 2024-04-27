@@ -1,4 +1,5 @@
 ﻿#include "TerrainGenerator.h"
+#include "Config.h"
 #include "TerrainModel.h"
 #include "OpenGL/Shader/Shader.h"
 #include "PerlinNoise/CPU/PerlinNoiseModuleCPU.h"
@@ -16,6 +17,7 @@ TerrainGenerator::~TerrainGenerator() = default;
 void TerrainGenerator::GenerateTerrain(float width, int subdivisions, ShaderType shaderType)
 {
     m_subdivision = subdivisions;
+    m_BorderedMapSize = m_subdivision + 2 * ErosionBrushRadius;
     m_terrain = std::make_unique<TerrainModel>(width, subdivisions, shaderType);
     UpdateTerrain();
 }

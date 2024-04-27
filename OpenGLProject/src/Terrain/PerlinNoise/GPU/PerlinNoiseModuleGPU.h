@@ -42,5 +42,4 @@ class PerlinNoiseModuleGPU : public TerrainGenerationModule
         Shader* m_HeightMapShader;
         int m_FloatToIntMultiplier = 1000;
         bool randomizeSeed = false; // TODO : Set in game
-        int m_MapSizeWithBorder;
 };

@@ -42,7 +42,6 @@ class ErosionModuleGPU : public TerrainGenerationModule
         Shader* m_ErosionShader;
     
         int m_MaxLifetime = 30;
-        int m_MapSizeWithBorder;
 
         float m_MinSedimentCapacity = .01f;
         float m_DepositSpeed = 0.3f;

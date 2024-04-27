@@ -22,8 +22,6 @@ void ErosionModuleGPU::Erode(std::vector<float>& heighmap)
 {
     m_BrushIndexOffsets.clear();
     m_BrushWeights.clear();
-
-    m_MapSizeWithBorder = Application::Get()->GetTerrainGenerator()->GetSubdivisions() + ErosionBrushRadius * 2;
     
     CreateBrushes();
     GenerateRandomIndicesForDropletPlacement();
@@ -123,7 +121,7 @@ void ErosionModuleGPU::SetErosionShaderUniforms() const
     m_ErosionShader->SetUniform1f("gravity", m_Gravity);
     m_ErosionShader->SetUniform1f("startSpeed", m_StartSpeed);
     m_ErosionShader->SetUniform1f("startWater", m_StartWater);
-    m_ErosionShader->SetUniform1i("mapSize", m_MapSizeWithBorder);
+    m_ErosionShader->SetUniform1i("mapSize", Application::Get()->GetTerrainGenerator()->m_BorderedMapSize);
 }
 
 void ErosionModuleGPU::UnBind() const
