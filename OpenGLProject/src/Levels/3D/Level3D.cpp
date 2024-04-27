@@ -12,7 +12,7 @@
 #include "Terrain/Erosion/ErosionModuleGPU.h"
 #include <imgui.h>
 
-Level3D::Level3D() : m_PerlinGPU(nullptr), m_PerlinCPU(nullptr), m_ErosionGPU(nullptr)
+Level3D::Level3D() : m_PerlinModule(nullptr), m_ErosionGPU(nullptr)
 {
 	AddModel<SkyBox,Model>(ShaderType::SKYBOX);
 	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
@@ -44,51 +44,47 @@ void Level3D::OnImGuiRender() // TODO : Refactor
 		OnTerrainSettingsChanged();
 	}
 	
-	MyImGui::SliderFloat("Height", terrainGenerator->m_ElevationScale, 0.0f, 100.0f, [=](const float newValue) {
-				terrainGenerator->m_ElevationScale = newValue;
-				OnTerrainSettingsChanged();
-			});
-	if(m_PerlinGPU)
-	{
-		// octaves
-		MyImGui::SliderInt("Octaves", m_PerlinGPU->m_NumOctaves, 1, 8, [=](const int newValue) {
-			m_PerlinGPU->m_NumOctaves = newValue;
-			OnTerrainSettingsChanged();
-		});
-
-		// persistence
-		MyImGui::SliderFloat("Persistence", m_PerlinGPU->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
-			m_PerlinGPU->m_Persistence = newValue;
-			OnTerrainSettingsChanged();
-		});
-
-		// lacunarity
-		MyImGui::SliderFloat("Lacunarity", m_PerlinGPU->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
-			m_PerlinGPU->m_Lacunarity = newValue;
-			OnTerrainSettingsChanged();
-		});
-	
-		// initial scale
-		// MyImGui::SliderFloat("Scale", tmp_perlinGPU->m_InitialScale, 0.1f, 4.0f, [=](const float newValue) {
-		// 	 tmp_perlinGPU->m_InitialScale = newValue;
-		// 	 OnTerrainSettingsChanged();
-		//  });
-	}
-	if(m_PerlinCPU)
-	{
-		MyImGui::SliderFloat("Frequency", m_PerlinCPU->m_Frequency, 0.05f, 1.0f, [=](const float newValue) {
-			 m_PerlinCPU->m_Frequency = newValue;
-			 OnTerrainSettingsChanged();
-		 });
-	}
-
 	if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 	{
 		Application::Get()->SetPolygoneMode();
 	}
 	
-	// --------------- EROSION ---------------
+	ImGui::Text("Terrain Settings");
+	
+	ImGui::Checkbox("Randomize Seed", &m_PerlinModule->randomizeSeed);
+	
+	MyImGui::SliderFloat("Height", terrainGenerator->m_ElevationScale, 0.0f, 100.0f, [=](const float newValue) {
+				terrainGenerator->m_ElevationScale = newValue;
+				OnTerrainSettingsChanged();
+			});
 
+	// octaves
+	MyImGui::SliderInt("Octaves", m_PerlinModule->m_NumOctaves, 1, 8, [=](const int newValue) {
+		m_PerlinModule->m_NumOctaves = newValue;
+		OnTerrainSettingsChanged();
+	});
+
+	// persistence
+	MyImGui::SliderFloat("Persistence", m_PerlinModule->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
+		m_PerlinModule->m_Persistence = newValue;
+		OnTerrainSettingsChanged();
+	});
+
+	// lacunarity
+	MyImGui::SliderFloat("Lacunarity", m_PerlinModule->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
+		m_PerlinModule->m_Lacunarity = newValue;
+		OnTerrainSettingsChanged();
+	});
+		
+	MyImGui::SliderInt("Scale", m_PerlinModule->m_Scale, 1, 100, [=](const int newValue) {
+		m_PerlinModule->m_Scale = newValue;
+		OnTerrainSettingsChanged();
+	});
+	
+	// --------------- EROSION ---------------
+	
+	ImGui::Text("Erosion Settings");
+	
 	// num iterations
 	MyImGui::SliderInt("Iterations", m_ErosionGPU->m_NumErosionIterations, 0, 250000, [=](const int newValue) {
 		m_ErosionGPU->m_NumErosionIterations = newValue;
@@ -118,7 +114,6 @@ void Level3D::UpdateImGuiModulesParameters()
 {
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	//TODO To remove
-	m_PerlinGPU = terrainGenerator->GetModule<PerlinNoiseModuleGPU>();
-	m_PerlinCPU = terrainGenerator->GetModule<PerlinNoiseModuleCPU>();
+	m_PerlinModule = terrainGenerator->GetModule<PerlinNoiseBaseModule>();
 	m_ErosionGPU = terrainGenerator->GetModule<ErosionModuleGPU>();
 }

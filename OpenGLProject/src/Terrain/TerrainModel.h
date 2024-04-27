@@ -21,7 +21,7 @@ class TerrainModel : public Model
         void ReCalculateNormals();
         void UpdateOrCreateNewMesh();
         void GenerateIndices(int x, int y, int meshMapIndex);
-        void UpdateVertexProperties(int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex);
+        void UpdateVertexProperties(int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex,int scale);
 
         std::vector<Vertex> m_Vertices;
         std::vector<unsigned int> m_Indices;

@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "Terrain/TerrainGenerationModule.h"
+#include "Terrain/PerlinNoise/PerlinNoiseBaseModule.h"
 
-class PerlinNoiseModuleCPU : public TerrainGenerationModule
+class PerlinNoiseModuleCPU : public PerlinNoiseBaseModule
 {
     public:
         PerlinNoiseModuleCPU();
