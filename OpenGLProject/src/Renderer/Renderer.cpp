@@ -22,11 +22,12 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 	va.Bind();
 	ib.Bind();
 
-	glDrawElements(GL_TRIANGLES, ib.GetNumberOfIndices(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, ib.m_Indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::HandleError(GLenum source, const GLenum type, GLuint id, const GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
+    // TODO : Handle performance messages
     if (severity == GL_DEBUG_SEVERITY_NOTIFICATION || type == GL_DEBUG_TYPE_PERFORMANCE)
         return;
     

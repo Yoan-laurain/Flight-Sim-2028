@@ -8,22 +8,21 @@ enum class ShaderType;
 class TerrainModel : public Model
 {
     public:
-        TerrainModel(float width, float depth, int subdivisions, ShaderType shaderType);
-        virtual ~TerrainModel();
-
-        void ValidateTerrain();
+        TerrainModel(int width, float subdivisions, ShaderType shaderType);
+        ~TerrainModel() override;
+    
         void SetHeight(const std::vector<float>& heightMap);
         
-        float m_Width;
-        float m_Depth;
-        int m_Subdivisions;
+        int m_Width;
+        float m_Subdivisions;
 
     private:
-        void CreateVertices();
-        void CalculIndices();
-        void ReCalculateNormals(const std::vector<std::unique_ptr<Mesh>>::value_type& m_Mesh);
 
-        std::vector<Vertex> vertices;
-        std::vector<Vertex> baseVertices;
-        std::vector<unsigned int> indices;
+        void ReCalculateNormals();
+        void UpdateOrCreateNewMesh();
+        void GenerateIndices(int x, int y, int meshMapIndex);
+        void UpdateVertexProperties(int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex,int scale);
+
+        std::vector<Vertex> m_Vertices;
+        std::vector<unsigned int> m_Indices;
 };

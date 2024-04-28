@@ -16,7 +16,7 @@ using json = nlohmann::json;
 class ModelLoader
 {
     public:
-        explicit ModelLoader(const char* file, ShaderType shaderType);
+        ModelLoader(const char* file, ShaderType shaderType);
         ~ModelLoader();
 
         std::unique_ptr<Model> m_Model;

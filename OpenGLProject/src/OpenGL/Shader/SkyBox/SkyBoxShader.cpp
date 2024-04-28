@@ -17,12 +17,9 @@ void SkyBoxShader::OnBeforeDraw()
     Bind();
 
     const Camera& camera = *Application::Get()->GetCamera();
-
-    const Mat3<float> a = Math::mat3_cast(Math::lookAtM4(camera.m_Position, camera.m_Position + camera.m_Rotation, camera.m_Up));
+    const Mat3<float> viewMatrix = Math::mat3_cast(Math::lookAtM4(camera.m_Position, camera.m_Position + Math::radians(camera.m_Rotation), Math::radians(camera.m_Up)));
     
-    const Mat4<float> view = Mat4(a);
-    SetUniformMat4fv("u_View", view);
-    
+    SetUniformMat4fv("u_View", Mat4(viewMatrix));
     SetUniformMat4fv("u_Projection", camera.m_ProjectionMatrix);
 }
 

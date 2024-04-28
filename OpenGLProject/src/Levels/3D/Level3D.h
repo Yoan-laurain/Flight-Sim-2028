@@ -2,8 +2,8 @@
 
 #include "../Level.h"
 
-class PerlinNoiseModuleGPU;
-class PerlinNoiseModuleCPU;
+class PerlinNoiseBaseModule;
+class ErosionModuleGPU;
 
 class Level3D : public Level
 {
@@ -17,9 +17,6 @@ class Level3D : public Level
 		void UpdateImGuiModulesParameters();
 		void OnTerrainSettingsChanged();
 
-		Model* m_SkyBox;
-	    Model* m_Plane;
-
-		PerlinNoiseModuleGPU* tmp_perlinGPU;
-		PerlinNoiseModuleCPU* tmp_perlinCPU;
+		PerlinNoiseBaseModule* m_PerlinModule;
+		ErosionModuleGPU* m_ErosionGPU;
 };

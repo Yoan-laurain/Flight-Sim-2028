@@ -24,11 +24,11 @@ class Application
 
         static Application* Get();
     
-        const Renderer* GetRenderer();
-        ShaderManager* GetShaderManager();
-        Camera* GetCamera();
-        BatchRenderer* GetBatchRenderer();
-		TerrainGenerator* GetTerrainGenerator();
+        const Renderer* GetRenderer() const;
+        ShaderManager* GetShaderManager() const;
+        Camera* GetCamera() const;
+        BatchRenderer* GetBatchRenderer() const;
+		TerrainGenerator* GetTerrainGenerator() const;
 	
         /* 
            * Enable face culling it improves performance by not rendering the back of the faces
@@ -38,7 +38,6 @@ class Application
 
         /*
             * Deactivate VSync and uncap the frame rate
-            * Be careful : Inputs will be based on the frame rate you'll need to implement a deltaTime system
         */
         void SetVSync( bool enable );
 
@@ -59,8 +58,7 @@ class Application
 		void SetPolygoneMode();
         bool& GetPolygoneMode();
 
-        int GetMaxSlotForTextures();
-		
+        int GetMaxSlotForTextures() const;
 
     private:
     
@@ -69,9 +67,9 @@ class Application
 
         void DestroyImGui();
         void InitImGui(GLFWwindow* window);
-        void OnImGuiRender();
+        void OnImGuiRender() const;
 
-        void ApplyAppIcon();
+        void ApplyAppIcon() const;
 
         void UpdateDeltaTime(double& lastTime, double& deltaTime);
 
@@ -83,9 +81,9 @@ class Application
 		std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
 
         const char* m_AppIcon;
-        int MaxSlotForTextures;
+        int m_MaxSlotForTextures;
 
-		bool m_polygoneMode; // Wireframe mode
+		bool m_polygoneMode;
 
         static Application* m_Instance;
 };

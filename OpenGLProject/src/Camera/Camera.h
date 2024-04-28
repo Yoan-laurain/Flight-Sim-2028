@@ -32,18 +32,16 @@ class Camera
 		float m_NearPlane;
 		float m_FarPlane;
 
-		bool m_PlaneMode;
-
 	private:
 
 		float m_Fov;
-		float m_Speed{};
-		float m_Sensitivity{};
+		float m_Speed;
+		float m_Sensitivity;
 
 		double m_BaseMouseX;
 		double m_BaseMouseY;
 
-		bool m_FirstClick{};
+		bool m_FirstClick;
 
 		void Inputs( GLFWwindow* window,double deltaTime );
 		void HandleRotation( GLFWwindow* window );

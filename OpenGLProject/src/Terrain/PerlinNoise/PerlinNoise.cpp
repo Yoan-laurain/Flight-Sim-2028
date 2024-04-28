@@ -39,7 +39,7 @@ float PerlinNoise::noise(float x, float y) const
         lerp(u, dot(grad[AA], x, y), dot(grad[BA], x - 1, y)),
         lerp(u, dot(grad[AB], x, y - 1), dot(grad[BB], x - 1, y - 1)));
 
-    return (res + 1.0f) / 2.0f; // normalisation entre 0 et 1
+    return res;
 }
 
 float PerlinNoise::fade(float t) const

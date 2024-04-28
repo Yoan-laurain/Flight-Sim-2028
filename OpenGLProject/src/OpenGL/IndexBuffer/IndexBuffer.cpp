@@ -4,14 +4,10 @@
 IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices) 
 	: m_Indices(indices)
 	, m_ID(0)
-	, m_NumberOfIndices(static_cast<unsigned int>(indices.size()))
 {
 	glGenBuffers(1, &m_ID);
 	
-	Bind();
-
-	// Copy the data into the buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+	SetDatas(indices);
 }
 
 IndexBuffer::~IndexBuffer()
@@ -29,7 +25,11 @@ void IndexBuffer::Unbind() const
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-unsigned IndexBuffer::GetNumberOfIndices() const
+void IndexBuffer::SetDatas(const std::vector<unsigned>& indices)
 {
-	return m_NumberOfIndices;
+	m_Indices = indices;
+	
+	Bind();
+	
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 }
