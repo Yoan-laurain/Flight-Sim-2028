@@ -8,16 +8,18 @@ Camera::Camera(const int width, const int height, const Vec3<float>& position)
 	, m_Height(height)
 	, m_NearPlane(BaseNearPlane)
 	, m_FarPlane(BaseFarPlane)
-	, m_PlaneMode(false)
 	, m_Fov(BaseFOV)
+	, m_Speed(BaseCameraSpeed)
+	, m_Sensitivity(60.f)
 	, m_BaseMouseX(0.0)
 	, m_BaseMouseY(0.0)
+	, m_FirstClick(true)
 
 {
 	Reset();
 }
 
-void Camera::Update(GLFWwindow* window,double deltaTime)
+void Camera::Update(GLFWwindow* window, const double deltaTime)
 {
 	Inputs(window,deltaTime);
 	UpdateMatrix();
@@ -25,7 +27,7 @@ void Camera::Update(GLFWwindow* window,double deltaTime)
 
 void Camera::Reset()
 {
-	m_Rotation = Vec3(0.f, 0.0f, -90.f);
+	m_Rotation = Vec3(-200.f, -150.0f, -130.f);
 	m_Up = Vec3(0.0f, 90.0f, 0.0f);
 	m_Speed = BaseCameraSpeed;
 	m_Sensitivity = 60.f;
@@ -38,14 +40,9 @@ void Camera::UpdateMatrix()
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window,double deltaTime)
+void Camera::Inputs(GLFWwindow* window, const double deltaTime)
 {
-	if(m_PlaneMode)
-	{
-		HandleRotation(window);
-		m_Position += m_Speed * m_Rotation * deltaTime;
-	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		// change orientation of the camera based on mouse movement
 		HandleRotation(window);

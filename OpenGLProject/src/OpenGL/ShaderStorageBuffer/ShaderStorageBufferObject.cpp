@@ -22,19 +22,19 @@ void ShaderStorageBufferObject::Unbind()
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
-void ShaderStorageBufferObject::GetData(void* data, unsigned size, unsigned offset, const unsigned index) const
+void ShaderStorageBufferObject::GetData(void* data, unsigned size, const unsigned offset, const unsigned index) const
 {
     Bind(index);
     glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data);
 }
 
-void ShaderStorageBufferObject::SetData(const void* data, const unsigned size, const unsigned index)
+void ShaderStorageBufferObject::SetData(const void* data, const unsigned size, const unsigned index) const
 {
     Bind(index);
     glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_DYNAMIC_DRAW);
 }
 
-void ShaderStorageBufferObject::SetSubData(const void* data, const unsigned size, const unsigned offset, unsigned index)
+void ShaderStorageBufferObject::SetSubData(const void* data, const unsigned size, const unsigned offset, const unsigned index) const
 {
     Bind(index);
     glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data);

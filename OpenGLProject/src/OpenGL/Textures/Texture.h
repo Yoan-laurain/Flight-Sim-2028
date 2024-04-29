@@ -13,11 +13,9 @@ class Texture
 		Texture() = default; 
 		virtual ~Texture() = default;
 
-		virtual void Bind() const;
 		void Bind(int slot) const;
+		virtual void Bind() const;
 		virtual void Unbind() const;
-
-		const char* GetType() const;
 
 		GLuint m_Slot;
 		std::string m_FilePath;
