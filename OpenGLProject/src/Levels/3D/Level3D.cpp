@@ -78,21 +78,7 @@ void Level3D::CreateGeneralSettings() const
 		if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 		{
 			Application::Get()->SetPolygoneMode();
-		}
-		//TODO: See w yoan to move this
-		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
-		MyImGui::SliderFloat("Stone Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_maxTextureNormalThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Stone Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_minTextureNormalThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Snow", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
-					terrainShader->m_snowThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
-					terrainShader->m_dirtThreshold = newValue;
-				});
+		}		
 
 		ImGui::EndTabItem();
 	}
@@ -141,6 +127,22 @@ void Level3D::CreatePerlinSettings()
 			m_PerlinModule->m_Scale = newValue;
 			OnTerrainSettingsChanged();
 		});
+
+		ImGui::SeparatorText("Textures threshold");
+		
+		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
+		MyImGui::SliderFloat("Stone Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_maxTextureNormalThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Stone Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_minTextureNormalThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Snow", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
+					terrainShader->m_snowThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
+					terrainShader->m_dirtThreshold = newValue;
+				});
 
 		ImGui::SeparatorText("Monitoring");
 
