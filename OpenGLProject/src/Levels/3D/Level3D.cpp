@@ -11,13 +11,15 @@
 #include "Terrain/Erosion/ErosionModuleGPU.h"
 #include <imgui.h>
 
+#include "OpenGL/Shader/Terrain/TerrainShader.h"
+
 Level3D::Level3D() : m_PerlinModule(nullptr), m_ErosionGPU(nullptr)
 {
 	AddModel<SkyBox,Model>(ShaderType::SKYBOX);
 	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::BASIC);
+	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::TERRAIN);
 	terrainGenerator->GetTerrain()->SendDataRender();
 	
 	UpdateImGuiModulesParameters();
@@ -76,7 +78,7 @@ void Level3D::CreateGeneralSettings() const
 		if (ImGui::Checkbox("Wireframe Mode", &Application::Get()->GetPolygoneMode()))
 		{
 			Application::Get()->SetPolygoneMode();
-		}
+		}		
 
 		ImGui::EndTabItem();
 	}
@@ -125,6 +127,22 @@ void Level3D::CreatePerlinSettings()
 			m_PerlinModule->m_Scale = newValue;
 			OnTerrainSettingsChanged();
 		});
+
+		ImGui::SeparatorText("Textures threshold");
+		
+		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
+		MyImGui::SliderFloat("Stone Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_maxTextureNormalThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Stone Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_minTextureNormalThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Snow", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
+					terrainShader->m_snowThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
+					terrainShader->m_dirtThreshold = newValue;
+				});
 
 		ImGui::SeparatorText("Monitoring");
 

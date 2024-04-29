@@ -11,6 +11,7 @@ enum class ShaderType
     HEIGHTMAP = 1,
     SKYBOX = 2,
     EROSION = 3,
+    TERRAIN  = 4
 };
 
 class Shader;

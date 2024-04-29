@@ -91,8 +91,12 @@ void TerrainModel::UpdateOrCreateNewMesh()
 {
     if (m_Meshes.empty())
     {
-        Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/Dirt.jpg", Diffuse, m_ShaderType);
-        Mesh* terrainMesh = new Mesh(m_Vertices, m_Indices, {*defaultTexture}, Mat4(1.0f));
+        
+        Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
+        Texture* rockTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/stone.jpg", Diffuse, m_ShaderType);
+        Texture* snowTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/snow.jpg", Diffuse, m_ShaderType);
+        Texture* dirtTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/Dirt.jpg", Diffuse, m_ShaderType);
+        Mesh* terrainMesh = new Mesh(m_Vertices, m_Indices, {*defaultTexture,*snowTexture,*dirtTexture,*rockTexture}, Mat4(1.0f));
         m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
     }
     else

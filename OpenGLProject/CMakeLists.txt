@@ -8,6 +8,7 @@ file(GLOB_RECURSE HEADERS
 
 file(GLOB_RECURSE SOURCES
     "${SRC_DIR}/*.cpp"
+    "${SRC_DIR}/*.shader"
 )
 
 add_executable(OpenGLProject
