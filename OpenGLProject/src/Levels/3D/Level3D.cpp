@@ -30,14 +30,14 @@ void Level3D::OnTerrainSettingsChanged()
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	terrainGenerator->UpdateTerrain();
 	
-	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::BASIC);
+	Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(terrainGenerator->GetTerrain(), ShaderType::TERRAIN);
 }
 
 void Level3D::OnImGuiRender() 
 {
 	Level::OnImGuiRender();
 	
-	ImGui::SetNextWindowSize(ImVec2(400, 400));
+	ImGui::SetNextWindowSize(ImVec2(400, 450));
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoResize);
 
