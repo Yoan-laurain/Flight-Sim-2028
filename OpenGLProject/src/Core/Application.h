@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 
+class ImGuiManager;
 class BatchRenderer;
 class Renderer;
 class ShaderManager;
@@ -46,12 +47,6 @@ class Application
         */
         void SetLinearColorSpace( bool enable );
 
-        /*
-         * Enable stencil test it allows you to create a mask for your objects
-         * Needed for outline shaders or post processing effects
-        */
-        void SetStencilTest( bool enable );
-
 		/*
 		 * Wireframe mode
 		 */
@@ -60,15 +55,14 @@ class Application
 
         int GetMaxSlotForTextures() const;
 
+		int m_WindowWidth;
+		int m_WindowHeight;
+
     private:
     
-        GLFWwindow* CreateWindow(const char* title, int height, int width);
+        GLFWwindow* CreateWindow(const char* title);
         void SetCurrentLevel(Level* level);
-
-        void DestroyImGui();
-        void InitImGui(GLFWwindow* window);
-        void OnImGuiRender() const;
-
+	
         void ApplyAppIcon() const;
 
         void UpdateDeltaTime(double& lastTime, double& deltaTime);
@@ -79,6 +73,7 @@ class Application
         std::unique_ptr<Camera> m_Camera;
         std::unique_ptr<BatchRenderer> m_BatchRenderer;
 		std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
+		std::unique_ptr<ImGuiManager> m_ImGuiManager;
 
         const char* m_AppIcon;
         int m_MaxSlotForTextures;
