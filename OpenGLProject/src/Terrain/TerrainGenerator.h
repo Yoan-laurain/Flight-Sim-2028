@@ -43,6 +43,10 @@ class TerrainGenerator
         float m_ElevationScale = 10.f;
         bool m_GenerateGPU = true;
         int m_BorderedMapSize;
+
+        double GetMinGenerationTime() const;
+        double GetMedGenerationTime() const;
+        double GetMaxGenerationTime() const;
     
     private:
         int m_subdivision;

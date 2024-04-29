@@ -16,6 +16,11 @@ class Level3D : public Level
 	private:
 		void UpdateImGuiModulesParameters();
 		void OnTerrainSettingsChanged();
+	
+		void CreateGeneralSettings() const;
+		void CreatePerlinSettings();
+		void CreateErosionSettings();
+		void CreateOverlay() const;
 
 		PerlinNoiseBaseModule* m_PerlinModule;
 		ErosionModuleGPU* m_ErosionGPU;
