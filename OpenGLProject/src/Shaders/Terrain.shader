@@ -54,13 +54,19 @@ flat in int v_IndexSpecular;
 uniform sampler2D u_Diffuse[MAX_TEXTURE_UNITS/2];
 uniform sampler2D u_Specular[MAX_TEXTURE_UNITS/2];
 
+uniform float v_minTextureNormalThreshold;
+uniform float v_maxTextureNormalThreshold;
+uniform float v_snowThreshold;
+uniform float v_dirtThreshold;
+
+
 uniform vec3 u_CamPos;
 
 float when_neq(float x, float y) {
     return float(x != y);
 }
 
-vec4 directLight(float _textureIndex)
+vec4 directLight(float _textureThreshold)
 {
 	float ambient = 1.0f;
 
@@ -74,24 +80,41 @@ vec4 directLight(float _textureIndex)
 	float specAmount = pow(max(dot(normal, halfway), 0.0f), 16);
 	float specular = specAmount * specularLight * when_neq(diffuse, 0);
 
+	
+	
 	vec4 diffuse1 = texture(u_Diffuse[0], v_TexCoord);
 	vec4 diffuse0 = texture(u_Diffuse[1], v_TexCoord);
+	vec4 diffuseSnow = texture(u_Diffuse[2], v_TexCoord);
+	vec4 diffuseDirt = texture(u_Diffuse[3], v_TexCoord);
+
 	vec4 specular1 = texture(u_Specular[0], v_TexCoord);
 	vec4 specular0 = texture(u_Specular[1], v_TexCoord);
-
+	vec4 specularSnow = texture(u_Specular[2], v_TexCoord);
+	vec4 specularDirt = texture(u_Specular[3], v_TexCoord);
+	
 	vec4 finalDiffuse;
 	vec4 finalSpecular;
+	float blendValue = 0.5;
+	
+	// Calculer une échelle basée sur la comparaison avec les seuils
+	float blendFactor = smoothstep(v_minTextureNormalThreshold, v_maxTextureNormalThreshold, _textureThreshold);
+	finalDiffuse = mix(diffuse0, diffuse1, blendFactor);
+	finalSpecular = mix(specular0, specular1, blendFactor);
 
-	if (_textureIndex > 0.9) {
-	    finalDiffuse = diffuse1;
-	    finalSpecular = specular1;
-	} else if (_textureIndex < 0.5) {
-	    finalDiffuse = diffuse0;
-	    finalSpecular = specular0;
-	} else {
-	    finalDiffuse = mix(diffuse0, diffuse1, _textureIndex);
-	    finalSpecular = mix(specular0, specular1, _textureIndex);
-	}
+	//Calcul de la neige
+	float aboveSnowThreshold = step(v_snowThreshold - blendValue, v_currentPosition.y);
+	float snowBlend = smoothstep(v_snowThreshold - blendValue, v_snowThreshold, v_currentPosition.y);
+
+	finalDiffuse = mix(finalDiffuse, mix(finalDiffuse, diffuseSnow, snowBlend), aboveSnowThreshold);
+	finalSpecular = mix(finalSpecular, mix(finalSpecular, specularSnow, snowBlend), aboveSnowThreshold);
+
+	//Calcul du sous sol
+	float belowDirtThreshold = step(v_currentPosition.y, v_dirtThreshold + blendValue);
+	float dirtBlend = smoothstep(v_dirtThreshold, v_dirtThreshold - blendValue, v_currentPosition.y);
+
+	finalDiffuse = mix(finalDiffuse, mix(finalDiffuse, diffuseDirt, dirtBlend), belowDirtThreshold);
+	finalSpecular = mix(finalSpecular, mix(finalSpecular, specularDirt, dirtBlend), belowDirtThreshold);
+	
 	return (finalDiffuse * (diffuse + ambient) + finalSpecular.r * specular) * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 

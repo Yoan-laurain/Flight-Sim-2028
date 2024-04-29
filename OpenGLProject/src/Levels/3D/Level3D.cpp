@@ -12,11 +12,13 @@
 #include "Terrain/Erosion/ErosionModuleGPU.h"
 #include <imgui.h>
 
+#include "OpenGL/Shader/Terrain/TerrainShader.h"
+
 Level3D::Level3D() : m_PerlinModule(nullptr), m_ErosionGPU(nullptr)
 {
 	AddModel<SkyBox,Model>(ShaderType::SKYBOX);
 	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
-
+	
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::TERRAIN);
 	terrainGenerator->GetTerrain()->SendDataRender();
@@ -37,6 +39,8 @@ void Level3D::OnImGuiRender() // TODO : Refactor
 	Level::OnImGuiRender();
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+	TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
+
 	if (ImGui::Checkbox("Generate with GPU",&terrainGenerator->m_GenerateGPU))
 	{
 		terrainGenerator->UpdateGenerationModules();
@@ -52,6 +56,19 @@ void Level3D::OnImGuiRender() // TODO : Refactor
 	ImGui::Text("Terrain Settings");
 	
 	ImGui::Checkbox("Randomize Seed", &m_PerlinModule->randomizeSeed);
+
+	MyImGui::SliderFloat("Texture Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+				terrainShader->m_maxTextureNormalThreshold = newValue;
+			});
+	MyImGui::SliderFloat("Texture  Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+				terrainShader->m_minTextureNormalThreshold = newValue;
+			});
+	MyImGui::SliderFloat("Snow", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
+				terrainShader->m_snowThreshold = newValue;
+			});
+	MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
+				terrainShader->m_dirtThreshold = newValue;
+			});
 	
 	MyImGui::SliderFloat("Height", terrainGenerator->m_ElevationScale, 0.0f, 100.0f, [=](const float newValue) {
 				terrainGenerator->m_ElevationScale = newValue;

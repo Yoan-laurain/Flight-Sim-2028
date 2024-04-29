@@ -4,10 +4,12 @@
 #include "../../OpenGL/Shader/SkyBox/SkyBoxShader.h"
 #include <stdexcept>
 
+#include "OpenGL/Shader/Terrain/TerrainShader.h"
+
 ShaderManager::ShaderManager()
 {
     CreateShader<BasicShader>(ShaderType::BASIC, "../../OpenGLProject/src/Shaders/Basic.shader");
-    CreateShader<BasicShader>(ShaderType::TERRAIN, "../../OpenGLProject/src/Shaders/Terrain.shader");
+    CreateShader<TerrainShader>(ShaderType::TERRAIN, "../../OpenGLProject/src/Shaders/Terrain.shader");
     CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "../../OpenGLProject/src/Shaders/Skybox.shader");
     CreateShader<Shader>(ShaderType::HEIGHTMAP, "../../OpenGLProject/src/Shaders/HeightMap.shader");
     CreateShader<Shader>(ShaderType::EROSION, "../../OpenGLProject/src/Shaders/Erosion.shader");
