@@ -25,3 +25,15 @@ bool TerrainGenerationModule::IsDirty() const
 {
     return m_isDirty;
 }
+
+double TerrainGenerationModule::GetAverageGenerationTime() const
+{
+    {
+        double sum = 0;
+        for(const auto& time : m_AverageGenerationTimeHistory)
+        {
+            sum += time;
+        }
+        return sum / m_AverageGenerationTimeHistory.size();
+    }
+}
