@@ -147,6 +147,13 @@ void Level3D::CreatePerlinSettings()
 		MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
 					terrainShader->m_dirtThreshold = newValue;
 				});
+		MyImGui::SliderFloat("Snow Blend", terrainShader->m_snowBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_snowBlendValue = newValue;
+				});
+		MyImGui::SliderFloat("Dirt Blend", terrainShader->m_dirtBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_dirtBlendValue = newValue;
+				});
+		
 
 		ImGui::SeparatorText("Monitoring");
 

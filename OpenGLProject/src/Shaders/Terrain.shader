@@ -56,8 +56,12 @@ uniform sampler2D u_Specular[MAX_TEXTURE_UNITS/2];
 
 uniform float v_minTextureNormalThreshold;
 uniform float v_maxTextureNormalThreshold;
+
 uniform float v_snowThreshold;
 uniform float v_dirtThreshold;
+
+uniform float v_snowBlendValue;
+uniform float v_dirtBlendValue;
 
 
 uniform vec3 u_CamPos;
@@ -102,15 +106,15 @@ vec4 directLight(float _textureThreshold)
 	finalSpecular = mix(specular0, specular1, blendFactor);
 
 	//Calcul de la neige
-	float aboveSnowThreshold = step(v_snowThreshold - blendValue, v_currentPosition.y);
-	float snowBlend = smoothstep(v_snowThreshold - blendValue, v_snowThreshold, v_currentPosition.y);
+	float aboveSnowThreshold = step(v_snowThreshold - v_snowBlendValue, v_currentPosition.y);
+	float snowBlend = smoothstep(v_snowThreshold - v_snowBlendValue, v_snowThreshold, v_currentPosition.y);
 
 	finalDiffuse = mix(finalDiffuse, mix(finalDiffuse, diffuseSnow, snowBlend), aboveSnowThreshold);
 	finalSpecular = mix(finalSpecular, mix(finalSpecular, specularSnow, snowBlend), aboveSnowThreshold);
 
 	//Calcul du sous sol
-	float belowDirtThreshold = step(v_currentPosition.y, v_dirtThreshold + blendValue);
-	float dirtBlend = smoothstep(v_dirtThreshold, v_dirtThreshold - blendValue, v_currentPosition.y);
+	float belowDirtThreshold = step(v_currentPosition.y, v_dirtBlendValue + blendValue);
+	float dirtBlend = smoothstep(v_dirtThreshold, v_dirtBlendValue - blendValue, v_currentPosition.y);
 
 	finalDiffuse = mix(finalDiffuse, mix(finalDiffuse, diffuseDirt, dirtBlend), belowDirtThreshold);
 	finalSpecular = mix(finalSpecular, mix(finalSpecular, specularDirt, dirtBlend), belowDirtThreshold);

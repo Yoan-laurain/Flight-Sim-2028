@@ -16,4 +16,6 @@ public:
     float m_maxTextureNormalThreshold = 0.9f;
     float m_snowThreshold = 8.f;
     float m_dirtThreshold = 2.f;
+    float m_snowBlendValue = 0.5f;
+    float m_dirtBlendValue = 0.5f;
 };
