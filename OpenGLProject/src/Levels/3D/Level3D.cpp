@@ -19,7 +19,7 @@ Level3D::Level3D() : m_PerlinModule(nullptr), m_ErosionGPU(nullptr)
 	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::TERRAIN);
+	terrainGenerator->GenerateTerrain(300.f, 300.f,ShaderType::TERRAIN);
 	terrainGenerator->GetTerrain()->SendDataRender();
 	
 	UpdateImGuiModulesParameters();
@@ -70,7 +70,7 @@ void Level3D::CreateGeneralSettings() const
 		ImGui::SeparatorText("Monitoring - All Modules");
 
 		ImGui::Text("Max : %.3f ms", terrainGenerator->GetMaxGenerationTime());
-		ImGui::Text("Med : %.3f ms", terrainGenerator->GetMedGenerationTime());
+		ImGui::Text("Avg : %.3f ms", terrainGenerator->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", terrainGenerator->GetMinGenerationTime());
 			
 		ImGui::SeparatorText("Options");
@@ -147,7 +147,7 @@ void Level3D::CreatePerlinSettings()
 		ImGui::SeparatorText("Monitoring");
 
 		ImGui::Text("Max : %.3f ms", m_PerlinModule->m_MaxGenerationTime);
-		ImGui::Text("Med : %.3f ms", m_PerlinModule->m_MedGenerationTime);
+		ImGui::Text("Avg : %.3f ms", m_PerlinModule->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", m_PerlinModule->m_MinGenerationTime);
 			
 		ImGui::EndTabItem();
@@ -183,7 +183,7 @@ void Level3D::CreateErosionSettings()
 		ImGui::SeparatorText("Monitoring");
 
 		ImGui::Text("Max : %.3f ms", m_ErosionGPU->m_MaxGenerationTime);
-		ImGui::Text("Med : %.3f ms", m_ErosionGPU->m_MedGenerationTime);
+		ImGui::Text("Avg : %.3f ms", m_ErosionGPU->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", m_ErosionGPU->m_MinGenerationTime);
 			
 		ImGui::EndTabItem();
