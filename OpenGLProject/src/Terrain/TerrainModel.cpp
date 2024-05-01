@@ -21,7 +21,7 @@ void TerrainModel::SetHeight(const std::vector<float>& heightMap)
     m_Vertices.resize(m_Subdivisions * m_Subdivisions);
     m_Indices.resize((m_Subdivisions - 1) * (m_Subdivisions - 1) * 6);
 
-    int scale = Application::Get()->GetTerrainGenerator()->GetModule<PerlinNoiseBaseModule>()->m_Scale;
+    int scale = Application::Get()->GetTerrainGenerator()->GetModule<PerlinNoiseBaseModule>()->GetScale();
 
     for (int i = 0; i < m_Subdivisions * m_Subdivisions; ++i)
     {
