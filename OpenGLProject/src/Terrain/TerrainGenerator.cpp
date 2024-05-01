@@ -17,9 +17,9 @@ TerrainGenerator::~TerrainGenerator() = default;
 
 void TerrainGenerator::GenerateTerrain(float width, int subdivisions, ShaderType shaderType)
 {
-    m_subdivision = subdivisions;
+    m_subdivision = subdivisions + 1;
     m_BorderedMapSize = m_subdivision + 2 * ErosionBrushRadius;
-    m_terrain = std::make_unique<TerrainModel>(width, subdivisions, shaderType);
+    m_terrain = std::make_unique<TerrainModel>(width, m_subdivision, shaderType);
     UpdateTerrain();
 }
 

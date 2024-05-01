@@ -18,11 +18,9 @@ TerrainModel::~TerrainModel() = default;
 
 void TerrainModel::SetHeight(const std::vector<float>& heightMap)
 {
-    m_Vertices.resize(m_Subdivisions * m_Subdivisions);
-    m_Indices.resize((m_Subdivisions - 1) * (m_Subdivisions - 1) * 6);
-
-    int scale = Application::Get()->GetTerrainGenerator()->GetModule<PerlinNoiseBaseModule>()->m_Scale;
-
+    m_Vertices.resize(heightMap.size());
+    m_Indices.resize(heightMap.size() * 6);
+    
     for (int i = 0; i < m_Subdivisions * m_Subdivisions; ++i)
     {
         int x = i % static_cast<int>(m_Subdivisions);
@@ -31,7 +29,7 @@ void TerrainModel::SetHeight(const std::vector<float>& heightMap)
         const int borderedMapIndex = (y + ErosionBrushRadius) * Application::Get()->GetTerrainGenerator()->m_BorderedMapSize + x + ErosionBrushRadius;
         const int meshMapIndex = y * static_cast<int>(m_Subdivisions) + x;
         
-        UpdateVertexProperties(meshMapIndex, x, y, heightMap, borderedMapIndex,scale);
+        UpdateVertexProperties(meshMapIndex, x, y, heightMap, borderedMapIndex);
         GenerateIndices(x, y, meshMapIndex);
     }
 
@@ -106,12 +104,12 @@ void TerrainModel::UpdateOrCreateNewMesh()
     }
 }
 
-void TerrainModel::UpdateVertexProperties(const int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex,int scale)
+void TerrainModel::UpdateVertexProperties(const int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex)
 {
     // Calculate vertex position
     const Vec2 percent = { static_cast<float>(x) / (m_Subdivisions - 1.f), static_cast<float>(y) / (m_Subdivisions - 1.f) }; 
     Vec3<float> pos = { percent.x * 2 - 1, 0, percent.y * 2 - 1 };
-    pos *= scale;
+    pos *= Application::Get()->GetTerrainGenerator()->GetModule<PerlinNoiseBaseModule>()->m_Scale;;
     pos += Vec3<float>::Up() * heightMap[borderedMapIndex] * Application::Get()->GetTerrainGenerator()->m_ElevationScale;
     
     m_Vertices[meshMapIndex].m_Position = pos;
