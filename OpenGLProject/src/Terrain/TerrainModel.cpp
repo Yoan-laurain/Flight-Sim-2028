@@ -109,7 +109,7 @@ void TerrainModel::UpdateVertexProperties(const int meshMapIndex, int x, int y, 
     // Calculate vertex position
     const Vec2 percent = { static_cast<float>(x) / (m_Subdivisions - 1.f), static_cast<float>(y) / (m_Subdivisions - 1.f) }; 
     Vec3<float> pos = { percent.x * 2 - 1, 0, percent.y * 2 - 1 };
-    pos *= Application::Get()->GetTerrainGenerator()->GetModule<PerlinNoiseBaseModule>()->m_Scale;;
+    pos *= Application::Get()->GetTerrainGenerator()->GetModule<PerlinNoiseBaseModule>()->GetScale();
     pos += Vec3<float>::Up() * heightMap[borderedMapIndex] * Application::Get()->GetTerrainGenerator()->m_ElevationScale;
     
     m_Vertices[meshMapIndex].m_Position = pos;

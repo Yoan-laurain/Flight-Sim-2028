@@ -35,10 +35,11 @@ public:
     bool randomizeSeed = false;
 
     std::vector<Vec2<int>> m_Offsets;
+    
 protected:
     float m_Persistence = .52f;
     float m_Lacunarity = 1.66f;
-    float m_Scale = 20;
+    float m_Scale = 40;
     float m_InitialScale = 2;
     int m_NumOctaves = 8;
     int m_FloatToIntMultiplier = 1000;
