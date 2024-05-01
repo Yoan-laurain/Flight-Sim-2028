@@ -20,7 +20,15 @@
 
 <br/>
 
-![image](https://github.com/Yoan-laurain/OpenGLDiscovery/assets/80961060/9bc4a0fe-9260-4293-89d1-0d28c479375a)
+## Résultat 🎉
+
+![Map](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/e5e04ea2-2812-4a98-8330-1cd3305c68d9)
+
+## Monde paramétrable 🔧
+
+![GeneralSettings](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/de6c0a7e-57da-4eb4-bb62-76b1f46832d7)
+![HeightMapSettings](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/1ffb6fe3-6989-4f21-8554-8f3aa499de5b)
+![ErosionSettings](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/4f5d4a17-d94e-489f-bc8b-5fccf77aa7af)
 
 ## Pour cloner le projet 👋
 
@@ -63,3 +71,16 @@ Voici les objectifs :
 - [Yoan-laurain](https://github.com/Yoan-laurain)
   
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://fr.linkedin.com/in/yoan-laurain-568886213)
+
+## Ressources
+
+Simplex noise : 
+
+https://en.wikipedia.org/wiki/Simplex_noise
+https://www.researchgate.net/publication/216813608_Simplex_noise_demystified
+
+Hydraulic erosion :
+
+https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
+
+https://ranmantaru.com/blog/2011/10/08/water-erosion-on-heightmap-terrain/
