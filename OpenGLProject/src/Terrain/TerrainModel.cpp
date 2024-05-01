@@ -94,8 +94,9 @@ void TerrainModel::UpdateOrCreateNewMesh()
         
         Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
         Texture* rockTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/stone.jpg", Diffuse, m_ShaderType);
-        Texture* snowTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/snow.jpg", Diffuse, m_ShaderType);
-        Texture* dirtTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/Dirt.jpg", Diffuse, m_ShaderType);
+        Texture* snowTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/snow.png", Diffuse, m_ShaderType);
+        Texture* dirtTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/dirt.png", Diffuse, m_ShaderType);
+        
         Mesh* terrainMesh = new Mesh(m_Vertices, m_Indices, {*defaultTexture,*snowTexture,*dirtTexture,*rockTexture}, Mat4(1.0f));
         m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
     }
@@ -115,8 +116,8 @@ void TerrainModel::UpdateVertexProperties(const int meshMapIndex, int x, int y, 
     pos += Vec3<float>::Up() * heightMap[borderedMapIndex] * Application::Get()->GetTerrainGenerator()->m_ElevationScale;
     
     m_Vertices[meshMapIndex].m_Position = pos;
-    // m_Vertices[meshMapIndex].m_Color = {1.0f, 1.0f, 1.0f};
-    // m_Vertices[meshMapIndex].m_TexUV = {percent.x, percent.y};
+    m_Vertices[meshMapIndex].m_Color = {1.0f, 1.0f, 1.0f};
+    m_Vertices[meshMapIndex].m_TexUV = {percent.x*10, percent.y*10};
     
     if (!m_Meshes.empty())
     {

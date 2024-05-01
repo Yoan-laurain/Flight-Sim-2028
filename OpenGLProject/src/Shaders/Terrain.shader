@@ -113,8 +113,8 @@ vec4 directLight(float _textureThreshold)
 	finalSpecular = mix(finalSpecular, mix(finalSpecular, specularSnow, snowBlend), aboveSnowThreshold);
 
 	//Calcul du sous sol
-	float belowDirtThreshold = step(v_currentPosition.y, v_dirtBlendValue + blendValue);
-	float dirtBlend = smoothstep(v_dirtThreshold, v_dirtBlendValue - blendValue, v_currentPosition.y);
+	float belowDirtThreshold = step(v_currentPosition.y, v_dirtBlendValue + v_dirtThreshold);
+	float dirtBlend = smoothstep(v_dirtThreshold, v_dirtThreshold - v_dirtBlendValue, v_currentPosition.y);
 
 	finalDiffuse = mix(finalDiffuse, mix(finalDiffuse, diffuseDirt, dirtBlend), belowDirtThreshold);
 	finalSpecular = mix(finalSpecular, mix(finalSpecular, specularDirt, dirtBlend), belowDirtThreshold);
