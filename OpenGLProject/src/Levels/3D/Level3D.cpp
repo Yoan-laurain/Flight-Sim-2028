@@ -108,27 +108,23 @@ void Level3D::CreatePerlinSettings()
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderInt("Octaves", m_PerlinModule->m_NumOctaves, 1, 8, [=](const int newValue) {
-			m_PerlinModule->m_NumOctaves = newValue;
-			m_PerlinModule->SetDirty();
+		MyImGui::SliderInt("Octaves", m_PerlinModule->GetNumOctaves(), 1, 8, [=](const int newValue) {
+			m_PerlinModule->SetNumOctaves(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderFloat("Persistence", m_PerlinModule->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
-			m_PerlinModule->m_Persistence = newValue;
-			m_PerlinModule->SetDirty();
+		MyImGui::SliderFloat("Persistence", m_PerlinModule->GetPersistance(), 0.0f, 2.0f, [=](const float newValue) {
+			m_PerlinModule->SetPersistance(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderFloat("Lacunarity", m_PerlinModule->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
-			m_PerlinModule->m_Lacunarity = newValue;
-			m_PerlinModule->SetDirty();
+		MyImGui::SliderFloat("Lacunarity", m_PerlinModule->GetLacunarity(), 0.0f, 4.0f, [=](const float newValue) {
+			m_PerlinModule->SetLacunarity(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderInt("Scale", m_PerlinModule->m_Scale, 1, 100, [=](const int newValue) {
-			m_PerlinModule->m_Scale = newValue;
-			m_PerlinModule->SetDirty();
+		MyImGui::SliderInt("Scale", m_PerlinModule->GetScale(), 1, 100, [=](const int newValue) {
+			m_PerlinModule->SetScale(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
@@ -149,27 +145,23 @@ void Level3D::CreateErosionSettings()
 	{
 		ImGui::SeparatorText("Sliders");
 			
-		MyImGui::SliderInt("Iterations", m_ErosionGPU->m_NumErosionIterations, 0, 250000, [=](const int newValue) {
-			m_ErosionGPU->m_NumErosionIterations = newValue;
-			m_ErosionGPU->SetDirty();
+		MyImGui::SliderInt("Iterations", m_ErosionGPU->GetNumErosionIterations(), 0, 250000, [=](const int newValue) {
+			m_ErosionGPU->SetNumErosionIterations(newValue);
 			OnTerrainSettingsChanged();
 		});
 			
-		MyImGui::SliderFloat("Sediment Capacity Factor", m_ErosionGPU->m_SedimentCapacityFactor, 0.0f, 10.0f, [=](const float newValue) {
-			m_ErosionGPU->m_SedimentCapacityFactor = newValue;
-			m_ErosionGPU->SetDirty();
+		MyImGui::SliderFloat("Sediment Capacity Factor", m_ErosionGPU->GetSedimentCapacityFactor(), 0.0f, 10.0f, [=](const float newValue) {
+			m_ErosionGPU->SetSedimentCapacityFactor(newValue);
 			OnTerrainSettingsChanged();
 		});
 			
-		MyImGui::SliderFloat("Evaporate Speed", m_ErosionGPU->m_EvaporateSpeed, 0.01f, 1.0f, [=](const float newValue) {
-			m_ErosionGPU->m_EvaporateSpeed = newValue;
-			m_ErosionGPU->SetDirty();
+		MyImGui::SliderFloat("Evaporate Speed", m_ErosionGPU->GetEvaporateSpeed(), 0.01f, 1.0f, [=](const float newValue) {
+			m_ErosionGPU->SetEvaporateSpeed(newValue);
 			OnTerrainSettingsChanged();
 		});
 			
-		MyImGui::SliderFloat("Inertia", m_ErosionGPU->m_Inertia, 0.0f, 0.2f, [=](const float newValue) {
-			m_ErosionGPU->m_Inertia = newValue;
-			m_ErosionGPU->SetDirty();
+		MyImGui::SliderFloat("Inertia", m_ErosionGPU->GetInertia(), 0.0f, 0.2f, [=](const float newValue) {
+			m_ErosionGPU->SetInertia(newValue);
 			OnTerrainSettingsChanged();
 		});
 
