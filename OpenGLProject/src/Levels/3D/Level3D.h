@@ -20,6 +20,7 @@ class Level3D : public Level
 		void CreateGeneralSettings() const;
 		void CreatePerlinSettings();
 		void CreateErosionSettings();
+		void CreateTerrainShaderSettings();
 		void CreateOverlay() const;
 
 		PerlinNoiseBaseModule* m_PerlinModule;
