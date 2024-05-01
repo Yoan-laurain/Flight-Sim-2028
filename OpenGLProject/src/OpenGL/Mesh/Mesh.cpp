@@ -4,27 +4,27 @@
 #include "OpenGL/Textures/Texture.h"
 #include "OpenGL/VertexBuffer/VertexBuffer.h"
 #include "Config.h"
+#include "Core/Application.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const Mat4<float>& matrix)
 	: m_Transform(Vec3(0.0f) )
 	, m_Rotation( Quaternion(1.0f, 0.0f, 0.0f, 0.0f) )
 	, m_Scale(Vec3(1.0f) )
 	, m_Matrix(matrix)
-	, m_TriangleCount(0)
 	, m_Vertices(std::move(vertices))
 	, m_Indices(indices)
 	, m_Textures(std::move(textures))
 {
-	m_TriangleCount = static_cast<int>(indices.size()) / 3;
+	Application::Get()->m_TriangleCount += indices.size() / 3;
 	
 	FillTexturesArrays();
 }
 
-Mesh::Mesh(const Mesh&): m_TriangleCount(0)
+Mesh::Mesh(const Mesh&)
 {
 }
 
-Mesh::Mesh() : m_TriangleCount(0) {}
+Mesh::Mesh()  {}
 
 Mesh::~Mesh() = default;
 

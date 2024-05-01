@@ -11,6 +11,7 @@ Model::Model(const ShaderType shaderType)
 	, m_Translation(Vec3<float>(0))
 	, m_Scale(Vec3<float>(1))
 {
+	Application::Get()->m_ModelCount++;
 }
 
 Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
@@ -19,6 +20,7 @@ Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 	, m_Translation(Vec3(0.0f))
 	, m_Scale(Vec3(1.0f))
 {
+	Application::Get()->m_ModelCount++;
 	for (const auto mesh : meshes)
 	{
 		m_Meshes.emplace_back(std::unique_ptr<Mesh>(mesh));
@@ -28,18 +30,6 @@ Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 }
 
 Model::~Model() = default;
-
-int Model::GetNumberOfTriangles() const
-{
-	int numTriangles = 0;
-	
-	for (const auto& Mesh : m_Meshes)
-	{
-		numTriangles += Mesh->m_TriangleCount;
-	}
-
-	return numTriangles;
-}
 
 void Model::Update()
 {

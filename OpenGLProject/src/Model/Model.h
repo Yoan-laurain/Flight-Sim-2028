@@ -15,8 +15,6 @@ class Model
 		Model(const std::vector<Mesh*>& meshes, ShaderType shaderType);
 		virtual ~Model();
 
-		int GetNumberOfTriangles() const;
-
 		/*
 		 * Update all the meshes in the model
 		 * Rotate, translate, and scale as the model values
