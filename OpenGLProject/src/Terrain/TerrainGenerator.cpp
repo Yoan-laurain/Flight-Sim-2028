@@ -36,10 +36,10 @@ void TerrainGenerator::UpdateTerrain() const
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-        module->m_MoyGenerationTimeHistory.push_back(duration);
+        module->m_AverageGenerationTimeHistory.push_back(duration);
 
         module->m_MinGenerationTime = (duration < module->m_MinGenerationTime) ? duration : module->m_MinGenerationTime;
-        module->m_MoyGenerationTime = module->GetMoyGenerationTime();
+        module->m_AverageGenerationTime = module->GetAverageGenerationTime();
         module->m_MaxGenerationTime = (duration > module->m_MaxGenerationTime) ? duration : module->m_MaxGenerationTime;
     }
     
@@ -77,12 +77,12 @@ double TerrainGenerator::GetMinGenerationTime() const
     return minTime;
 }
 
-double TerrainGenerator::GetMoyGenerationTime() const
+double TerrainGenerator::GetMAverageGenerationTime() const
 {
     double medTime = 0;
     for(const auto& module : m_modules)
     {
-        module->m_MoyGenerationTime = module->GetMoyGenerationTime();
+        module->m_AverageGenerationTime = module->GetAverageGenerationTime();
     }
     return medTime / m_modules.size();
 }
