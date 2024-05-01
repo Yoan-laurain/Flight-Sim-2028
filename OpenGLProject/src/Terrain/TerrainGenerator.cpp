@@ -26,12 +26,18 @@ void TerrainGenerator::GenerateTerrain(float width, int subdivisions, ShaderType
 void TerrainGenerator::UpdateTerrain() const
 {
     std::vector<float> heightMap(m_subdivision*m_subdivision);
-    
+
+    bool isPreviousModuleDirty = false;
     for(const auto& module : m_modules)
     {
         auto start = std::chrono::high_resolution_clock::now();
         
-        module->Process(heightMap);
+        if(isPreviousModuleDirty)
+        {
+            module->SetDirty();
+        }
+        isPreviousModuleDirty = module->IsDirty();
+        module->Generate(heightMap);
         
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
