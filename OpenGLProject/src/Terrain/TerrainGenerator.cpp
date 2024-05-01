@@ -77,7 +77,7 @@ double TerrainGenerator::GetMinGenerationTime() const
     return minTime;
 }
 
-double TerrainGenerator::GetMAverageGenerationTime() const
+double TerrainGenerator::GetAverageGenerationTime() const
 {
     double medTime = 0;
     for(const auto& module : m_modules)

@@ -70,7 +70,7 @@ void Level3D::CreateGeneralSettings() const
 		ImGui::SeparatorText("Monitoring - All Modules");
 
 		ImGui::Text("Max : %.3f ms", terrainGenerator->GetMaxGenerationTime());
-		ImGui::Text("Avg : %.3f ms", terrainGenerator->GetMAverageGenerationTime());
+		ImGui::Text("Avg : %.3f ms", terrainGenerator->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", terrainGenerator->GetMinGenerationTime());
 			
 		ImGui::SeparatorText("Options");
