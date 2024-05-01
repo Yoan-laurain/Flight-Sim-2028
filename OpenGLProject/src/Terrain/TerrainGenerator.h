@@ -45,7 +45,7 @@ class TerrainGenerator
         int m_BorderedMapSize;
 
         double GetMinGenerationTime() const;
-        double GetMedGenerationTime() const;
+        double GetMoyGenerationTime() const;
         double GetMaxGenerationTime() const;
     
     private:

@@ -70,7 +70,7 @@ void Level3D::CreateGeneralSettings() const
 		ImGui::SeparatorText("Monitoring - All Modules");
 
 		ImGui::Text("Max : %.3f ms", terrainGenerator->GetMaxGenerationTime());
-		ImGui::Text("Med : %.3f ms", terrainGenerator->GetMedGenerationTime());
+		ImGui::Text("Med : %.3f ms", terrainGenerator->GetMoyGenerationTime());
 		ImGui::Text("Min : %.3f ms", terrainGenerator->GetMinGenerationTime());
 			
 		ImGui::SeparatorText("Options");
@@ -147,7 +147,7 @@ void Level3D::CreatePerlinSettings()
 		ImGui::SeparatorText("Monitoring");
 
 		ImGui::Text("Max : %.3f ms", m_PerlinModule->m_MaxGenerationTime);
-		ImGui::Text("Med : %.3f ms", m_PerlinModule->m_MedGenerationTime);
+		ImGui::Text("Moy : %.3f ms", m_PerlinModule->m_MoyGenerationTime);
 		ImGui::Text("Min : %.3f ms", m_PerlinModule->m_MinGenerationTime);
 			
 		ImGui::EndTabItem();
@@ -183,7 +183,7 @@ void Level3D::CreateErosionSettings()
 		ImGui::SeparatorText("Monitoring");
 
 		ImGui::Text("Max : %.3f ms", m_ErosionGPU->m_MaxGenerationTime);
-		ImGui::Text("Med : %.3f ms", m_ErosionGPU->m_MedGenerationTime);
+		ImGui::Text("Med : %.3f ms", m_ErosionGPU->m_MoyGenerationTime);
 		ImGui::Text("Min : %.3f ms", m_ErosionGPU->m_MinGenerationTime);
 			
 		ImGui::EndTabItem();

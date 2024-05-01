@@ -4,8 +4,6 @@
 #include "../Managers/BatchRenderer/BatchRenderer.h"
 #include "../Managers/ModelLoader/ModelLoader.h"
 
-#include <imgui.h>
-
 Level::Level() = default;
 
 Level::~Level() = default;
