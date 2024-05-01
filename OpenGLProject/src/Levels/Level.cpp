@@ -26,7 +26,6 @@ void Level::OnImGuiRender()
 
 void Level::BeginPlay()
 {
-	UpdateTrianglesCount();
 }
 
 Model* Level::AddModel(const char* file, const ShaderType shaderType)
@@ -35,12 +34,4 @@ Model* Level::AddModel(const char* file, const ShaderType shaderType)
 	
 	m_Models.push_back( std::unique_ptr<Model>(loader.m_Model.release()) );
 	return m_Models.back().get();
-}
-
-void Level::UpdateTrianglesCount()
-{
-	for (auto& shape : m_Models)
-	{
-		m_TriangleCount += shape.get()->GetNumberOfTriangles();
-	}
 }

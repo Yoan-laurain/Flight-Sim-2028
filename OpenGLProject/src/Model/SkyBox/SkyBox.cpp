@@ -2,6 +2,7 @@
 #include "../../OpenGL/VertexBuffer/VertexBuffer.h"
 #include "../../OpenGL/Textures/CubeMap/CubeMapTexture.h"
 #include "../../Config.h"
+#include "Core/Application.h"
 
 SkyBox::SkyBox()
 {
@@ -56,6 +57,7 @@ SkyBox::SkyBox()
 
     m_Vertices = vertices;
     m_Indices = indices;
+    Application::Get()->m_TriangleCount += indices.size() / 3;
 
     m_Matrix = Mat4(1.0f);
 }

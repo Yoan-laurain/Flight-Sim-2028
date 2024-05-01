@@ -21,7 +21,6 @@ class Mesh
 		Quaternion<float> m_Rotation;
 		Vec3<float> m_Scale;
 		Mat4<float> m_Matrix;
-		int m_TriangleCount;
 
 		std::vector<Vertex> m_Vertices;
 		std::vector<unsigned int> m_Indices;

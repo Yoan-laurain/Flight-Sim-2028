@@ -64,8 +64,8 @@ void Level3D::CreateGeneralSettings() const
 		ImGui::SeparatorText("Monitoring");
 			
 		ImGui::Text("Draws: %d", m_CountDraws);
-		ImGui::Text("Triangles: %d", m_TriangleCount);
-		ImGui::Text("Number of models: %llu", m_Models.size());
+		ImGui::Text("Triangles: %d", Application::Get()->m_TriangleCount);
+		ImGui::Text("Number of models: %llu", Application::Get()->m_ModelCount);
 
 		ImGui::SeparatorText("Monitoring - All Modules");
 

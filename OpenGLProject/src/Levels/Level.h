@@ -30,11 +30,7 @@ class Level
 			return model;
 		}
 
-	private:
-		void UpdateTrianglesCount(); 
-
 	protected:
 		int m_CountDraws = 0;
-		int m_TriangleCount = 0;
 		std::vector<std::unique_ptr<Model>> m_Models;
 };

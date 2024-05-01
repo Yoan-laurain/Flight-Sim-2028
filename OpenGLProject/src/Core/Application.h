@@ -57,6 +57,8 @@ class Application
 
 		int m_WindowWidth;
 		int m_WindowHeight;
+		int m_TriangleCount = 0;
+		int m_ModelCount = 0;
 
     private:
     
