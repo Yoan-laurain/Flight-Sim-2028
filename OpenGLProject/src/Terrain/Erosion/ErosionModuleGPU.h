@@ -19,13 +19,26 @@ class ErosionModuleGPU : public TerrainGenerationModule
         /* Inherited via TerrainGenerationModule */
     
         void Erode(std::vector<float>& heighmap);
+
+
+        int GetNumErosionIterations() const;
+        float GetSedimentCapacityFactor() const;
+        float GetEvaporateSpeed() const;
+        float GetInertia() const;
+    
+        void SetNumErosionIterations(int numIterations);
+        void SetSedimentCapacityFactor(float factor);
+        void SetEvaporateSpeed(float speed);
+        void SetInertia(float inertia);
+        
+
+    private:
     
         int m_NumErosionIterations = 200000;
         float m_SedimentCapacityFactor = 5.32f;
         float m_EvaporateSpeed = .014f;
         float m_Inertia = 0.04f;
-
-    private:
+    
         void CreateBrushes();
         void GenerateRandomIndicesForDropletPlacement() const;
         void SetErosionShaderUniforms() const;

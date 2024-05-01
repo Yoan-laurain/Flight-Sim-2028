@@ -26,18 +26,26 @@ void TerrainGenerator::GenerateTerrain(float width, int subdivisions, ShaderType
 void TerrainGenerator::UpdateTerrain() const
 {
     std::vector<float> heightMap(m_subdivision*m_subdivision);
-    
+
+    bool isPreviousModuleDirty = false;
     for(const auto& module : m_modules)
     {
         auto start = std::chrono::high_resolution_clock::now();
         
-        module->Process(heightMap);
+        if(isPreviousModuleDirty)
+        {
+            module->SetDirty();
+        }
+        isPreviousModuleDirty = module->IsDirty();
+        module->Generate(heightMap);
         
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
+        module->m_AverageGenerationTimeHistory.push_back(duration);
+
         module->m_MinGenerationTime = (duration < module->m_MinGenerationTime) ? duration : module->m_MinGenerationTime;
-        module->m_MedGenerationTime = module->m_MedGenerationTime > 0 ? (module->m_MedGenerationTime + duration) / 2 : duration;
+        module->m_AverageGenerationTime = module->GetAverageGenerationTime();
         module->m_MaxGenerationTime = (duration > module->m_MaxGenerationTime) ? duration : module->m_MaxGenerationTime;
     }
     
@@ -75,12 +83,12 @@ double TerrainGenerator::GetMinGenerationTime() const
     return minTime;
 }
 
-double TerrainGenerator::GetMedGenerationTime() const
+double TerrainGenerator::GetAverageGenerationTime() const
 {
     double medTime = 0;
     for(const auto& module : m_modules)
     {
-        medTime += module->m_MedGenerationTime;
+        module->m_AverageGenerationTime = module->GetAverageGenerationTime();
     }
     return medTime / m_modules.size();
 }

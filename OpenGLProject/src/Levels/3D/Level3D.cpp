@@ -19,7 +19,7 @@ Level3D::Level3D() : m_PerlinModule(nullptr), m_ErosionGPU(nullptr)
 	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
-	terrainGenerator->GenerateTerrain(300.f, 500.f,ShaderType::TERRAIN);
+	terrainGenerator->GenerateTerrain(300.f, 300.f,ShaderType::TERRAIN);
 	terrainGenerator->GetTerrain()->SendDataRender();
 	
 	UpdateImGuiModulesParameters();
@@ -46,7 +46,7 @@ void Level3D::OnImGuiRender()
 		CreateGeneralSettings();
 		CreatePerlinSettings();
 		CreateErosionSettings();
-
+		CreateTerrainShaderSettings();
 		ImGui::EndTabBar();
 	}
 
@@ -70,7 +70,7 @@ void Level3D::CreateGeneralSettings() const
 		ImGui::SeparatorText("Monitoring - All Modules");
 
 		ImGui::Text("Max : %.3f ms", terrainGenerator->GetMaxGenerationTime());
-		ImGui::Text("Med : %.3f ms", terrainGenerator->GetMedGenerationTime());
+		ImGui::Text("Avg : %.3f ms", terrainGenerator->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", terrainGenerator->GetMinGenerationTime());
 			
 		ImGui::SeparatorText("Options");
@@ -108,46 +108,31 @@ void Level3D::CreatePerlinSettings()
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderInt("Octaves", m_PerlinModule->m_NumOctaves, 1, 8, [=](const int newValue) {
-			m_PerlinModule->m_NumOctaves = newValue;
+		MyImGui::SliderInt("Octaves", m_PerlinModule->GetNumOctaves(), 1, 8, [=](const int newValue) {
+			m_PerlinModule->SetNumOctaves(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderFloat("Persistence", m_PerlinModule->m_Persistence, 0.0f, 2.0f, [=](const float newValue) {
-			m_PerlinModule->m_Persistence = newValue;
+		MyImGui::SliderFloat("Persistence", m_PerlinModule->GetPersistance(), 0.0f, 2.0f, [=](const float newValue) {
+			m_PerlinModule->SetPersistance(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderFloat("Lacunarity", m_PerlinModule->m_Lacunarity, 0.0f, 4.0f, [=](const float newValue) {
-			m_PerlinModule->m_Lacunarity = newValue;
+		MyImGui::SliderFloat("Lacunarity", m_PerlinModule->GetLacunarity(), 0.0f, 4.0f, [=](const float newValue) {
+			m_PerlinModule->SetLacunarity(newValue);
 			OnTerrainSettingsChanged();
 		});
 		
-		MyImGui::SliderInt("Scale", m_PerlinModule->m_Scale, 1, 100, [=](const int newValue) {
-			m_PerlinModule->m_Scale = newValue;
+		MyImGui::SliderInt("Scale", m_PerlinModule->GetScale(), 1, 100, [=](const int newValue) {
+			m_PerlinModule->SetScale(newValue);
 			OnTerrainSettingsChanged();
 		});
-
-		ImGui::SeparatorText("Textures threshold");
 		
-		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
-		MyImGui::SliderFloat("Stone Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_maxTextureNormalThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Stone Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_minTextureNormalThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Snow", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
-					terrainShader->m_snowThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
-					terrainShader->m_dirtThreshold = newValue;
-				});
 
 		ImGui::SeparatorText("Monitoring");
 
 		ImGui::Text("Max : %.3f ms", m_PerlinModule->m_MaxGenerationTime);
-		ImGui::Text("Med : %.3f ms", m_PerlinModule->m_MedGenerationTime);
+		ImGui::Text("Avg : %.3f ms", m_PerlinModule->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", m_PerlinModule->m_MinGenerationTime);
 			
 		ImGui::EndTabItem();
@@ -160,32 +145,64 @@ void Level3D::CreateErosionSettings()
 	{
 		ImGui::SeparatorText("Sliders");
 			
-		MyImGui::SliderInt("Iterations", m_ErosionGPU->m_NumErosionIterations, 0, 250000, [=](const int newValue) {
-			m_ErosionGPU->m_NumErosionIterations = newValue;
+		MyImGui::SliderInt("Iterations", m_ErosionGPU->GetNumErosionIterations(), 0, 250000, [=](const int newValue) {
+			m_ErosionGPU->SetNumErosionIterations(newValue);
 			OnTerrainSettingsChanged();
 		});
 			
-		MyImGui::SliderFloat("Sediment Capacity Factor", m_ErosionGPU->m_SedimentCapacityFactor, 0.0f, 10.0f, [=](const float newValue) {
-			m_ErosionGPU->m_SedimentCapacityFactor = newValue;
+		MyImGui::SliderFloat("Sediment Capacity Factor", m_ErosionGPU->GetSedimentCapacityFactor(), 0.0f, 10.0f, [=](const float newValue) {
+			m_ErosionGPU->SetSedimentCapacityFactor(newValue);
 			OnTerrainSettingsChanged();
 		});
 			
-		MyImGui::SliderFloat("Evaporate Speed", m_ErosionGPU->m_EvaporateSpeed, 0.01f, 1.0f, [=](const float newValue) {
-			m_ErosionGPU->m_EvaporateSpeed = newValue;
+		MyImGui::SliderFloat("Evaporate Speed", m_ErosionGPU->GetEvaporateSpeed(), 0.01f, 1.0f, [=](const float newValue) {
+			m_ErosionGPU->SetEvaporateSpeed(newValue);
 			OnTerrainSettingsChanged();
 		});
 			
-		MyImGui::SliderFloat("Inertia", m_ErosionGPU->m_Inertia, 0.0f, 0.2f, [=](const float newValue) {
-			m_ErosionGPU->m_Inertia = newValue;
+		MyImGui::SliderFloat("Inertia", m_ErosionGPU->GetInertia(), 0.0f, 0.2f, [=](const float newValue) {
+			m_ErosionGPU->SetInertia(newValue);
 			OnTerrainSettingsChanged();
 		});
 
 		ImGui::SeparatorText("Monitoring");
 
 		ImGui::Text("Max : %.3f ms", m_ErosionGPU->m_MaxGenerationTime);
-		ImGui::Text("Med : %.3f ms", m_ErosionGPU->m_MedGenerationTime);
+		ImGui::Text("Avg : %.3f ms", m_ErosionGPU->GetAverageGenerationTime());
 		ImGui::Text("Min : %.3f ms", m_ErosionGPU->m_MinGenerationTime);
 			
+		ImGui::EndTabItem();
+	}
+}
+
+void Level3D::CreateTerrainShaderSettings()
+{
+	if (ImGui::BeginTabItem("Terrain Shader"))
+	{
+		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
+
+		ImGui::SeparatorText("Grass > Stone Thresholds");
+		MyImGui::SliderFloat("Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_maxTextureNormalThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_minTextureNormalThreshold = newValue;
+				});
+		ImGui::SeparatorText("Snow");
+		MyImGui::SliderFloat("Snow heigh", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
+					terrainShader->m_snowThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Snow Blend", terrainShader->m_snowBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_snowBlendValue = newValue;
+				});
+		ImGui::SeparatorText("Low Dirt");
+		MyImGui::SliderFloat("Dirt heigh", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
+					terrainShader->m_dirtThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Dirt Blend", terrainShader->m_dirtBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_dirtBlendValue = newValue;
+				});
+
 		ImGui::EndTabItem();
 	}
 }
