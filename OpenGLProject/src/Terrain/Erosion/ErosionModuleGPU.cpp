@@ -36,6 +36,66 @@ void ErosionModuleGPU::Erode(std::vector<float>& heighmap)
     UnBind();
 }
 
+int ErosionModuleGPU::GetNumErosionIterations() const
+{
+    return m_NumErosionIterations;
+}
+
+float ErosionModuleGPU::GetSedimentCapacityFactor() const
+{
+    return m_SedimentCapacityFactor;
+}
+
+float ErosionModuleGPU::GetEvaporateSpeed() const
+{
+    return m_EvaporateSpeed;
+}
+
+float ErosionModuleGPU::GetInertia() const
+{
+    return m_Inertia;
+}
+
+void ErosionModuleGPU::SetNumErosionIterations(int numIterations)
+{
+    if(m_NumErosionIterations == numIterations)
+    {
+        return;
+    }
+    m_NumErosionIterations = numIterations;
+    SetDirty();
+}
+
+void ErosionModuleGPU::SetSedimentCapacityFactor(float factor)
+{
+    if(m_SedimentCapacityFactor == factor)
+    {
+        return;
+    }
+    m_SedimentCapacityFactor = factor;
+    SetDirty();
+}
+
+void ErosionModuleGPU::SetEvaporateSpeed(float speed)
+{
+    if(m_EvaporateSpeed == speed)
+    {
+        return;
+    }
+    m_EvaporateSpeed = speed;
+    SetDirty();
+}
+
+void ErosionModuleGPU::SetInertia(float inertia)
+{
+    if(m_Inertia == inertia)
+    {
+        return;
+    }
+    m_Inertia = inertia;
+    SetDirty();
+}
+
 void ErosionModuleGPU::Process(std::vector<float>& heighmap)
 {
     Erode(heighmap);
