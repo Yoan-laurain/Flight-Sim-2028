@@ -46,7 +46,7 @@ void Level3D::OnImGuiRender()
 		CreateGeneralSettings();
 		CreatePerlinSettings();
 		CreateErosionSettings();
-
+		CreateTerrainShaderSettings();
 		ImGui::EndTabBar();
 	}
 
@@ -131,28 +131,6 @@ void Level3D::CreatePerlinSettings()
 			m_PerlinModule->SetDirty();
 			OnTerrainSettingsChanged();
 		});
-
-		ImGui::SeparatorText("Textures threshold");
-		
-		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
-		MyImGui::SliderFloat("Stone Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_maxTextureNormalThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Stone Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_minTextureNormalThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Snow", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
-					terrainShader->m_snowThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Dirt", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
-					terrainShader->m_dirtThreshold = newValue;
-				});
-		MyImGui::SliderFloat("Snow Blend", terrainShader->m_snowBlendValue, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_snowBlendValue = newValue;
-				});
-		MyImGui::SliderFloat("Dirt Blend", terrainShader->m_dirtBlendValue, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_dirtBlendValue = newValue;
-				});
 		
 
 		ImGui::SeparatorText("Monitoring");
@@ -201,6 +179,38 @@ void Level3D::CreateErosionSettings()
 		ImGui::Text("Med : %.3f ms", m_ErosionGPU->m_MedGenerationTime);
 		ImGui::Text("Min : %.3f ms", m_ErosionGPU->m_MinGenerationTime);
 			
+		ImGui::EndTabItem();
+	}
+}
+
+void Level3D::CreateTerrainShaderSettings()
+{
+	if (ImGui::BeginTabItem("Terrain Shader"))
+	{
+		TerrainShader* terrainShader = static_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
+
+		ImGui::SeparatorText("Grass > Stone Thresholds");
+		MyImGui::SliderFloat("Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_maxTextureNormalThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_minTextureNormalThreshold = newValue;
+				});
+		ImGui::SeparatorText("Snow");
+		MyImGui::SliderFloat("Snow heigh", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
+					terrainShader->m_snowThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Snow Blend", terrainShader->m_snowBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_snowBlendValue = newValue;
+				});
+		ImGui::SeparatorText("Low Dirt");
+		MyImGui::SliderFloat("Dirt heigh", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
+					terrainShader->m_dirtThreshold = newValue;
+				});
+		MyImGui::SliderFloat("Dirt Blend", terrainShader->m_dirtBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_dirtBlendValue = newValue;
+				});
+
 		ImGui::EndTabItem();
 	}
 }
