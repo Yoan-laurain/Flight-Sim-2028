@@ -40,7 +40,7 @@ class TerrainGenerator
         TerrainModel* GetTerrain() const;
         int GetSubdivisions() const;
 
-        float m_ElevationScale = 10.f;
+        float m_ElevationScale = 20.f;
         bool m_GenerateGPU = true;
         int m_BorderedMapSize;
 

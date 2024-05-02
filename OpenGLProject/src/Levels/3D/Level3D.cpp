@@ -16,7 +16,24 @@
 Level3D::Level3D() : m_PerlinModule(nullptr), m_ErosionGPU(nullptr)
 {
 	AddModel<SkyBox,Model>(ShaderType::SKYBOX);
-	AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+
+	int numberOfPlanes = 10;
+
+	for (int i = 0; i < numberOfPlanes; i++)
+	{
+		Model* plane =  AddModel("res/models/airplane/scene.gltf", ShaderType::BASIC);
+		
+		int rndX = rand() % 70 - 35;
+		int rndY = rand() % 25 + 25;
+		int rndZ = rand() % 70 - 35;
+
+		int rotationX = rand() % 45;
+		int rotationY = rand() % 360;
+		int rotationZ = rand() % 45;
+		
+		plane->SetTranslation( Vec3<float>(rndX, rndY, rndZ));
+		plane->SetRotation( Vec3<float>(rotationX, rotationY, rotationZ));
+	}
 
 	TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
 	terrainGenerator->GenerateTerrain(300.f, 300.f,ShaderType::TERRAIN);
