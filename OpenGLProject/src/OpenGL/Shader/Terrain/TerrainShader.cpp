@@ -4,7 +4,15 @@
 
 #include <iostream>
 
-TerrainShader::TerrainShader(const std::string& filepath) : Shader(filepath)
+TerrainShader::TerrainShader(const std::string& filepath)
+    : Shader(filepath)
+    , m_minTextureNormalThreshold(0.7f)
+    , m_maxTextureNormalThreshold(0.9f)
+    , m_snowThreshold(15.4f)
+    , m_dirtThreshold(2.f)
+    , m_snowBlendValue(0.5f)
+    , m_dirtBlendValue(0.5f)
+    
 {
 }
 

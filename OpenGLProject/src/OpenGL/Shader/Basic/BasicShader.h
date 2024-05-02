@@ -5,7 +5,7 @@
 class BasicShader : public Shader
 {
 	public:
-		BasicShader(const std::string& filepath);
+		explicit BasicShader(const std::string& filepath);
 		~BasicShader() override = default;
 
 		/* inherited from Shader */

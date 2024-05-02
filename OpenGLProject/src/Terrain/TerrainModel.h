@@ -23,6 +23,6 @@ class TerrainModel : public Model
         void GenerateIndices(int x, int y, int meshMapIndex);
         void UpdateVertexProperties(int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex);
 
-        std::vector<Vertex> m_Vertices;
-        std::vector<unsigned int> m_Indices;
+        std::vector<Vertex> m_vertices;
+        std::vector<unsigned int> m_indices;
 };

@@ -3,7 +3,6 @@
 #include "../../Library/coreMinimal.h"
 #include <string>
 #include <unordered_map>
-#include <GL/glew.h>
 
 struct ShaderProgramSource
 {
@@ -15,8 +14,7 @@ struct ShaderProgramSource
 class Shader
 {
 	public:
-
-		Shader( const std::string& filepath );
+		explicit Shader( const std::string& filepath );
 		virtual ~Shader();
 		
 		virtual void OnBeforeDraw();
@@ -39,7 +37,7 @@ class Shader
 	
 	private:
 		
-		std::unordered_map<std::string, int> m_UniformLocationCache;
+		std::unordered_map<std::string, int> m_uniformLocationCache;
 
 		void SetShader(const std::string& filepath);
 		unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
@@ -47,5 +45,5 @@ class Shader
 		unsigned int CompileShader(unsigned int type, const std::string& source);
 		
 		ShaderProgramSource ParseShader(const std::string& filepath) const;
-		void HandleLinkError(GLuint Program);
+		void HandleLinkError(int Program);
 };

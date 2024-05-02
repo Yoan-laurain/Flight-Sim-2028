@@ -4,6 +4,12 @@
 #include <unordered_map>
 #include <string>
 
+#define BASIC_SHADER_PATH "../../OpenGLProject/src/Shaders/Basic.shader"
+#define TERRAIN_SHADER_PATH "../../OpenGLProject/src/Shaders/Terrain.shader"
+#define SKYBOX_SHADER_PATH "../../OpenGLProject/src/Shaders/Skybox.shader"
+#define HEIGHTMAP_SHADER_PATH "../../OpenGLProject/src/Shaders/HeightMap.shader"
+#define EROSION_SHADER_PATH "../../OpenGLProject/src/Shaders/Erosion.shader"
+
 enum class ShaderType
 {
     NONE = -1,
@@ -37,7 +43,7 @@ class ShaderManager
         Shader* GetShader(ShaderType shaderType);
 
     private:
-        std::unordered_map<ShaderType, std::unique_ptr<Shader>> m_Shaders;
+        std::unordered_map<ShaderType, std::unique_ptr<Shader>> m_shaders;
     
         void RegisterShader(ShaderType shaderType, Shader* shader);
 };

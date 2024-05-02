@@ -8,9 +8,15 @@
 #include "Erosion/ErosionModuleGPU.h"
 #include <chrono>
 
-TerrainGenerator::TerrainGenerator() : m_subdivision(0)
+#include "Core/Application.h"
+#include "Managers/BatchRenderer/BatchRenderer.h"
+
+TerrainGenerator::TerrainGenerator()
+    : m_subdivision(0)
+    , m_isInitialized(false)
 {
-    UpdateGenerationModules();
+    m_modules.emplace_back(std::make_unique<PerlinNoiseModuleGPU>());
+    m_modules.emplace_back( std::make_unique<ErosionModuleGPU>());
 }
 
 TerrainGenerator::~TerrainGenerator() = default;
@@ -23,7 +29,7 @@ void TerrainGenerator::GenerateTerrain(float width, int subdivisions, ShaderType
     UpdateTerrain();
 }
 
-void TerrainGenerator::UpdateTerrain() const
+void TerrainGenerator::UpdateTerrain()
 {
     std::vector<float> heightMap(m_subdivision*m_subdivision);
 
@@ -50,6 +56,15 @@ void TerrainGenerator::UpdateTerrain() const
     }
     
     m_terrain->SetHeight(heightMap);
+
+    if(!m_isInitialized)
+    {
+        m_terrain->SendDataRender();
+        m_isInitialized = true;
+        return;
+    }
+    
+    Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(m_terrain.get(),m_terrain->m_ShaderType);
 }
 
 void TerrainGenerator::UpdateGenerationModules()
@@ -66,6 +81,8 @@ void TerrainGenerator::UpdateGenerationModules()
     }
 
     m_modules.emplace_back( std::make_unique<ErosionModuleGPU>());
+
+    UpdateTerrain();
 }
 
 int TerrainGenerator::GetSubdivisions() const

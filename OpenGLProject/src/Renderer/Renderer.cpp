@@ -1,8 +1,8 @@
 #include "Renderer.h"
-#include "../OpenGL/VertexArray/VertexArray.h"
-#include "../OpenGL/IndexBuffer/IndexBuffer.h"
-#include "../OpenGL/Shader/Shader.h"
-#include "../Config.h"
+#include "OpenGL/VertexArray/VertexArray.h"
+#include "OpenGL/IndexBuffer/IndexBuffer.h"
+#include "OpenGL/Shader/Shader.h"
+#include "Config.h"
 
 #include <iostream>
 

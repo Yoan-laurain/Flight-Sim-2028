@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../OpenGL/Mesh/Mesh.h"
+#include "../Mesh.h"
 
 class SkyBox final : public Mesh
 {

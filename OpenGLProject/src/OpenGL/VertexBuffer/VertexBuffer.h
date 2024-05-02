@@ -22,7 +22,7 @@ struct Vertex
 class VertexBuffer
 {
 	public:
-		VertexBuffer( const std::vector<Vertex>& vertices );
+		explicit VertexBuffer( const std::vector<Vertex>& vertices );
 		~VertexBuffer();
 
 		void Bind() const;
@@ -32,5 +32,5 @@ class VertexBuffer
 		std::vector<Vertex> m_Vertices;
 	
 	private:
-		unsigned int m_ID;
+		unsigned int m_id;
 };

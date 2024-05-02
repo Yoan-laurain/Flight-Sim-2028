@@ -11,7 +11,7 @@ class Mesh;
 class Model
 {
 	public:
-		Model(ShaderType shaderType);
+		explicit Model(ShaderType shaderType);
 		Model(const std::vector<Mesh*>& meshes, ShaderType shaderType);
 		virtual ~Model();
 
@@ -35,7 +35,7 @@ class Model
 		std::vector<std::unique_ptr<Mesh>> m_Meshes;
 
 	private:
-		Vec3<float> m_Rotation;
-		Vec3<float> m_Translation;
-		Vec3<float> m_Scale;
+		Vec3<float> m_rotation;
+		Vec3<float> m_translation;
+		Vec3<float> m_scale;
 };

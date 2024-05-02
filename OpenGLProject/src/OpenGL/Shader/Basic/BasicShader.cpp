@@ -10,6 +10,7 @@ BasicShader::BasicShader(const std::string& filepath) : Shader(filepath)
 
 void BasicShader::OnBeforeDraw()
 {
+	Shader::OnBeforeDraw();
 	Bind();
 	
 	SetUniformMat4fv("u_CamMatrix", Application::Get()->GetCamera()->m_ViewProjectionMatrix);

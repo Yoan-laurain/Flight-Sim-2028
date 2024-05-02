@@ -11,6 +11,8 @@ SkyBoxShader::SkyBoxShader(const std::string& filepath) : Shader(filepath)
 
 void SkyBoxShader::OnBeforeDraw()
 {
+    Shader::OnBeforeDraw();
+    
     // Since the cubemap will always have a depth of 1.0, we need that equal sign so it doesn't get discarded
     glDepthFunc(GL_LEQUAL);
 
@@ -25,6 +27,8 @@ void SkyBoxShader::OnBeforeDraw()
 
 void SkyBoxShader::OnAfterDraw()
 {
+    Shader::OnAfterDraw();
+    
     // Switch back to the normal depth function
     glDepthFunc(GL_LESS);
 }

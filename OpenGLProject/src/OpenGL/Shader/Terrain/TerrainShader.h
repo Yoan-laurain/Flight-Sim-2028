@@ -4,18 +4,18 @@
 
 class TerrainShader : public Shader
 {
-public:
-    TerrainShader(const std::string& filepath);
-    ~TerrainShader() override = default;
-    
-    /* inherited from Shader */
-    void OnBeforeDraw() override;
-    /* inherited from Shader */
+    public:
+        explicit TerrainShader(const std::string& filepath);
+        ~TerrainShader() override = default;
+        
+        /* inherited from Shader */
+        void OnBeforeDraw() override;
+        /* inherited from Shader */
 
-    float m_minTextureNormalThreshold = 0.7f;
-    float m_maxTextureNormalThreshold = 0.9f;
-    float m_snowThreshold = 15.4f;
-    float m_dirtThreshold = 2.f;
-    float m_snowBlendValue = 0.5f;
-    float m_dirtBlendValue = 0.5f;
+        float m_minTextureNormalThreshold;
+        float m_maxTextureNormalThreshold;
+        float m_snowThreshold;
+        float m_dirtThreshold;
+        float m_snowBlendValue;
+        float m_dirtBlendValue;
 };

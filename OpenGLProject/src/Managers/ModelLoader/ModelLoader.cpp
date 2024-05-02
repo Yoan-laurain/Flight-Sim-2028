@@ -1,12 +1,12 @@
 ﻿#include "ModelLoader.h"
-#include "../../OpenGL/Textures/Texture.h"
-#include "../../OpenGL/Mesh/Mesh.h"
-#include "../../Config.h"
-#include "../../Core/Application.h"
-#include "../BatchRenderer/BatchRenderer.h"
-#include "../../OpenGL/VertexBuffer/VertexBuffer.h"
-#include "../../Model/Model.h"
+#include "OpenGL/Textures/Texture.h"
+#include "Config.h"
+#include "Core/Application.h"
+#include "Managers/BatchRenderer/BatchRenderer.h"
+#include "OpenGL/VertexBuffer/VertexBuffer.h"
+#include "Model/Model.h"
 #include "Library/Math.h"
+#include "Mesh/Mesh.h"
 
 #include <fstream>
 
@@ -21,7 +21,7 @@ std::string Get_file_contents(const char* filename)
 		in.seekg(0, std::ios::end); // Seek to the end of the file
 		contents.resize(in.tellg()); // Resize the string to the size of the file
 		in.seekg(0, std::ios::beg); // Seek back to the beginning of the file
-		in.read(&contents[0], contents.size()); // Read the file into the string
+		in.read(&contents[0], static_cast<long long>(contents.size())); // Read the file into the string
 		in.close(); // Close the file
 		
 		return contents;
@@ -33,17 +33,15 @@ std::string Get_file_contents(const char* filename)
 ModelLoader::ModelLoader(const char* file, const ShaderType shaderType)
 	: m_Model(nullptr)
 	, m_ShaderType(shaderType)
-	, m_File(file)
+	, m_file(file)
 {
 	m_Model = std::make_unique<Model>(shaderType);
 	
-	// Make a JSON object
 	std::string text = Get_file_contents(file);
-	m_JSON = json::parse(text);
+	m_json = json::parse(text);
 
-	m_Data = GetData();
-
-	// Traverse all nodes
+	m_data = GetData();
+	
 	TraverseNode(0);
 
 	m_Model->SendDataRender();
@@ -54,40 +52,40 @@ ModelLoader::~ModelLoader() = default;
 void ModelLoader::LoadMesh(const unsigned int indMesh)
 {
 	// Get all accessor indices
-	const unsigned int posAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
-	const unsigned int normalAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
-	const unsigned int texAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
-	const unsigned int indAccInd = m_JSON["meshes"][indMesh]["primitives"][0]["indices"];
+	const unsigned int posAccInd = m_json["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
+	const unsigned int normalAccInd = m_json["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
+	const unsigned int texAccInd = m_json["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
+	const unsigned int indAccInd = m_json["meshes"][indMesh]["primitives"][0]["indices"];
 
 	// Use accessor indices to get all vertices components
-	const std::vector<float> posVec = GetFloats(m_JSON["accessors"][posAccInd]);
+	const std::vector<float> posVec = GetFloats(m_json["accessors"][posAccInd]);
 	const std::vector<Vec3<float>> positions = GroupFloatsVec3(posVec);
-	const std::vector<float> normalVec = GetFloats(m_JSON["accessors"][normalAccInd]);
+	const std::vector<float> normalVec = GetFloats(m_json["accessors"][normalAccInd]);
 	const std::vector<Vec3<float>> normals = GroupFloatsVec3(normalVec);
-	const std::vector<float> texVec = GetFloats(m_JSON["accessors"][texAccInd]);
+	const std::vector<float> texVec = GetFloats(m_json["accessors"][texAccInd]);
 	const std::vector<Vec2<float>> texUVs = GroupFloatsVec2(texVec);
 	
 	// Combine all the vertex components and also get the indices and textures
 	std::vector<Vertex> vertices = AssembleVertices(positions, normals, texUVs);
-	std::vector<GLuint> indices = GetIndices(m_JSON["accessors"][indAccInd]);
+	std::vector<unsigned> indices = GetIndices(m_json["accessors"][indAccInd]);
 	std::vector<Texture> textures = GetTextures();
 	
 	 // If there is no texture set a default texture
 	 if (textures.empty())
 	 {
-		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/default.jpg", Diffuse, m_ShaderType);
+		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(DEFAULT_TEXTURE_PATH, Diffuse, m_ShaderType);
 	 	 textures.emplace_back(*defaultTex);
 
 	 	 delete defaultTex;
 	 }
 	
-	m_Model->m_Meshes.emplace_back(std::make_unique<Mesh>(vertices, indices, textures, m_MatricesMeshes.back()));
+	m_Model->m_Meshes.emplace_back(std::make_unique<Mesh>(vertices, indices, textures, m_matricesMeshes.back()));
 }
 
 void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& matrix)
 {
 	// Current node
-	json node = m_JSON["nodes"][nextNode];
+	json node = m_json["nodes"][nextNode];
 
 	// Get translation if it exists
 	Vec3<float> translation = Vec3(0.0f, 0.0f, 0.0f);
@@ -112,7 +110,7 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& m
 		rotation = Math::make_quaternion(rotValues);
 	}
 	// Get scale if it exists
-	Vec3<float> scale(1.0f, 1.0f, 1.0f);
+	Vec3 scale(1.0f, 1.0f, 1.0f);
 	if (node.find("scale") != node.end())
 	{
 		float scaleValues[3];
@@ -130,7 +128,7 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& m
 		matNode = Math::make_mat4(matValues);
 	}
 
-	const Mat4<float> trans = Math::translate(Mat4<float>(1.0f), translation);
+	const Mat4<float> trans = Math::translate(Mat4(1.0f), translation);
 	const Mat4<float> rot = Math::mat4_cast(rotation);
 	const Mat4<float> sca = Math::Scale(Mat4(1.0f), scale);
 
@@ -139,10 +137,10 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& m
 	// Check if the node contains a mesh and if it does load it
 	if (node.find("mesh") != node.end())
 	{
-		m_TranslationsMeshes.push_back(translation);
-		m_RotationsMeshes.push_back(rotation);
-		m_ScalesMeshes.push_back(scale);
-		m_MatricesMeshes.push_back(matNextNode);
+		m_translationsMeshes.push_back(translation);
+		m_rotationsMeshes.push_back(rotation);
+		m_scalesMeshes.push_back(scale);
+		m_matricesMeshes.push_back(matNextNode);
 
 		LoadMesh(node["mesh"]);
 	}
@@ -158,10 +156,10 @@ void ModelLoader::TraverseNode(const unsigned int nextNode, const Mat4<float>& m
 std::vector<unsigned char> ModelLoader::GetData()
 {
 	// Create a place to store the raw text, and get the uri of the .bin file
-	const std::string uri = m_JSON["buffers"][0]["uri"];
+	const std::string uri = m_json["buffers"][0]["uri"];
 
 	// Store raw text data into bytesText
-	const std::string fileStr = std::string(m_File);
+	const std::string fileStr = std::string(m_file);
 	const std::string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
 	std::string bytesText = Get_file_contents((fileDirectory + uri).c_str());
 
@@ -181,7 +179,7 @@ std::vector<float> ModelLoader::GetFloats(json accessor)
 	const std::string type = accessor["type"];
 
 	// Get properties from the bufferView
-	const json bufferView = m_JSON["bufferViews"][buffViewInd];
+	const json bufferView = m_json["bufferViews"][buffViewInd];
 	const unsigned int byteOffset = bufferView.value("byteOffset", 0);
 
 	// Interpret the type and store it into numPerVert
@@ -197,7 +195,7 @@ std::vector<float> ModelLoader::GetFloats(json accessor)
 	const unsigned int lengthOfData = count * 4 * numPerVert;
 	for (unsigned int i = beginningOfData; i < beginningOfData + lengthOfData;)
 	{
-		const unsigned char bytes[] = { m_Data[i++], m_Data[i++], m_Data[i++], m_Data[i++] };
+		const unsigned char bytes[] = { m_data[i++], m_data[i++], m_data[i++], m_data[i++] };
 		float value;
 		std::memcpy(&value, bytes, sizeof(float));
 		floatVec.push_back(value);
@@ -206,9 +204,9 @@ std::vector<float> ModelLoader::GetFloats(json accessor)
 	return floatVec;
 }
 
-std::vector<GLuint> ModelLoader::GetIndices(json accessor) 
+std::vector<unsigned> ModelLoader::GetIndices(json accessor) 
 {
-	std::vector<GLuint> indices;
+	std::vector<unsigned> indices;
 
 	// Get properties from the accessor
 	const unsigned int buffViewInd = accessor.value("bufferView", 0);
@@ -217,7 +215,7 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	const unsigned int componentType = accessor["componentType"];
 
 	// Get properties from the bufferView
-	const json bufferView = m_JSON["bufferViews"][buffViewInd];
+	const json bufferView = m_json["bufferViews"][buffViewInd];
 	const unsigned int byteOffset = bufferView.value("byteOffset", 0);
 
 	// Get indices with regards to their type: unsigned int, unsigned short, or short
@@ -226,7 +224,7 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	{
 		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 4;)
 		{
-			const unsigned char bytes[] = { m_Data[i++], m_Data[i++], m_Data[i++], m_Data[i++] };
+			const unsigned char bytes[] = { m_data[i++], m_data[i++], m_data[i++], m_data[i++] };
 			unsigned int value;
 			std::memcpy(&value, bytes, sizeof(unsigned int));
 			indices.push_back(value);
@@ -236,7 +234,7 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	{
 		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2;)
 		{
-			const unsigned char bytes[] = { m_Data[i++], m_Data[i++] };
+			const unsigned char bytes[] = { m_data[i++], m_data[i++] };
 			unsigned short value;
 			std::memcpy(&value, bytes, sizeof(unsigned short));
 			indices.push_back(value);
@@ -246,10 +244,10 @@ std::vector<GLuint> ModelLoader::GetIndices(json accessor)
 	{
 		for (unsigned int i = beginningOfData; i < byteOffset + accByteOffset + count * 2; )
 		{
-			const unsigned char bytes[] = { m_Data[i++], m_Data[i++] };
+			const unsigned char bytes[] = { m_data[i++], m_data[i++] };
 			short value;
 			std::memcpy(&value, bytes, sizeof(short));
-			indices.push_back(static_cast<GLuint>(value));
+			indices.push_back(value);
 		}
 	}
 
@@ -260,22 +258,22 @@ std::vector<Texture> ModelLoader::GetTextures()
 {
 	std::vector<Texture> textures;
 
-	const std::string fileStr = std::string(m_File);
+	const std::string fileStr = std::string(m_file);
 	const std::string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
 
 	// Go over all images
-	for (unsigned int i = 0; i < m_JSON["images"].size(); i++)
+	for (unsigned int i = 0; i < m_json["images"].size(); i++)
 	{
 		// uri of current texture
-		std::string texPath = m_JSON["images"][i]["uri"];
+		std::string texPath = m_json["images"][i]["uri"];
 
 		// Check if the texture has already been loaded
 		bool skip = false;
-		for (unsigned int j = 0; j < m_LoadedTexName.size(); j++)
+		for (unsigned int j = 0; j < m_loadedTexName.size(); j++)
 		{
-			if (m_LoadedTexName[j] == texPath)
+			if (m_loadedTexName[j] == texPath)
 			{
-				textures.push_back(m_LoadedTex[j]);
+				textures.push_back(m_loadedTex[j]);
 				skip = true;
 				break;
 			}
@@ -289,8 +287,8 @@ std::vector<Texture> ModelLoader::GetTextures()
 			{
 				const Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
 				textures.push_back(*defaultTex);
-				m_LoadedTex.push_back(*defaultTex);
-				m_LoadedTexName.push_back(texPath);
+				m_loadedTex.push_back(*defaultTex);
+				m_loadedTexName.push_back(texPath);
 				
 				delete defaultTex;
 			
@@ -300,8 +298,8 @@ std::vector<Texture> ModelLoader::GetTextures()
 			{
 				const Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Specular, m_ShaderType);
 				textures.push_back(*defaultTex);
-				m_LoadedTex.push_back(*defaultTex);
-				m_LoadedTexName.push_back(texPath);
+				m_loadedTex.push_back(*defaultTex);
+				m_loadedTexName.push_back(texPath);
 				delete defaultTex;
 			}
 		}
@@ -315,8 +313,7 @@ std::vector<Vertex> ModelLoader::AssembleVertices(const std::vector<Vec3<float>>
 	std::vector<Vertex> vertices;
 	for (int i = 0; i < static_cast<int>(positions.size()); i++)
 	{
-		vertices.emplace_back(positions[i], normals[i], Vec3(1.0f, 1.0f, 1.0f), texUVs[i]
-		);
+		vertices.emplace_back(positions[i], normals[i], Vec3(1.0f, 1.0f, 1.0f), texUVs[i]);
 	}
 	return vertices;
 }

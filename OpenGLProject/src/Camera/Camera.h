@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../Library/coreMinimal.h"
-
-#include <GLFW/glfw3.h>
+#include "Library/coreMinimal.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -11,14 +9,9 @@ struct GLFWwindow;
 class Camera
 {
 	public:
-		Camera( int width, int height, const Vec3<float>& position);
+		Camera(int width, int height, const Vec3<float>& position);
 
-		void Update(GLFWwindow* window,double deltaTime );
-
-		/*
-		 * Reset the camera to the initial position, rotation and speed
-		*/
-		void Reset();
+		void Update(GLFWwindow* window, double deltaTime);
 
 		Vec3<float> m_Position;
 		Mat4<float> m_ViewMatrix;
@@ -27,23 +20,24 @@ class Camera
 		Vec3<float> m_Rotation;
 		Vec3<float> m_Up;
 
-		int m_Width;
-		int m_Height;
-		float m_NearPlane;
-		float m_FarPlane;
-
 	private:
+	
+		float m_fov;
+		float m_speed;
+		float m_sensitivity;
+		float m_nearPlane;
+		float m_farPlane;
 
-		float m_Fov;
-		float m_Speed;
-		float m_Sensitivity;
+		double m_baseMouseX;
+		double m_baseMouseY;
 
-		double m_BaseMouseX;
-		double m_BaseMouseY;
+		bool m_firstClick;
 
-		bool m_FirstClick;
+		int m_width;
+		int m_height;
 
-		void Inputs( GLFWwindow* window,double deltaTime );
-		void HandleRotation( GLFWwindow* window );
+		void HandleInputs(GLFWwindow* window, double deltaTime);
+		void HandleRotation(GLFWwindow* window);
 		void UpdateMatrix();
+		void ResetToDefault();
 };

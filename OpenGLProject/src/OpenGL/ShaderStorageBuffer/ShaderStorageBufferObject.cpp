@@ -22,7 +22,7 @@ void ShaderStorageBufferObject::Unbind()
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
-void ShaderStorageBufferObject::GetData(void* data, unsigned size, const unsigned offset, const unsigned index) const
+void ShaderStorageBufferObject::GetData(void* data, const unsigned size, const unsigned offset, const unsigned index) const
 {
     Bind(index);
     glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data);

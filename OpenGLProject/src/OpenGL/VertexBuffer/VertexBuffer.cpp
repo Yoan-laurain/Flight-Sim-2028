@@ -23,26 +23,26 @@ Vertex::Vertex(const Vec3<float>& position)
 
 void VertexBuffer::SetDatas(const std::vector<Vertex>& vertices)
 {
-    glGenBuffers(1, &m_ID);
+    glGenBuffers(1, &m_id);
     
     Bind();
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 }
 
-VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices) : m_Vertices(vertices), m_ID(0)
+VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices) : m_Vertices(vertices), m_id(0)
 {
     SetDatas(vertices);
 }
 
 VertexBuffer::~VertexBuffer()
 {
-    glDeleteBuffers(1, &m_ID);
+    glDeleteBuffers(1, &m_id);
 }
 
 void VertexBuffer::Bind() const
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
 }
 
 void VertexBuffer::Unbind() const

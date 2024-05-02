@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
 #include <string>
 
 enum class ShaderType;
@@ -17,8 +16,8 @@ class Texture
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		GLuint m_Slot;
 		std::string m_FilePath;
+		int m_Slot;
 		int m_Index;
 		const char* m_Type;
 
@@ -26,8 +25,8 @@ class Texture
 		void HandleFormat() const;
 	
 	protected:
-		unsigned int m_ID;
+		unsigned int m_id;
 	
-		unsigned char* m_LocalBuffer;
-		int m_Width, m_Height, m_BPP;
+		unsigned char* m_localBuffer;
+		int m_width, m_height, m_bpp;
 };

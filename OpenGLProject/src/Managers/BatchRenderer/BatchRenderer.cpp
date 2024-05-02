@@ -2,7 +2,7 @@
 #include "../../OpenGL/VertexBuffer/VertexBuffer.h" // Ne pas delete
 #include "../../OpenGL/VertexBufferLayout/VertexBufferLayout.h"
 #include "../../OpenGL/Shader/Shader.h"
-#include "../../OpenGL/Mesh/Mesh.h"
+#include "../../Mesh/Mesh.h"
 #include "../../OpenGL/Textures/Texture.h" 
 #include "../ShaderManager/ShaderManager.h"
 #include "../../Core/Application.h"

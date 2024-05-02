@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Library/coreMinimal.h"
+#include "Library/coreMinimal.h"
 
 #include <memory>
 #include <vector>
@@ -13,7 +13,6 @@ class Mesh
 	public:
 	
 		Mesh(std::vector<Vertex> vertices, const std::vector<unsigned int>& indices, std::vector<Texture> textures, const Mat4<float>& matrix);
-		Mesh(const Mesh&);
 		Mesh();
 		virtual ~Mesh();
 

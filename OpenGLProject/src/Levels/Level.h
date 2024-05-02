@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../Model/Model.h"
-
 #include <vector>
 #include <memory>
 
+class Model;
 class Mesh;
+class Widget;
+
 enum class ShaderType;
 
 class Level
@@ -25,12 +26,12 @@ class Level
 		{
 			T* mesh = new T();
 			M * model = new M({ mesh }, shaderType);
-			m_Models.push_back(std::unique_ptr<Model>(model));
+			m_models.push_back(std::unique_ptr<Model>(model));
 
 			return model;
 		}
 
 	protected:
-		int m_CountDraws = 0;
-		std::vector<std::unique_ptr<Model>> m_Models;
+		std::vector<std::unique_ptr<Model>> m_models;
+		std::unique_ptr<Widget> m_widget;
 };

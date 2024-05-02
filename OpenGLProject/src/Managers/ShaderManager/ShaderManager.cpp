@@ -1,21 +1,21 @@
 #include "ShaderManager.h"
-#include "../../OpenGL/Shader/Shader.h"
-#include "../../OpenGL/Shader/Basic/BasicShader.h"
-#include "../../OpenGL/Shader/SkyBox/SkyBoxShader.h"
-#include <stdexcept>
-
+#include "OpenGL/Shader/Shader.h"
+#include "OpenGL/Shader/Basic/BasicShader.h"
+#include "OpenGL/Shader/SkyBox/SkyBoxShader.h"
 #include "OpenGL/Shader/Terrain/TerrainShader.h"
+#include <stdexcept>
+#include <GL/glew.h>
 
 ShaderManager::ShaderManager()
 {
-    CreateShader<BasicShader>(ShaderType::BASIC, "../../OpenGLProject/src/Shaders/Basic.shader");
-    CreateShader<TerrainShader>(ShaderType::TERRAIN, "../../OpenGLProject/src/Shaders/Terrain.shader");
-    CreateShader<SkyBoxShader>(ShaderType::SKYBOX, "../../OpenGLProject/src/Shaders/Skybox.shader");
-    CreateShader<Shader>(ShaderType::HEIGHTMAP, "../../OpenGLProject/src/Shaders/HeightMap.shader");
-    CreateShader<Shader>(ShaderType::EROSION, "../../OpenGLProject/src/Shaders/Erosion.shader");
+    CreateShader<BasicShader>(ShaderType::BASIC, BASIC_SHADER_PATH);
+    CreateShader<TerrainShader>(ShaderType::TERRAIN, TERRAIN_SHADER_PATH);
+    CreateShader<SkyBoxShader>(ShaderType::SKYBOX, SKYBOX_SHADER_PATH);
+    CreateShader<Shader>(ShaderType::HEIGHTMAP, HEIGHTMAP_SHADER_PATH);
+    CreateShader<Shader>(ShaderType::EROSION, EROSION_SHADER_PATH);
 }
 
-void ShaderManager::RunComputeShader(const Shader* shader, int numIterations, float wGroupSize) const
+void ShaderManager::RunComputeShader(const Shader* shader, const int numIterations, const float wGroupSize) const
 {
     Vec3 workGroupSize = { 1, 1, 1 };
     
@@ -23,9 +23,9 @@ void ShaderManager::RunComputeShader(const Shader* shader, int numIterations, fl
     glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSize.y);
     glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSize.z);
 
-    const int workGroupCountX = static_cast<int>(ceil(numIterations / wGroupSize));
-    const int workGroupCountY = static_cast<int>(ceil(1 / (float)workGroupSize.y));
-    const int workGroupCountZ = static_cast<int>(ceil(1 / (float)workGroupSize.y));
+    const int workGroupCountX = static_cast<int>(ceil(static_cast<float>(numIterations) / wGroupSize));
+    const int workGroupCountY = static_cast<int>(ceil(1 / static_cast<float>(workGroupSize.y)));
+    const int workGroupCountZ = static_cast<int>(ceil(1 / static_cast<float>(workGroupSize.y)));
     
     glUseProgram(shader->m_ID);
     glDispatchCompute(workGroupCountX, workGroupCountY, workGroupCountZ);
@@ -34,22 +34,19 @@ void ShaderManager::RunComputeShader(const Shader* shader, int numIterations, fl
 
 void ShaderManager::RegisterShader(const ShaderType shaderType, Shader* shader)
 {
-    if (!m_Shaders.contains(shaderType))
+    if (!m_shaders.contains(shaderType))
     {
-        m_Shaders[shaderType] = std::unique_ptr<Shader>(shader);
+        m_shaders[shaderType] = std::unique_ptr<Shader>(shader);
+        return;
     }
-    else
-    {
-        throw std::runtime_error("Shader already exists in the ShaderManager");
-    }
+    throw std::runtime_error("Shader already exists in the ShaderManager");
 }
 
 Shader* ShaderManager::GetShader(const ShaderType shaderType)
 {
-    if (m_Shaders.contains(shaderType))
+    if (m_shaders.contains(shaderType))
     {
-        return m_Shaders[shaderType].get();
+        return m_shaders[shaderType].get();
     }
-    
     throw std::runtime_error("Shader does not exist in the ShaderManager");
 }

@@ -3,7 +3,7 @@
 #include "Library/Math.h"
 #include "Model/Model.h"
 #include "OpenGL/IndexBuffer/IndexBuffer.h"
-#include "OpenGL/Mesh/Mesh.h"
+#include "../../../Mesh/Mesh.h"
 #include "OpenGL/Shader/Shader.h"
 #include "OpenGL/ShaderStorageBuffer/ShaderStorageBufferObject.h"
 #include "OpenGL/Textures/Texture.h"
