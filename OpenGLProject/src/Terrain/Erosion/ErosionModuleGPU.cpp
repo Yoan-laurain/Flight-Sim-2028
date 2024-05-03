@@ -27,11 +27,11 @@ void ErosionModuleGPU::Erode(std::vector<float>& heighmap)
     GenerateRandomIndicesForDropletPlacement();
     SetErosionShaderUniforms();
     
-    m_MapBuffer->SetData(heighmap.data(), heighmap.size() * sizeof(float), 18);
+    m_MapBuffer->SetData(heighmap.data(), heighmap.size() * sizeof(float), 1);
 
     Application::Get()->GetShaderManager()->RunComputeShader(m_ErosionShader, m_NumErosionIterations,64);
     
-    m_MapBuffer->GetData(heighmap.data(), heighmap.size() * sizeof(float), 0,18);
+    m_MapBuffer->GetData(heighmap.data(), heighmap.size() * sizeof(float), 0,1);
     
     UnBind();
 }
@@ -137,8 +137,8 @@ void ErosionModuleGPU::CreateBrushes()
         m_BrushWeight /= weightSum;
     }
     
-    m_ErosionBrushIndicesBuffer->SetData(m_BrushIndexOffsets.data(), m_BrushIndexOffsets.size() * sizeof(int), 16);
-    m_ErosionBrushWeightsBuffer->SetData(m_BrushWeights.data(), m_BrushWeights.size() * sizeof(float), 17);
+    m_ErosionBrushIndicesBuffer->SetData(m_BrushIndexOffsets.data(), m_BrushIndexOffsets.size() * sizeof(int), 3);
+    m_ErosionBrushWeightsBuffer->SetData(m_BrushWeights.data(), m_BrushWeights.size() * sizeof(float), 4);
 }
 
 void ErosionModuleGPU::GenerateRandomIndicesForDropletPlacement() const
@@ -162,7 +162,7 @@ void ErosionModuleGPU::GenerateRandomIndicesForDropletPlacement() const
         randomIndices[i] = randomY * width + randomX;
     }
     
-    m_ErosionRandomIndexBuffer->SetData(randomIndices.data(), randomIndices.size() * sizeof(int), 15);
+    m_ErosionRandomIndexBuffer->SetData(randomIndices.data(), randomIndices.size() * sizeof(int), 2);
 }
 
 void ErosionModuleGPU::SetErosionShaderUniforms() const

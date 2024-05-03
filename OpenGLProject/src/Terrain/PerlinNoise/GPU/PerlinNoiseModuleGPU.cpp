@@ -40,12 +40,12 @@ void PerlinNoiseModuleGPU::Process(std::vector<float>& heighmap)
 
 void PerlinNoiseModuleGPU::SetSSBODatas(const std::vector<float>& heighmap)
 {
-    m_OffsetsBuffer->SetData(m_Offsets.data(), m_Offsets.size() * sizeof(Vec2<int>),14);
-    m_MapBuffer->SetData(heighmap.data(), heighmap.size() * sizeof(float),12);
+    m_OffsetsBuffer->SetData(m_Offsets.data(), m_Offsets.size() * sizeof(Vec2<int>),3);
+    m_MapBuffer->SetData(heighmap.data(), heighmap.size() * sizeof(float),1);
     
     m_MinMaxHeight = { m_FloatToIntMultiplier * m_NumOctaves, 0 };
 
-    m_MinMaxBuffer->SetData(m_MinMaxHeight.data(), m_MinMaxHeight.size() * sizeof(int),13);
+    m_MinMaxBuffer->SetData(m_MinMaxHeight.data(), m_MinMaxHeight.size() * sizeof(int),2);
 }
 
 void PerlinNoiseModuleGPU::SetUniforms(std::vector<float>& heighmap) const

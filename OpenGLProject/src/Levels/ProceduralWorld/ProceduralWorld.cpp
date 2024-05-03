@@ -1,4 +1,5 @@
 #include "ProceduralWorld.h"
+#include "Mesh/SkyBox/SkyBox.h"
 #include "Managers/ShaderManager/ShaderManager.h"
 #include "Core/Application.h"
 #include "Terrain/TerrainModel.h"

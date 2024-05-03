@@ -19,11 +19,11 @@ TerrainShader::TerrainShader(const std::string& filepath)
 void TerrainShader::OnBeforeDraw()
 {
     Bind();
-	SetUniform1f("v_minTextureNormalThreshold",m_MinTextureNormalThreshold);
-    SetUniform1f("v_maxTextureNormalThreshold",m_MaxTextureNormalThreshold);
-    SetUniform1f("v_snowThreshold",m_SnowThreshold);
-    SetUniform1f("v_dirtThreshold",m_DirtThreshold);
-    SetUniform1f("v_snowBlendValue",m_SnowBlendValue);
-    SetUniform1f("v_dirtBlendValue",m_DirtBlendValue);
+	SetUniform1f("u_minTextureNormalThreshold",m_MinTextureNormalThreshold);
+    SetUniform1f("u_maxTextureNormalThreshold",m_MaxTextureNormalThreshold);
+    SetUniform1f("u_snowThreshold",m_SnowThreshold);
+    SetUniform1f("u_dirtThreshold",m_DirtThreshold);
+    SetUniform1f("u_snowBlendValue",m_SnowBlendValue);
+    SetUniform1f("u_dirtBlendValue",m_DirtBlendValue);
     SetUniformMat4fv("u_CamMatrix", Application::Get()->GetCamera()->m_ViewProjectionMatrix);
 }
