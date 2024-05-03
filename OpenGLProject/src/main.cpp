@@ -1,9 +1,8 @@
 #include "Core/Application.h"
 
-int main(void)
+int main()
 {
 	Application app;
 	app.Run();
-	
-   return 0;
+	return 0;
 }

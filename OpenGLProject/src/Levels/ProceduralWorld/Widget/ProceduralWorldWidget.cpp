@@ -165,25 +165,25 @@ void ProceduralWorldWidget::CreateTerrainShaderSettings()
 		auto* terrainShader = dynamic_cast<TerrainShader*>(Application::Get()->GetShaderManager()->GetShader(ShaderType::TERRAIN));
 
 		ImGui::SeparatorText("Grass > Stone Thresholds");
-		MyImGui::SliderFloat("Normal Max", terrainShader->m_maxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_maxTextureNormalThreshold = newValue;
+		MyImGui::SliderFloat("Normal Max", terrainShader->m_MaxTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_MaxTextureNormalThreshold = newValue;
 				});
-		MyImGui::SliderFloat("Normal Min", terrainShader->m_minTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_minTextureNormalThreshold = newValue;
+		MyImGui::SliderFloat("Normal Min", terrainShader->m_MinTextureNormalThreshold, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_MinTextureNormalThreshold = newValue;
 				});
 		ImGui::SeparatorText("Snow");
-		MyImGui::SliderFloat("Snow height", terrainShader->m_snowThreshold, 0.0f, 20.0f, [=](const float newValue) {
-					terrainShader->m_snowThreshold = newValue;
+		MyImGui::SliderFloat("Snow height", terrainShader->m_SnowThreshold, 0.0f, 20.0f, [=](const float newValue) {
+					terrainShader->m_SnowThreshold = newValue;
 				});
-		MyImGui::SliderFloat("Snow Blend", terrainShader->m_snowBlendValue, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_snowBlendValue = newValue;
+		MyImGui::SliderFloat("Snow Blend", terrainShader->m_SnowBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_SnowBlendValue = newValue;
 				});
 		ImGui::SeparatorText("Low Dirt");
-		MyImGui::SliderFloat("Dirt height", terrainShader->m_dirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
-					terrainShader->m_dirtThreshold = newValue;
+		MyImGui::SliderFloat("Dirt height", terrainShader->m_DirtThreshold, -10.0f, 10.0f, [=](const float newValue) {
+					terrainShader->m_DirtThreshold = newValue;
 				});
-		MyImGui::SliderFloat("Dirt Blend", terrainShader->m_dirtBlendValue, 0.0f, 1.0f, [=](const float newValue) {
-					terrainShader->m_dirtBlendValue = newValue;
+		MyImGui::SliderFloat("Dirt Blend", terrainShader->m_DirtBlendValue, 0.0f, 1.0f, [=](const float newValue) {
+					terrainShader->m_DirtBlendValue = newValue;
 				});
 
 		ImGui::EndTabItem();

@@ -182,7 +182,7 @@ int ShadersBuffer::GetSlotForTexture(const Mesh* mesh, bool isSpecular)
         }
     }
 
-    return isSpecular ? static_cast<int>(m_TexturesSpecular.size()) : static_cast<int>(m_TexturesDiffuse.size()); // Retrieve the next available index for the texture
+    return isSpecular ? static_cast<int>(m_TexturesSpecular.size()) : static_cast<int>(m_TexturesDiffuse.size()); // Retrieve the next available index for the Texture
 }
 
 void ShadersBuffer::InsertIndices(const Mesh* mesh) 

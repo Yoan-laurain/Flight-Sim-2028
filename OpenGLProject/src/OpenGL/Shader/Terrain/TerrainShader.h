@@ -12,10 +12,10 @@ class TerrainShader : public Shader
         void OnBeforeDraw() override;
         /* inherited from Shader */
 
-        float m_minTextureNormalThreshold;
-        float m_maxTextureNormalThreshold;
-        float m_snowThreshold;
-        float m_dirtThreshold;
-        float m_snowBlendValue;
-        float m_dirtBlendValue;
+        float m_MinTextureNormalThreshold;
+        float m_MaxTextureNormalThreshold;
+        float m_SnowThreshold;
+        float m_DirtThreshold;
+        float m_SnowBlendValue;
+        float m_DirtBlendValue;
 };

@@ -70,7 +70,7 @@ void ModelLoader::LoadMesh(const unsigned int indMesh)
 	std::vector<unsigned> indices = GetIndices(m_json["accessors"][indAccInd]);
 	std::vector<Texture> textures = GetTextures();
 	
-	 // If there is no texture set a default texture
+	 // If there is no Texture set a default Texture
 	 if (textures.empty())
 	 {
 		 Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(DEFAULT_TEXTURE_PATH, Diffuse, m_ShaderType);
@@ -264,10 +264,10 @@ std::vector<Texture> ModelLoader::GetTextures()
 	// Go over all images
 	for (unsigned int i = 0; i < m_json["images"].size(); i++)
 	{
-		// uri of current texture
+		// uri of current Texture
 		std::string texPath = m_json["images"][i]["uri"];
 
-		// Check if the texture has already been loaded
+		// Check if the Texture has already been loaded
 		bool skip = false;
 		for (unsigned int j = 0; j < m_loadedTexName.size(); j++)
 		{
@@ -279,10 +279,10 @@ std::vector<Texture> ModelLoader::GetTextures()
 			}
 		}
 
-		// If the texture has been loaded, skip this
+		// If the Texture has been loaded, skip this
 		if (!skip)
 		{
-			// Load diffuse texture
+			// Load diffuse Texture
 			if (texPath.find("baseColor") != std::string::npos || texPath.find("diffuse") != std::string::npos)
 			{
 				const Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Diffuse, m_ShaderType);
@@ -293,7 +293,7 @@ std::vector<Texture> ModelLoader::GetTextures()
 				delete defaultTex;
 			
 			}
-			// Load specular texture
+			// Load specular Texture
 			else if (texPath.find("metallicRoughness") != std::string::npos || texPath.find("specular") != std::string::npos)
 			{
 				const Texture* defaultTex = Application::Get()->GetBatchRenderer()->CreateOrGetTexture((fileDirectory + texPath).c_str(), Specular, m_ShaderType);

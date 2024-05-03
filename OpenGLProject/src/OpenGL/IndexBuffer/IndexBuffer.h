@@ -17,5 +17,5 @@ class IndexBuffer
 		std::vector<unsigned int> m_Indices;
 	
 	private:
-		unsigned int m_ID;
+		unsigned int m_id;
 };

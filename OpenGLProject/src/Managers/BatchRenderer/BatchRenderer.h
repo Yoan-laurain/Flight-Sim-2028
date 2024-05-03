@@ -31,12 +31,12 @@ class BatchRenderer
         void AddNewMesh(Model* model, Mesh* mesh);
 
         /*
-         * Retrieve the next available index that a texture can be bind for a shader 
+         * Retrieve the next available index that a Texture can be bind for a shader 
          */
         int GetNextIndexToBindTextureTo(ShaderType shaderType);
 
         /*
-         * Create and return a new Texture, if the texture already exist, it will return the existing one to avoid duplication
+         * Create and return a new Texture, if the Texture already exist, it will return the existing one to avoid duplication
          */
         Texture* CreateOrGetTexture( const char* image, const char* texType, ShaderType shaderType);
 
@@ -52,7 +52,7 @@ class BatchRenderer
 
     private:
 
-        /* Keep track of the current available texture slot for each shader */
+        /* Keep track of the current available Texture slot for each shader */
         std::unordered_map<ShaderType,int> m_IndexTextures;
 
         /* Layout of the vertex buffer */

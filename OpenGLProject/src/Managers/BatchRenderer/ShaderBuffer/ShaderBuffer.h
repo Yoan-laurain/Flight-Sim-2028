@@ -26,7 +26,7 @@ struct TransformData
     Mat4<float> model;
 };
 /*
- * Todo : Adapt code to allow texture blending & multiple (diffuse or specular) textures per mesh 
+ * Todo : Adapt code to allow Texture blending & multiple (diffuse or specular) textures per mesh 
  */
 struct ShadersBuffer
 {
@@ -36,7 +36,7 @@ struct ShadersBuffer
 
         /*
          * Create the vertex buffer, index buffer , shader storage buffer object and fill the arrays
-         * of texture slot to use for this buffer also fill the transform data array
+         * of Texture slot to use for this buffer also fill the transform data array
          */
         void Init();
 
@@ -106,18 +106,18 @@ struct ShadersBuffer
        void AddTexture(std::unordered_map<std::string,Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture);
 
         /*
-         * Fill the array of texture slot to use for this buffer for the specified array of textures
+         * Fill the array of Texture slot to use for this buffer for the specified array of textures
          */
         void CreateTextureUniforms(const std::unordered_map<std::string, Texture>& texturesMap,
                            std::vector<int>& textureUniforms, int maxSlotForTextures);
 
        /*
-       * Set the index of Specular and diffuse texture to use for the current mesh
+       * Set the index of Specular and diffuse Texture to use for the current mesh
        */
        void SetIndexOfTextures(Mesh* mesh);
 
        /*
-       * Get the index of the texture if it already exist, otherwise return the next available slot
+       * Get the index of the Texture if it already exist, otherwise return the next available slot
        */
        int GetSlotForTexture(const Mesh* mesh, bool isSpecular);
 

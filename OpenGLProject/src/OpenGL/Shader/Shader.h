@@ -23,7 +23,7 @@ class Shader
 		void Bind() const;
 		void Unbind() const;
 
-		/* Set the maximum number of texture units available to the shader */
+		/* Set the maximum number of Texture units available to the shader */
 		void SetMaxImageUnit(ShaderProgramSource& source) const;
 
 		void SetUniform1i(const std::string& name, int value);

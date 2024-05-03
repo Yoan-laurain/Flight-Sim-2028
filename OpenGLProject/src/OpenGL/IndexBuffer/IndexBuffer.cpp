@@ -3,21 +3,21 @@
 
 IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices) 
 	: m_Indices(indices)
-	, m_ID(0)
+	, m_id(0)
 {
-	glGenBuffers(1, &m_ID);
+	glGenBuffers(1, &m_id);
 	
 	SetDatas(indices);
 }
 
 IndexBuffer::~IndexBuffer()
 {
-	glDeleteBuffers(1, &m_ID);
+	glDeleteBuffers(1, &m_id);
 }
 
 void IndexBuffer::Bind() const
 {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
 }
 
 void IndexBuffer::Unbind() const
@@ -31,5 +31,5 @@ void IndexBuffer::SetDatas(const std::vector<unsigned>& indices)
 	
 	Bind();
 	
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indices.size() * sizeof(unsigned int)), indices.data(), GL_STATIC_DRAW);
 }

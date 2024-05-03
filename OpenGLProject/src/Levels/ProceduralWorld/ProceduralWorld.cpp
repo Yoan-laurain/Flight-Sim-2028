@@ -1,11 +1,10 @@
 #include "ProceduralWorld.h"
-#include "Model/SkyBox/SkyBox.h"
 #include "Managers/ShaderManager/ShaderManager.h"
 #include "Core/Application.h"
-#include "Library/MyImGui/MyImGui.h"
 #include "Terrain/TerrainModel.h"
 #include "Terrain/TerrainGenerator.h"
 #include "Library/Math.h"
+#include "Mesh/SkyBox/SkyBox.h"
 #include "Widget/ProceduralWorldWidget.h"
 
 ProceduralWorld::ProceduralWorld()

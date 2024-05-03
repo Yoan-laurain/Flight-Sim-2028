@@ -17,7 +17,7 @@ Texture::Texture(const char* image,const char* texType, const ShaderType shaderT
 {
 	m_Slot = Application::Get()->GetBatchRenderer()->GetNextIndexToBindTextureTo(shaderType);
 	
-	//Flip the texture vertically
+	//Flip the Texture vertically
 	stbi_set_flip_vertically_on_load(1);
 
 	// Load the image  
@@ -26,12 +26,12 @@ Texture::Texture(const char* image,const char* texType, const ShaderType shaderT
 	glGenTextures(1, &m_id);
 	Texture::Bind();
 	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // How the texture is going to be rendered when it's smaller than the original size
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // How the texture is going to be rendered when it's bigger than the original size
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // Stretch the texture on the x-axis
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Stretch the texture on the y-axis
-
-	// Configures the way the texture repeats (if it does at all)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // How the Texture is going to be rendered when it's smaller than the original size
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // How the Texture is going to be rendered when it's bigger than the original size
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // Stretch the Texture on the x-axis
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Stretch the Texture on the y-axis
+	
+	// Configures the way the Texture repeats (if it does at all)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -41,8 +41,10 @@ Texture::Texture(const char* image,const char* texType, const ShaderType shaderT
 	
 	// free the buffer if it is not null
 	if (m_localBuffer)
+	{
 		stbi_image_free(m_localBuffer);
-
+	}
+	
 	Texture::Unbind(); 
 }
 
@@ -65,45 +67,18 @@ void Texture::Unbind() const
 
 void Texture::HandleFormat() const
 {
-	if (m_bpp == 4)
-		glTexImage2D
-		(
-			GL_TEXTURE_2D,
-			0,
-			GL_SRGB_ALPHA,
-			m_width,
-			m_height,
-			0,
-			GL_RGBA,
-			GL_UNSIGNED_BYTE,
-			m_localBuffer
-		);
-	else if (m_bpp == 3)
-		glTexImage2D
-		(
-			GL_TEXTURE_2D,
-			0,
-			GL_SRGB,
-			m_width,
-			m_height,
-			0,
-			GL_RGB,
-			GL_UNSIGNED_BYTE,
-			m_localBuffer
-		);
-	else if (m_bpp == 1)
-		glTexImage2D
-		(
-			GL_TEXTURE_2D,
-			0,
-			GL_SRGB,
-			m_width,
-			m_height,
-			0,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			m_localBuffer
-		);
-	else
-		throw std::invalid_argument("Automatic Texture type recognition failed");
+	switch(m_bpp)
+	{
+		case 4:
+			glTexImage2D(GL_TEXTURE_2D,0,GL_SRGB_ALPHA,m_width,m_height,0,GL_RGBA,GL_UNSIGNED_BYTE,m_localBuffer);
+			break;
+		case 3:
+			glTexImage2D(GL_TEXTURE_2D,0,GL_SRGB,m_width,m_height,0,GL_RGB,GL_UNSIGNED_BYTE,m_localBuffer);
+			break;
+		case 1:
+			glTexImage2D(GL_TEXTURE_2D,0,GL_SRGB,m_width,m_height,0,GL_RED,GL_UNSIGNED_BYTE,m_localBuffer);
+			break;
+		default:
+			throw std::invalid_argument("Automatic Texture type recognition failed");
+	}
 }

@@ -46,7 +46,7 @@ CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces, 
 		}
 		else
 		{
-			std::cout << "Failed to load texture: " << faces[i] << std::endl;
+			std::cout << "Failed to load Texture: " << faces[i] << std::endl;
 			stbi_image_free(data);
 		}
 	}
