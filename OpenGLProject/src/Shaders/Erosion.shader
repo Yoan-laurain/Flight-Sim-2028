@@ -3,10 +3,10 @@
 
 layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
 
-layout(std430, binding = 18) buffer MapBuffer { float Data[]; } heightMap;
-layout(std430, binding = 15) buffer RandomIndicesBuffer{ int Data[];   } indices;
-layout(std430, binding = 16) buffer BrushIndicesBuffer { int Data[];   } brushIndices;
-layout(std430, binding = 17) buffer BrushWeightsBuffer { float Data[]; } brushWeightIndices;
+layout(std430, binding = 1) buffer MapBuffer { float Data[]; } heightMap;
+layout(std430, binding = 2) buffer RandomIndicesBuffer{ int Data[];   } indices;
+layout(std430, binding = 3) buffer BrushIndicesBuffer { int Data[];   } brushIndices;
+layout(std430, binding = 4) buffer BrushWeightsBuffer { float Data[]; } brushWeightIndices;
 
 uniform int mapSize;
 uniform int brushLength;

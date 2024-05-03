@@ -1,5 +1,8 @@
 ﻿#include "TerrainGenerationModule.h"
 
+#include "TerrainGenerator.h"
+#include "Core/Application.h"
+
 TerrainGenerationModule::TerrainGenerationModule():m_isDirty(true),m_lastGeneratedHeighmap()
 {
 }

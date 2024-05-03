@@ -1,15 +1,13 @@
 ﻿#include "TerrainGenerator.h"
 #include "Config.h"
 #include "TerrainModel.h"
-#include "OpenGL/Shader/Shader.h"
 #include "PerlinNoise/CPU/PerlinNoiseModuleCPU.h"
 #include "PerlinNoise/GPU/PerlinNoiseModuleGPU.h"
 #include "Terrain/TerrainGenerationModule.h"
 #include "Erosion/ErosionModuleGPU.h"
-#include <chrono>
-
 #include "Core/Application.h"
 #include "Managers/BatchRenderer/BatchRenderer.h"
+#include <chrono>
 
 TerrainGenerator::TerrainGenerator()
     : m_subdivision(0)

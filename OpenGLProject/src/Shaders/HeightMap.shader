@@ -3,9 +3,9 @@
 
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
-layout(std430, binding = 12) buffer heightMapBuffer { float Data[]; } heightMap;
-layout(std430, binding = 13) buffer minMaxBuffer { int Data[]; } minMax;
-layout(std430, binding = 14) buffer offsetsBuffer { ivec2 Data[]; } offsets;
+layout(std430, binding = 1) buffer heightMapBuffer { float Data[]; } heightMap;
+layout(std430, binding = 2) buffer minMaxBuffer { int Data[]; } minMax;
+layout(std430, binding = 3) buffer offsetsBuffer { ivec2 Data[]; } offsets;
 
 uniform int floatToIntMultiplier;
 uniform int mapSize;

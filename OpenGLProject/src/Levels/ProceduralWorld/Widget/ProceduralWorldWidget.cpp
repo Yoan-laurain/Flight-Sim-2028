@@ -98,22 +98,27 @@ void ProceduralWorldWidget::CreatePerlinSettings()
 
 		MyImGui::SliderFloat("Height", terrainGenerator->m_ElevationScale, 0.0f, 100.0f, [=](const float newValue) {
 			terrainGenerator->m_ElevationScale = newValue;
+			terrainGenerator->UpdateTerrain();
 		});
 		
-		MyImGui::SliderInt("Octaves", m_perlinModule->GetNumOctaves(), 1, 8, [this](const int newValue) {
+		MyImGui::SliderInt("Octaves", m_perlinModule->GetNumOctaves(), 1, 8, [this,terrainGenerator](const int newValue) {
 			m_perlinModule->SetNumOctaves(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 		
-		MyImGui::SliderFloat("Persistence", m_perlinModule->GetPersistance(), 0.0f, 2.0f, [this](const float newValue) {
+		MyImGui::SliderFloat("Persistence", m_perlinModule->GetPersistance(), 0.0f, 2.0f, [this,terrainGenerator](const float newValue) {
 			m_perlinModule->SetPersistance(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 		
-		MyImGui::SliderFloat("Lacunarity", m_perlinModule->GetLacunarity(), 0.0f, 4.0f, [this](const float newValue) {
+		MyImGui::SliderFloat("Lacunarity", m_perlinModule->GetLacunarity(), 0.0f, 4.0f, [this,terrainGenerator](const float newValue) {
 			m_perlinModule->SetLacunarity(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 		
-		MyImGui::SliderFloat("Scale", m_perlinModule->GetScale(), 1.f, 100.f, [this](const float newValue) {
+		MyImGui::SliderFloat("Scale", m_perlinModule->GetScale(), 1.f, 100.f, [this,terrainGenerator](const float newValue) {
 			m_perlinModule->SetScale(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 		
 		ImGui::SeparatorText("Monitoring");
@@ -130,22 +135,28 @@ void ProceduralWorldWidget::CreateErosionSettings() const
 {
 	if (m_erosionGPU && ImGui::BeginTabItem("Erosion"))
 	{
+		TerrainGenerator* terrainGenerator = Application::Get()->GetTerrainGenerator();
+		
 		ImGui::SeparatorText("Sliders");
 			
-		MyImGui::SliderInt("Iterations", m_erosionGPU->GetNumErosionIterations(), 0, 250000, [this](const int newValue) {
+		MyImGui::SliderInt("Iterations", m_erosionGPU->GetNumErosionIterations(), 0, 250000, [this,terrainGenerator](const int newValue) {
 			m_erosionGPU->SetNumErosionIterations(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 			
-		MyImGui::SliderFloat("Sediment Capacity Factor", m_erosionGPU->GetSedimentCapacityFactor(), 0.0f, 10.0f, [this](const float newValue) {
+		MyImGui::SliderFloat("Sediment Capacity Factor", m_erosionGPU->GetSedimentCapacityFactor(), 0.0f, 10.0f, [this,terrainGenerator](const float newValue) {
 			m_erosionGPU->SetSedimentCapacityFactor(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 			
-		MyImGui::SliderFloat("Evaporate Speed", m_erosionGPU->GetEvaporateSpeed(), 0.01f, 1.0f, [this](const float newValue) {
+		MyImGui::SliderFloat("Evaporate Speed", m_erosionGPU->GetEvaporateSpeed(), 0.01f, 1.0f, [this,terrainGenerator](const float newValue) {
 			m_erosionGPU->SetEvaporateSpeed(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 			
-		MyImGui::SliderFloat("Inertia", m_erosionGPU->GetInertia(), 0.0f, 0.2f, [this](const float newValue) {
+		MyImGui::SliderFloat("Inertia", m_erosionGPU->GetInertia(), 0.0f, 0.2f, [this,terrainGenerator](const float newValue) {
 			m_erosionGPU->SetInertia(newValue);
+			terrainGenerator->UpdateTerrain();
 		});
 
 		ImGui::SeparatorText("Monitoring");

@@ -1,5 +1,5 @@
 #include "ProceduralWorld.h"
-#include "Model/SkyBox/SkyBox.h"
+#include "Mesh/SkyBox/SkyBox.h"
 #include "Managers/ShaderManager/ShaderManager.h"
 #include "Core/Application.h"
 #include "Library/MyImGui/MyImGui.h"
