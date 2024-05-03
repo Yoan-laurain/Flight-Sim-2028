@@ -45,9 +45,10 @@ void Model::Update()
 
 void Model::SendDataRender()
 {
+	BatchRenderer* batchRenderer = Application::Get()->GetBatchRenderer();
 	for (const auto& Mesh : m_Meshes)
 	{
-		Application::Get()->GetBatchRenderer()->AddNewMesh(this, Mesh.get());
+		batchRenderer->AddNewMesh(this, Mesh.get());
 	}
 }
 
