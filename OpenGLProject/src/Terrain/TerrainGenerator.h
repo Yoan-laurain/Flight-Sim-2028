@@ -6,7 +6,6 @@
 class TerrainGenerationModule;
 class TerrainModel;
 enum class ShaderType;
-class Shader;
 
 class TerrainGenerator
 {
@@ -40,8 +39,8 @@ class TerrainGenerator
         TerrainModel* GetTerrain() const;
         int GetSubdivisions() const;
 
-        float m_ElevationScale = 20.f;
-        bool m_GenerateGPU = true;
+        float m_ElevationScale;
+        bool m_GenerateGPU;
         int m_BorderedMapSize;
 
         double GetMinGenerationTime() const;

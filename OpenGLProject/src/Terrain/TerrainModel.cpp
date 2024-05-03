@@ -20,11 +20,14 @@ void TerrainModel::SetHeight(const std::vector<float>& heightMap)
 {
     m_vertices.resize(heightMap.size());
     m_indices.resize(heightMap.size() * 6);
+
+    const int size = static_cast<int>(m_Subdivisions) * static_cast<int>(m_Subdivisions);
     
-    for (int i = 0; i < m_Subdivisions * m_Subdivisions; ++i)
+    for (int i = 0; i < size; ++i)
     {
-        int x = i % static_cast<int>(m_Subdivisions);
-        int y = i / static_cast<int>(m_Subdivisions);
+        // Retrieve the x and y coordinates of the vertex
+        const int x = i % static_cast<int>(m_Subdivisions);
+        const int y = i / static_cast<int>(m_Subdivisions);
 
         const int borderedMapIndex = (y + ErosionBrushRadius) * Application::Get()->GetTerrainGenerator()->m_BorderedMapSize + x + ErosionBrushRadius;
         const int meshMapIndex = y * static_cast<int>(m_Subdivisions) + x;
@@ -44,8 +47,9 @@ void TerrainModel::ReCalculateNormals()
     {
         vertex.m_Normal = {0.0f, 0.0f, 0.0f};
     }
-    
-    for (int i = 0; i < m_indices.size(); i += 3)
+
+    const int size = static_cast<int>(m_indices.size());
+    for (int i = 0; i < size; i += 3)
     {
         const unsigned int index1 = m_indices[i];
         const unsigned int index2 = m_indices[i + 1];
@@ -89,11 +93,10 @@ void TerrainModel::UpdateOrCreateNewMesh()
 {
     if (m_Meshes.empty())
     {
-        
-        Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/grass.png", Diffuse, m_ShaderType);
-        Texture* rockTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/stone.jpg", Diffuse, m_ShaderType);
-        Texture* snowTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/snow.png", Diffuse, m_ShaderType);
-        Texture* dirtTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture("res/textures/dirt.png", Diffuse, m_ShaderType);
+        Texture* defaultTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(GRASS_TEXTURE_PATH, Diffuse, m_ShaderType);
+        Texture* rockTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(STONE_TEXTURE_PATH, Diffuse, m_ShaderType);
+        Texture* snowTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(SNOW_TEXTURE_PATH, Diffuse, m_ShaderType);
+        Texture* dirtTexture = Application::Get()->GetBatchRenderer()->CreateOrGetTexture(DIRT_TEXTURE_PATH, Diffuse, m_ShaderType);
         
         Mesh* terrainMesh = new Mesh(m_vertices, m_indices, {*defaultTexture,*snowTexture,*dirtTexture,*rockTexture}, Mat4(1.0f));
         m_Meshes.emplace_back(std::unique_ptr<Mesh>(terrainMesh));
@@ -105,7 +108,7 @@ void TerrainModel::UpdateOrCreateNewMesh()
     }
 }
 
-void TerrainModel::UpdateVertexProperties(const int meshMapIndex, int x, int y, const std::vector<float>& heightMap, int borderedMapIndex)
+void TerrainModel::UpdateVertexProperties(const int meshMapIndex, const int x, const int y, const std::vector<float>& heightMap, const int borderedMapIndex)
 {
     // Calculate vertex position
     const Vec2 percent = { static_cast<float>(x) / (m_Subdivisions - 1.f), static_cast<float>(y) / (m_Subdivisions - 1.f) }; 

@@ -5,6 +5,11 @@
 struct Vertex;
 enum class ShaderType;
 
+#define GRASS_TEXTURE_PATH "res/textures/grass.png"
+#define STONE_TEXTURE_PATH "res/textures/stone.jpg"
+#define SNOW_TEXTURE_PATH "res/textures/snow.png"
+#define DIRT_TEXTURE_PATH "res/textures/dirt.png"
+
 class TerrainModel : public Model
 {
     public:

@@ -7,10 +7,11 @@
 
 PerlinNoiseModuleCPU::PerlinNoiseModuleCPU() = default;
 
-void PerlinNoiseModuleCPU::Process(std::vector<float>& heighmap)
+void PerlinNoiseModuleCPU::Process(std::vector<float>& heightmap)
 {
-    heighmap.clear();
-    heighmap.resize(Application::Get()->GetTerrainGenerator()->m_BorderedMapSize * Application::Get()->GetTerrainGenerator()->m_BorderedMapSize);
+    heightmap.clear();
+    const int size = Application::Get()->GetTerrainGenerator()->m_BorderedMapSize;
+    heightmap.resize(size);
     
     GenerateOffsets(-1000, 1000, m_Offsets);
     
@@ -18,7 +19,7 @@ void PerlinNoiseModuleCPU::Process(std::vector<float>& heighmap)
     float maxValue = std::numeric_limits<float>::min();
     const int mapSize = Application::Get()->GetTerrainGenerator()->m_BorderedMapSize;
 
-    PerlinNoise perlin = PerlinNoise(m_Seed);
+    const PerlinNoise perlin = PerlinNoise(m_seed);
     
     for (int y = 0; y < mapSize; y++)
     {
@@ -27,18 +28,18 @@ void PerlinNoiseModuleCPU::Process(std::vector<float>& heighmap)
             float noiseValue = 0;
             float scale = 2;
             float weight = 1;
-            for (int i = 0; i < m_NumOctaves; i++)
+            for (int i = 0; i < m_numOctaves; i++)
             {
-                Vec2<float> p = Vec2(x / (float)mapSize, y / (float)mapSize) * scale + m_Offsets[i];
+                Vec2<float> p = Vec2(static_cast<float>(x) / static_cast<float>(mapSize), static_cast<float>(y) / static_cast<float>(mapSize)) * scale + m_Offsets[i];
                 noiseValue += perlin.noise(p.x, p.y) * weight;
-                weight *= m_Persistence;
-                scale *= m_Lacunarity;
+                weight *= m_persistence;
+                scale *= m_lacunarity;
             }
-            heighmap[y * mapSize + x] = noiseValue;
+            heightmap[y * mapSize + x] = noiseValue;
             minValue = std::min(noiseValue, minValue);
             maxValue = std::max(noiseValue, maxValue);
         }
     }
 
-    NormalizeHeightMap(heighmap, {static_cast<int>(minValue * m_FloatToIntMultiplier), static_cast<int>(maxValue * m_FloatToIntMultiplier)});
+    NormalizeHeightMap(heightmap, {static_cast<int>(minValue * static_cast<float>(m_floatToIntMultiplier)), static_cast<int>(maxValue * static_cast<float>(m_floatToIntMultiplier))});
 }

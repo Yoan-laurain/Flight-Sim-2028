@@ -5,7 +5,6 @@
 #include "Terrain/TerrainModel.h"
 #include "Terrain/TerrainGenerator.h"
 #include "Library/Math.h"
-#include "Mesh/SkyBox/SkyBox.h"
 #include "Widget/ProceduralWorldWidget.h"
 
 ProceduralWorld::ProceduralWorld()

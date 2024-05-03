@@ -8,16 +8,16 @@ class TerrainGenerationModule
         TerrainGenerationModule();
         virtual ~TerrainGenerationModule() = default;
         
-        virtual void Process(std::vector<float>& heighmap) = 0;
+        virtual void Process(std::vector<float>& heightmap) = 0;
 
-        void Generate(std::vector<float>& heighmap);
+        void Generate(std::vector<float>& heightmap);
+        void UpdateTimers(double generationTime);
     
         void SetDirty();
         bool IsDirty() const;
     
-        double m_MaxGenerationTime = std::numeric_limits<float>::min();
-        double m_AverageGenerationTime = 0.f;
-        double m_MinGenerationTime = std::numeric_limits<float>::max();
+        double m_MaxGenerationTime;
+        double m_MinGenerationTime;
 
         double GetAverageGenerationTime() const;
         std::vector<double> m_AverageGenerationTimeHistory;
@@ -25,7 +25,4 @@ class TerrainGenerationModule
     private:
         bool m_isDirty;
         std::vector<float> m_lastGeneratedHeighmap;
-
-        
-    
 };

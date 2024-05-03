@@ -7,13 +7,13 @@ layout(std430, binding = 1) buffer heightMapBuffer { float Data[]; } heightMap;
 layout(std430, binding = 2) buffer minMaxBuffer    { int Data[];   } minMax;
 layout(std430, binding = 3) buffer offsetsBuffer   { ivec2 Data[]; } offsets;
 
-uniform int floatToIntMultiplier;
-uniform int mapSize;
-uniform int octaves;
-uniform float persistence;
-uniform float lacunarity;
-uniform float scaleFactor;
-uniform int heightMapSize;
+uniform int u_floatToIntMultiplier;
+uniform int u_mapSize;
+uniform int u_octaves;
+uniform float u_persistence;
+uniform float u_lacunarity;
+uniform float u_scaleFactor;
+uniform int u_heightMapSize;
 
 vec2 mod289(vec2 x) { return x - floor(x / 289.0) * 289.0; }
 
@@ -71,22 +71,22 @@ void main()
 {
     uint id = gl_GlobalInvocationID.x;
 
-    if (id >= heightMapSize)
+    if (id >= u_heightMapSize)
         return;
 
-    int x = int(id) % mapSize;
-    int y = int(id) / mapSize;
+    int x = int(id) % u_mapSize;
+    int y = int(id) / u_mapSize;
 
-    float scale = scaleFactor;
+    float scale = u_scaleFactor;
     float weight = 1.0;
-    for (int i = 0; i < octaves; i++) 
+    for (int i = 0; i < u_octaves; i++) 
     {
-        heightMap.Data[id] += snoise(vec2(float(x), float(y))/mapSize * scale + offsets.Data[i]) * weight;
-        scale *= lacunarity;
-        weight *= persistence;
+        heightMap.Data[id] += snoise(vec2(float(x), float(y))/u_mapSize * scale + offsets.Data[i]) * weight;
+        scale *= u_lacunarity;
+        weight *= u_persistence;
     }
 
-    int val = int(heightMap.Data[id] * floatToIntMultiplier);
+    int val = int(heightMap.Data[id] * u_floatToIntMultiplier);
     atomicMin(minMax.Data[0], val);
     atomicMax(minMax.Data[1], val); 
 }
