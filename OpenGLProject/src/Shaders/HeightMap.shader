@@ -4,8 +4,8 @@
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 layout(std430, binding = 1) buffer heightMapBuffer { float Data[]; } heightMap;
-layout(std430, binding = 2) buffer minMaxBuffer { int Data[]; } minMax;
-layout(std430, binding = 3) buffer offsetsBuffer { ivec2 Data[]; } offsets;
+layout(std430, binding = 2) buffer minMaxBuffer    { int Data[];   } minMax;
+layout(std430, binding = 3) buffer offsetsBuffer   { ivec2 Data[]; } offsets;
 
 uniform int floatToIntMultiplier;
 uniform int mapSize;
@@ -15,26 +15,18 @@ uniform float lacunarity;
 uniform float scaleFactor;
 uniform int heightMapSize;
 
-vec2 mod289(vec2 x) {
-    return x - floor(x / 289.0) * 289.0;
-}
+vec2 mod289(vec2 x) { return x - floor(x / 289.0) * 289.0; }
 
-vec3 mod289(vec3 x) {
-    return x - floor(x / 289.0) * 289.0;
-}
+vec3 mod289(vec3 x) {  return x - floor(x / 289.0) * 289.0; }
 
-vec3 permute(vec3 x) {
-    return mod289((x * 34.0 + 1.0) * x);
-}
+vec3 permute(vec3 x) {  return mod289((x * 34.0 + 1.0) * x); }
 
 const vec4 C = vec4(0.211324865405187,  // (3.0 - sqrt(3.0)) / 6.0
                     0.366025403784439,  // 0.5 * (sqrt(3.0) - 1.0)
                    -0.577350269189626,  // -1.0 + 2.0 * C.x
                     0.024390243902439); // 1.0 / 41.0
 
-vec3 taylorInvSqrt(vec3 r) {
-    return 1.79284291400159 - 0.85373472095314 * r;
-}
+vec3 taylorInvSqrt(vec3 r) { return 1.79284291400159 - 0.85373472095314 * r; }
 
 float snoise(vec2 v) 
 {
@@ -87,7 +79,8 @@ void main()
 
     float scale = scaleFactor;
     float weight = 1.0;
-    for (int i = 0; i < octaves; i++) {
+    for (int i = 0; i < octaves; i++) 
+    {
         heightMap.Data[id] += snoise(vec2(float(x), float(y))/mapSize * scale + offsets.Data[i]) * weight;
         scale *= lacunarity;
         weight *= persistence;

@@ -26,7 +26,7 @@ uniform float startWater;
 
 vec3 CalculateHeightAndGradient(float posX, float posY) 
 {
-    int coordX = int(posX);
+int coordX = int(posX);
     int coordY = int(posY);
 
     // Calculate droplet's offset inside the cell (0,0) = at NW node, (1,1) = at SE node

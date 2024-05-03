@@ -56,13 +56,11 @@ uniform sampler2D u_Specular[MAX_TEXTURE_UNITS/2];
 
 uniform vec3 u_CamPos;
 
-float when_neq(float x, float y) {
-    return float(x != y);
-}
+float when_neq(float x, float y) { return float(x != y); }
 
 vec4 directLight()
 {
-	float ambient = 1.0f;
+	float ambient = 0.3f;
 
 	vec3 normal = normalize(v_Normal);
 	vec3 lightDir = normalize(vec3(1.0f, 1.0f, 0.0f));
