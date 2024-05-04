@@ -13,12 +13,30 @@ ProceduralWorld::ProceduralWorld()
 	
 	AddModel<SkyBox,Model>(ShaderType::SKYBOX);
 
-	CreateAirPlanes(10);
+	CreateAirPlanes(20);
 	
 	Application::Get()->GetTerrainGenerator()->GenerateTerrain(300.f, 300.f,ShaderType::TERRAIN);
 }
 
 ProceduralWorld::~ProceduralWorld() = default;
+
+void ProceduralWorld::DrawDebugsCubes()
+{
+	const int count = 7;
+	const int spacing = 15;
+    
+	for (int i = 0; i < count; i++)
+	{
+		for (int j = 0; j < count; j++)
+		{
+			for (int k = 0; k < count; k++)
+			{
+				auto cube = AddModel("res/models/Cube/scene.gltf", ShaderType::BASIC);
+				cube->SetTranslation(Vec3<float>( i * spacing, j * spacing, k * spacing));
+			}
+		}
+	}
+}
 
 void ProceduralWorld::CreateAirPlanes(const unsigned count)
 {

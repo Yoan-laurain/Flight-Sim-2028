@@ -7,15 +7,17 @@
 
 Model::Model(const ShaderType shaderType)
 	: m_ShaderType(shaderType)
+	, m_Id(0)
 	, m_rotation(Vec3<float>(0))
 	, m_translation(Vec3<float>(0))
-	, m_scale(Vec3<float>(1))
+	, m_scale(Vec3<float>(1))	
 {
 	Application::Get()->m_ModelCount++;
 }
 
 Model::Model(const std::vector<Mesh*>& meshes, const ShaderType shaderType)
 	: m_ShaderType(shaderType)
+	, m_Id(0)
 	, m_rotation(Vec3(0.0f))
 	, m_translation(Vec3(0.0f))
 	, m_scale(Vec3(1.0f))

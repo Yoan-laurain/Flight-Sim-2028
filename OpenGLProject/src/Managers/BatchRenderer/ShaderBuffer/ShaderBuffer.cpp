@@ -34,6 +34,7 @@ void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
     // if the model is not already in the list, add it ( Since a model can have multiple meshes )
     if (std::ranges::find_if(m_Models, [model](const Model* m) { return m == model; }) == m_Models.end())
     {
+        model->m_Id = static_cast<int>(m_Models.size());
         m_Models.emplace_back(model);
     }
 
@@ -103,9 +104,9 @@ void ShadersBuffer::AddTextureToTheMap(std::unordered_map<std::string, Texture>&
 void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_type& model) 
 {
     // Clear the previous data
-    if (m_ModelsTransforms.contains(model))
+    if (m_ModelsTransforms.contains(model->m_Id))
     {
-        m_ModelsTransforms[model].clear();
+        m_ModelsTransforms[model->m_Id].clear();
     }
 
     // loop through all the meshes of the model
@@ -119,15 +120,8 @@ void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_t
             Math::Scale(Mat4(1.0f), model->GetScale()),
             mesh->m_Matrix
         };
-
-        if (m_ModelsTransforms.contains(model))
-        {
-            m_ModelsTransforms[model].emplace_back(transformData); 
-        }
-        else
-        {
-            m_ModelsTransforms[model] = { transformData };
-        }
+        
+        m_ModelsTransforms[model->m_Id].emplace_back(transformData);
     }
 
     m_needToRegroupTransformsAgain = true;
@@ -144,15 +138,7 @@ void ShadersBuffer::UpdateModelVerticesDatas(Model* model)
     // loop through all the meshes of the model
     for (const auto& mesh : model->m_Meshes)
     {
-        // Append the vertices of the mesh to the list of vertices of the model if it already exist
-        if (m_ModelsVertices.contains(model))
-        {
-            m_ModelsVertices[model].insert(m_ModelsVertices[model].end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
-        }
-        else
-        {
-            m_ModelsVertices[model] = mesh->m_Vertices;
-        }
+        m_ModelsVertices[model].insert(m_ModelsVertices[model].end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
     }
     
     m_Vertices.clear();

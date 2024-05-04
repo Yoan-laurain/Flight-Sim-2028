@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <map>
+
 #include "../../../Library/coreMinimal.h"
 #include <string>
 #include <vector>
@@ -80,7 +82,7 @@ struct ShadersBuffer
         std::unique_ptr<ShaderStorageBufferObject> m_SSBO;
 
         /* List of transform data for each mesh of the buffer that will be send to the shader by the SSBO */
-        std::unordered_map<Model*, std::vector<TransformData>> m_ModelsTransforms;
+        std::map<int, std::vector<TransformData>> m_ModelsTransforms;
 
         std::unordered_map<Model*, std::vector<Vertex>> m_ModelsVertices;
 

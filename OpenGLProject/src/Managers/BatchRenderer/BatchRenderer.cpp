@@ -101,7 +101,7 @@ void BatchRenderer::UpdateModelData(Model* model, ShaderType shaderType, UpdateT
     for (const auto& shaderData : m_shadersData[shaderType])
     {
         // If the model is in the buffer, update the data
-        if (shaderData->m_ModelsTransforms.contains(model))
+        if (shaderData->m_ModelsTransforms.contains(model->m_Id))
         {
             switch (updateType)
             {

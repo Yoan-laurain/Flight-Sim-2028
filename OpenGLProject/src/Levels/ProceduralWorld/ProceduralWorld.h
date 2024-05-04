@@ -10,6 +10,11 @@ class ProceduralWorld : public Level
 		ProceduralWorld();
 		~ProceduralWorld() override;
 
+		/*
+		 * This method is purely for demonstration purposes of the batch renderer
+		 */
+		void DrawDebugsCubes();
+
 	private:
 
 		void CreateAirPlanes(unsigned int count);
