@@ -11,7 +11,7 @@ void PerlinNoiseModuleCPU::Process(std::vector<float>& heightmap)
 {
     heightmap.clear();
     const int size = Application::Get()->GetTerrainGenerator()->m_BorderedMapSize;
-    heightmap.resize(size);
+    heightmap.resize(size * size);
     
     GenerateOffsets(-1000, 1000, m_Offsets);
     

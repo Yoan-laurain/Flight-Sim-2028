@@ -62,7 +62,7 @@ void TerrainGenerator::UpdateTerrain()
         return;
     }
     
-    Application::Get()->GetBatchRenderer()->UpdateVerticesDatas(m_terrain.get(),m_terrain->m_ShaderType);
+    Application::Get()->GetBatchRenderer()->UpdateModelData(m_terrain.get(),m_terrain->m_ShaderType, UpdateType::Vertices);
 }
 
 void TerrainGenerator::UpdateGenerationModules()

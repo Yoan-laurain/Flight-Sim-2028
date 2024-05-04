@@ -40,7 +40,7 @@ void Model::Update()
 		Mesh->m_Scale = m_scale;
 	}
 
-	Application::Get()->GetBatchRenderer()->UpdateModelDatas(this, m_ShaderType);
+	Application::Get()->GetBatchRenderer()->UpdateModelData(this, m_ShaderType, UpdateType::Transforms);
 }
 
 void Model::SendDataRender()
