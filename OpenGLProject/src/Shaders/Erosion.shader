@@ -1,7 +1,7 @@
 #shader compute
 #version 460 core
 
-layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 layout(std430, binding = 1) buffer MapBuffer { float Data[]; } heightMap;
 layout(std430, binding = 2) buffer RandomIndicesBuffer{ int Data[];   } indices;

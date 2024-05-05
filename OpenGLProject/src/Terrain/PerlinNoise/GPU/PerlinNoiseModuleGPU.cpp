@@ -27,7 +27,7 @@ void PerlinNoiseModuleGPU::Process(std::vector<float>& heightmap)
     SetSSBODatas(heightmap);
     SetUniforms(heightmap);
 
-    Application::Get()->GetShaderManager()->RunComputeShader(m_heightMapShader, static_cast<int>(heightmap.size()));
+    Application::Get()->GetShaderManager()->RunComputeShader(m_heightMapShader, static_cast<int>(heightmap.size()),64);
     
     m_mapBuffer->GetData(heightmap.data(), static_cast<int>(heightmap.size()) * sizeof(float), 0,1);
     m_minMaxBuffer->GetData(m_minMaxHeight.data(), static_cast<int>(m_minMaxHeight.size()) * sizeof(int), 0,2);

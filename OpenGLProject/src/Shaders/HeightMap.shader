@@ -74,11 +74,13 @@ void main()
     if (id >= u_heightMapSize)
         return;
 
+    // Calculate the x and y coordinates of the pixel
     int x = int(id) % u_mapSize;
     int y = int(id) / u_mapSize;
 
     float scale = u_scaleFactor;
     float weight = 1.0;
+    
     for (int i = 0; i < u_octaves; i++) 
     {
         heightMap.Data[id] += snoise(vec2(float(x), float(y))/u_mapSize * scale + offsets.Data[i]) * weight;

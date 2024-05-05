@@ -84,3 +84,7 @@ Hydraulic erosion :
 https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
 
 https://ranmantaru.com/blog/2011/10/08/water-erosion-on-heightmap-terrain/
+
+Compute Shader : 
+
+https://www.youtube.com/watch?v=XyUusirGAl4
