@@ -24,7 +24,7 @@ uniform float u_gravity;
 uniform float u_startSpeed;
 uniform float u_startWater;
 
-vec3 CalculateHeightAndGradient(float posX, float posY) 
+vec3 CalculateHeightAndGradient(float posX, float posY)
 {
     int coordX = int(posX);
     int coordY = int(posY);
@@ -50,9 +50,41 @@ vec3 CalculateHeightAndGradient(float posX, float posY)
     return vec3(gradientX, gradientY, height);
 }
 
+void Erode(float sedimentCapacity, inout float sediment, float deltaHeight, int dropletIndex)
+{
+    // Erode a fraction of the droplet's current carry capacity.
+    // Clamp the erosion to the change in height so that it doesn't dig a hole in the terrain behind the droplet
+    float amountToErode = min((sedimentCapacity - sediment) * u_erodeSpeed, -deltaHeight);
+    
+    for (int i = 0; i < u_brushLength; i++) 
+    {
+        int erodeIndex = dropletIndex + brushIndices.Data[i];
+
+        float weightedErodeAmount = amountToErode * brushWeightIndices.Data[i];
+        float deltaSediment = (heightMap.Data[erodeIndex] < weightedErodeAmount) ? heightMap.Data[erodeIndex] : weightedErodeAmount;
+        heightMap.Data[erodeIndex] -= deltaSediment;
+        sediment += deltaSediment;
+    }
+}
+
+void Deposit(float sedimentCapacity, inout float sediment, float deltaHeight, float cellOffsetX, float cellOffsetY, int dropletIndex)
+{
+    // If moving uphill (deltaHeight > 0) try fill up to the current height, otherwise deposit a fraction of the excess sediment
+    float amountToDeposit = (deltaHeight > 0.0) ? min(deltaHeight, sediment) : (sediment - sedimentCapacity) * u_depositSpeed;
+    
+    sediment -= amountToDeposit;
+
+    // Add the sediment to the four nodes of the current cell using bilinear interpolation
+    heightMap.Data[dropletIndex] += amountToDeposit * (1.0 - cellOffsetX) * (1.0 - cellOffsetY);
+    heightMap.Data[dropletIndex + 1] += amountToDeposit * cellOffsetX * (1.0 - cellOffsetY);
+    heightMap.Data[dropletIndex + u_mapSize] += amountToDeposit * (1.0 - cellOffsetX) * cellOffsetY;
+    heightMap.Data[dropletIndex + u_mapSize + 1] += amountToDeposit * cellOffsetX * cellOffsetY;
+}
+
 void main() 
 {
     uint index = indices.Data[gl_GlobalInvocationID.x];
+
     float posX = float(index % u_mapSize);
     float posY = float(index / u_mapSize);
     float dirX = 0.0;
@@ -63,8 +95,11 @@ void main()
 
     for (int lifetime = 0; lifetime < u_maxLifetime; lifetime++) 
     {
+        // Calculate droplet's cell position 
         int nodeX = int(posX);
         int nodeY = int(posY);
+        
+        // Calculate droplet's array index
         int dropletIndex = nodeY * u_mapSize + nodeX;
         
         // Calculate droplet's offset inside the cell (0,0) = at NW node, (1,1) = at SE node
@@ -101,32 +136,11 @@ void main()
         // If carrying more sediment than capacity, or if flowing uphill:
         if (sediment > sedimentCapacity || deltaHeight > 0.0) 
         {
-            // If moving uphill (deltaHeight > 0) try fill up to the current height, otherwise deposit a fraction of the excess sediment
-            float amountToDeposit = (deltaHeight > 0.0) ? min(deltaHeight, sediment) : (sediment - sedimentCapacity) * u_depositSpeed;
-            sediment -= amountToDeposit;
-
-            // Add the sediment to the four nodes of the current cell using bilinear interpolation
-            // Deposition is not distributed over a radius (like erosion) so that it can fill small pits
-            heightMap.Data[dropletIndex] += amountToDeposit * (1.0 - cellOffsetX) * (1.0 - cellOffsetY);
-            heightMap.Data[dropletIndex + 1] += amountToDeposit * cellOffsetX * (1.0 - cellOffsetY);
-            heightMap.Data[dropletIndex + u_mapSize] += amountToDeposit * (1.0 - cellOffsetX) * cellOffsetY;
-            heightMap.Data[dropletIndex + u_mapSize + 1] += amountToDeposit * cellOffsetX * cellOffsetY;
+            Deposit(sedimentCapacity, sediment, deltaHeight, cellOffsetX, cellOffsetY, dropletIndex);
         } 
         else
         {
-            // Erode a fraction of the droplet's current carry capacity.
-            // Clamp the erosion to the change in height so that it doesn't dig a hole in the terrain behind the droplet
-            float amountToErode = min((sedimentCapacity - sediment) * u_erodeSpeed, -deltaHeight);
-
-            for (int i = 0; i < u_brushLength; i++) 
-            {
-                int erodeIndex = dropletIndex + brushIndices.Data[i];
-
-                float weightedErodeAmount = amountToErode * brushWeightIndices.Data[i];
-                float deltaSediment = (heightMap.Data[erodeIndex] < weightedErodeAmount) ? heightMap.Data[erodeIndex] : weightedErodeAmount;
-                heightMap.Data[erodeIndex] -= deltaSediment;
-                sediment += deltaSediment;
-            }
+            Erode(sedimentCapacity, sediment, deltaHeight, dropletIndex);
         }
 
         // Update droplet's speed and water content
