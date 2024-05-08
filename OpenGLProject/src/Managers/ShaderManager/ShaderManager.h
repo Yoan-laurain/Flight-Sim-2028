@@ -4,11 +4,11 @@
 #include <unordered_map>
 #include <string>
 
-#define BASIC_SHADER_PATH "../../OpenGLProject/src/Shaders/Basic.shader"
-#define TERRAIN_SHADER_PATH "../../OpenGLProject/src/Shaders/Terrain.shader"
-#define SKYBOX_SHADER_PATH "../../OpenGLProject/src/Shaders/Skybox.shader"
-#define HEIGHTMAP_SHADER_PATH "../../OpenGLProject/src/Shaders/HeightMap.shader"
-#define EROSION_SHADER_PATH "../../OpenGLProject/src/Shaders/Erosion.shader"
+#define BASIC_SHADER_PATH "Shaders/Basic.shader"
+#define TERRAIN_SHADER_PATH "Shaders/Terrain.shader"
+#define SKYBOX_SHADER_PATH "Shaders/Skybox.shader"
+#define HEIGHTMAP_SHADER_PATH "Shaders/HeightMap.shader"
+#define EROSION_SHADER_PATH "Shaders/Erosion.shader"
 
 enum class ShaderType
 {

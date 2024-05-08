@@ -1,6 +1,9 @@
 @echo off
+
+git submodule init
+git submodule update
+
 mkdir build 2>nul
 cd build
-xcopy /s /e /y ..\res\ .\OpenGLProject\res\
 cmake ..
 pause

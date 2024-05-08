@@ -60,7 +60,7 @@ float when_neq(float x, float y) { return float(x != y); }
 
 vec4 directLight()
 {
-	float ambient = 0.3f;
+	float ambient = 0.6f;
 
 	vec3 normal = normalize(v_Normal);
 	vec3 lightDir = normalize(vec3(1.0f, 1.0f, 0.0f));
