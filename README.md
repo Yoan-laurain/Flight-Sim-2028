@@ -22,18 +22,20 @@
 
 ## Résultat 🎉
 
-![Map](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/e5e04ea2-2812-4a98-8330-1cd3305c68d9)
+![image](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/6cc7b25e-c8dc-40be-9899-2f7eb34bd567)
 
 ## Monde paramétrable 🔧
 
-![GeneralSettings](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/de6c0a7e-57da-4eb4-bb62-76b1f46832d7)
-![HeightMapSettings](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/1ffb6fe3-6989-4f21-8554-8f3aa499de5b)
-![ErosionSettings](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/4f5d4a17-d94e-489f-bc8b-5fccf77aa7af)
+![image](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/b2bb07b2-f9fc-49d2-b098-89592e4e9409)
+![image](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/709c8645-e3e6-44da-872d-0a32dd537e3e)
+![image](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/555496f2-dd64-4c89-b21d-4d21d301801c)
+![image](https://github.com/Yoan-laurain/Flight-Sim-2028/assets/80961060/da5edb1f-bb44-4fb1-8baa-edb8035cc022)
+
 
 ## Pour cloner le projet 👋
 
 ```bash
-git clone --recurse-submodules -j8 https://github.com/Yoan-laurain/Flight-Sim-2028.git
+git clone https://github.com/Yoan-laurain/Flight-Sim-2028.git
 ```
 
 ## 🚀 Build
