@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <memory>
 
 class ImGuiManager;
@@ -11,6 +9,8 @@ class ShaderManager;
 class Level;
 class Camera;
 class TerrainGenerator;
+
+struct GLFWwindow;
 
 class Application
 {
@@ -41,6 +41,7 @@ class Application
             * Deactivate VSync and uncap the frame rate
         */
         void SetVSync( bool enable );
+		bool& GetVSync();
 
         /*
          * Enable linear color space it improves the quality of the colors 
@@ -50,15 +51,15 @@ class Application
 		/*
 		 * Wireframe mode
 		 */
-		void SetPolygoneMode();
-        bool& GetPolygoneMode();
-
+		void SetPolygonMode();
+        bool& GetPolygonMode();
+	
         int GetMaxSlotForTextures() const;
-
+	
+		int m_TriangleCount;
+		int m_ModelCount;
 		int m_WindowWidth;
-		int m_WindowHeight;
-		int m_TriangleCount = 0;
-		int m_ModelCount = 0;
+		int m_CountDraws;
 
     private:
     
@@ -67,20 +68,26 @@ class Application
 	
         void ApplyAppIcon() const;
 
-        void UpdateDeltaTime(double& lastTime, double& deltaTime);
+        void UpdateDeltaTime();
 
-        std::unique_ptr<Level> m_CurrentLevel;
-        std::unique_ptr<Renderer> m_Renderer;
-        std::unique_ptr<ShaderManager> m_ShaderManager;
-        std::unique_ptr<Camera> m_Camera;
-        std::unique_ptr<BatchRenderer> m_BatchRenderer;
-		std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
-		std::unique_ptr<ImGuiManager> m_ImGuiManager;
+        std::unique_ptr<Level> m_currentLevel;
+        std::unique_ptr<Renderer> m_renderer;
+        std::unique_ptr<ShaderManager> m_shaderManager;
+        std::unique_ptr<Camera> m_camera;
+        std::unique_ptr<BatchRenderer> m_batchRenderer;
+		std::unique_ptr<TerrainGenerator> m_terrainGenerator;
+		std::unique_ptr<ImGuiManager> m_imGuiManager;
 
-        const char* m_AppIcon;
-        int m_MaxSlotForTextures;
+        const char* m_appIcon;
+	
+        int m_maxSlotForTextures;
+		int m_windowHeight;
+	
+		bool m_polygonMode;
+		bool m_vSync;
 
-		bool m_polygoneMode;
+		double m_lastTime;
+		double m_deltaTime;
 
-        static Application* m_Instance;
+        static Application* m_instance;
 };

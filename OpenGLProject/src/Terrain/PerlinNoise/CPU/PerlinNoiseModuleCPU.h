@@ -9,6 +9,6 @@ class PerlinNoiseModuleCPU : public PerlinNoiseBaseModule
         ~PerlinNoiseModuleCPU() override = default;
 
         /* Inherited via TerrainGenerationModule */
-        void Process(std::vector<float>& heighmap) override;
+        void Process(std::vector<float>& heightmap) override;
         /* Inherited via TerrainGenerationModule */
 };

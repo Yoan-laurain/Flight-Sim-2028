@@ -5,7 +5,7 @@
 class SkyBoxShader : public Shader
 {
 	public:
-		SkyBoxShader(const std::string& filepath);
+		explicit SkyBoxShader(const std::string& filepath);
 		~SkyBoxShader() override = default;
 
 		/* Inherited via Shader */

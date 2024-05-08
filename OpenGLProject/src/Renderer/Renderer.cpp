@@ -1,8 +1,8 @@
 #include "Renderer.h"
-#include "../OpenGL/VertexArray/VertexArray.h"
-#include "../OpenGL/IndexBuffer/IndexBuffer.h"
-#include "../OpenGL/Shader/Shader.h"
-#include "../Config.h"
+#include "OpenGL/VertexArray/VertexArray.h"
+#include "OpenGL/IndexBuffer/IndexBuffer.h"
+#include "OpenGL/Shader/Shader.h"
+#include "Config.h"
 
 #include <iostream>
 
@@ -22,7 +22,7 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 	va.Bind();
 	ib.Bind();
 
-	glDrawElements(GL_TRIANGLES, ib.m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(ib.m_Indices.size()), GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::HandleError(GLenum source, const GLenum type, GLuint id, const GLenum severity, GLsizei length, const GLchar* message, const void* userParam)

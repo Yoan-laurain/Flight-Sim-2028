@@ -1,19 +1,31 @@
 ﻿#include "TerrainGenerationModule.h"
+#include "TerrainGenerator.h"
+#include "Core/Application.h"
 
-TerrainGenerationModule::TerrainGenerationModule():m_isDirty(true),m_lastGeneratedHeighmap()
+TerrainGenerationModule::TerrainGenerationModule()
+    : m_MaxGenerationTime(std::numeric_limits<double>::min())
+    , m_MinGenerationTime(std::numeric_limits<double>::max())
+    , m_isDirty(true)
 {
 }
 
-void TerrainGenerationModule::Generate(std::vector<float>& heighmap)
+void TerrainGenerationModule::Generate(std::vector<float>& heightmap)
 {
     if(m_isDirty)
     {
-        Process(heighmap);
-        m_lastGeneratedHeighmap = std::vector(heighmap);
+        Process(heightmap);
+        m_lastGeneratedHeighmap = std::vector(heightmap);
         m_isDirty = false;
         return;
     }
-    heighmap = m_lastGeneratedHeighmap;
+    heightmap = m_lastGeneratedHeighmap;
+}
+
+void TerrainGenerationModule::UpdateTimers(const double generationTime)
+{
+    m_AverageGenerationTimeHistory.push_back(generationTime);
+    m_MinGenerationTime = generationTime < m_MinGenerationTime ? generationTime : m_MinGenerationTime;
+    m_MaxGenerationTime = generationTime > m_MaxGenerationTime ? generationTime : m_MaxGenerationTime;
 }
 
 void TerrainGenerationModule::SetDirty()
@@ -28,12 +40,10 @@ bool TerrainGenerationModule::IsDirty() const
 
 double TerrainGenerationModule::GetAverageGenerationTime() const
 {
+    double sum = 0;
+    for(const auto& time : m_AverageGenerationTimeHistory)
     {
-        double sum = 0;
-        for(const auto& time : m_AverageGenerationTimeHistory)
-        {
-            sum += time;
-        }
-        return sum / m_AverageGenerationTimeHistory.size();
+        sum += time;
     }
+    return sum / static_cast<double>(m_AverageGenerationTimeHistory.size());
 }

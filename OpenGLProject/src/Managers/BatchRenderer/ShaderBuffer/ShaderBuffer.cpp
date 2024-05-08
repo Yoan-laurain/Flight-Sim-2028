@@ -3,7 +3,7 @@
 #include "Library/Math.h"
 #include "Model/Model.h"
 #include "OpenGL/IndexBuffer/IndexBuffer.h"
-#include "OpenGL/Mesh/Mesh.h"
+#include "Mesh/Mesh.h"
 #include "OpenGL/Shader/Shader.h"
 #include "OpenGL/ShaderStorageBuffer/ShaderStorageBufferObject.h"
 #include "OpenGL/Textures/Texture.h"
@@ -22,18 +22,6 @@ ShadersBuffer::ShadersBuffer(Mesh* mesh, Model* model, const int indexOfBuffer)
     AddNewMesh(mesh, model);
 }
 
-void ShadersBuffer::SetIndexOfTextures(Mesh* mesh)
-{
-     const int indexSpecular = GetSlotForTexture(mesh, true);
-     const int indexDiffuse = GetSlotForTexture(mesh, false) ;
-    
-    for (auto& vertex : mesh->m_Vertices) 
-    {
-        vertex.m_IndexSpecular = indexSpecular;
-        vertex.m_IndexDiffuse = indexDiffuse;
-    }
-}
-
 void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
 {
     SetModelIndexForVertexBuffers(mesh);
@@ -46,11 +34,24 @@ void ShadersBuffer::AddNewMesh(Mesh* mesh, Model* model)
     // if the model is not already in the list, add it ( Since a model can have multiple meshes )
     if (std::ranges::find_if(m_Models, [model](const Model* m) { return m == model; }) == m_Models.end())
     {
+        model->m_Id = static_cast<int>(m_Models.size());
         m_Models.emplace_back(model);
     }
 
-    AddTexture(m_TexturesDiffuse, mesh->m_TextureDiffuse);
-    AddTexture(m_TexturesSpecular, mesh->m_TextureSpecular);
+    AddTextureToTheMap(m_TexturesDiffuse, mesh->m_TextureDiffuse);
+    AddTextureToTheMap(m_TexturesSpecular, mesh->m_TextureSpecular);
+}
+
+void ShadersBuffer::SetIndexOfTextures(Mesh* mesh)
+{
+    const int indexSpecular = GetIndexForTexture(mesh, true);
+    const int indexDiffuse = GetIndexForTexture(mesh, false);
+
+    for (auto& vertex : mesh->m_Vertices) 
+    {
+        vertex.m_IndexSpecular = indexSpecular;
+        vertex.m_IndexDiffuse = indexDiffuse;
+    }
 }
 
 void ShadersBuffer::Init()
@@ -69,23 +70,29 @@ void ShadersBuffer::Init()
 
 std::vector<TransformData>& ShadersBuffer::GetAllTransformsData()
 {
-    if ( m_NeedToRegroupTransformsAgain )
+    if ( m_needToRegroupTransformsAgain )
     {
-        m_TransformsData.clear();
+        m_transformsData.clear();
+
+        // Concatenate all the transforms data of all the models of the buffer
         for (const auto& [model, transforms] : m_ModelsTransforms)
         {
-            m_TransformsData.insert(m_TransformsData.end(), transforms.begin(), transforms.end());
+            m_transformsData.insert(m_transformsData.end(), transforms.begin(), transforms.end());
         }
-        m_NeedToRegroupTransformsAgain = false;
+        
+        m_needToRegroupTransformsAgain = false;
     }
-    return m_TransformsData;
+    return m_transformsData;
 }
 
-void ShadersBuffer::AddTexture(std::unordered_map<std::string, Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture)
+void ShadersBuffer::AddTextureToTheMap(std::unordered_map<std::string, Texture>& textures, const std::vector<std::unique_ptr<Texture>>& texture)
 {
     const int size = static_cast<int>(textures.size());
+    
+    // loop through all the textures of the mesh
     for (const auto& tex : texture)
     {
+        // if the texture is not already in the map, add it
         if (tex && !textures.contains(tex->m_FilePath))
         {
             tex->m_Index = size;
@@ -94,15 +101,18 @@ void ShadersBuffer::AddTexture(std::unordered_map<std::string, Texture>& texture
     }
 }
 
-void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_type& model)
+void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_type& model) 
 {
-    if (m_ModelsTransforms.contains(model))
+    // Clear the previous data
+    if (m_ModelsTransforms.contains(model->m_Id))
     {
-        m_ModelsTransforms[model].clear();
+        m_ModelsTransforms[model->m_Id].clear();
     }
-    
+
+    // loop through all the meshes of the model
     for (const auto& mesh : model->m_Meshes)
     {
+        // Create the transform data for the mesh
         TransformData transformData 
         {
             Math::translate(Mat4(1.0f), model->GetTranslation()),
@@ -110,79 +120,78 @@ void ShadersBuffer::ExtractModelTransformData(const std::vector<Model*>::value_t
             Math::Scale(Mat4(1.0f), model->GetScale()),
             mesh->m_Matrix
         };
-
-        if (m_ModelsTransforms.contains(model))
-        {
-            m_ModelsTransforms[model].emplace_back(transformData); 
-        }
-        else
-        {
-            m_ModelsTransforms[model] = { transformData }; 
-        }
+        
+        m_ModelsTransforms[model->m_Id].emplace_back(transformData);
     }
 
-    m_NeedToRegroupTransformsAgain = true;
+    m_needToRegroupTransformsAgain = true;
 }
 
 void ShadersBuffer::UpdateModelVerticesDatas(Model* model)
 {
+    // Clear the previous data
     if (m_ModelsVertices.contains(model))
     {
         m_ModelsVertices[model].clear();
     }
-    
+
+    // loop through all the meshes of the model
     for (const auto& mesh : model->m_Meshes)
     {
-        if (m_ModelsVertices.contains(model))
-        {
-            m_ModelsVertices[model].insert(m_ModelsVertices[model].end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
-        }
-        else
-        {
-            m_ModelsVertices[model] = mesh->m_Vertices;
-        }
+        m_ModelsVertices[model].insert(m_ModelsVertices[model].end(), mesh->m_Vertices.begin(), mesh->m_Vertices.end());
     }
     
     m_Vertices.clear();
 
+    // Concatenate all the vertices of all the models of the buffer
     for (const auto& [model, vertices] : m_ModelsVertices)
     {
         m_Vertices.insert(m_Vertices.end(), vertices.begin(), vertices.end());
     }
 
+    // Update the VBO with the new vertices
     m_VBO->SetDatas(m_Vertices);
 }
 
 void ShadersBuffer::InitTextureUniform()
 {
-    const int MaxSlotForTextures = Application::Get()->GetMaxSlotForTextures();
-    
-    CreateTextureUniforms(m_TexturesDiffuse, m_Diffuse, MaxSlotForTextures);
-    CreateTextureUniforms(m_TexturesSpecular, m_Specular, MaxSlotForTextures);
+    CreateTextureUniforms(m_TexturesDiffuse, m_diffuse);
+    CreateTextureUniforms(m_TexturesSpecular, m_specular);
 }
 
-void ShadersBuffer::CreateTextureUniforms(const std::unordered_map<std::string, Texture>& texturesMap, std::vector<int>& textureUniforms, const int maxSlotForTextures)
+void ShadersBuffer::CreateTextureUniforms(const std::unordered_map<std::string, Texture>& texturesMap, std::vector<int>& array)
 {
+    // clear the previous data
+    array.clear();
+    
+    const int maxSlotForTextures = Application::Get()->GetMaxSlotForTextures();
+
+    // loop through all the textures of the buffer
     for (const auto& texture : texturesMap)
     {
-        textureUniforms.emplace_back(texture.second.m_Slot - maxSlotForTextures * m_IndexBuffer);
+        // Offset the slot by the number of textures already added by the previous buffers
+        const int offset = maxSlotForTextures * m_IndexBuffer;
+        array.emplace_back(texture.second.m_Slot - offset);
     }
 }
 
-int ShadersBuffer::GetSlotForTexture(const Mesh* mesh, bool isSpecular)
+int ShadersBuffer::GetIndexForTexture(const Mesh* mesh, const bool isSpecular)
 {
     auto& texturesMap = isSpecular ? m_TexturesSpecular : m_TexturesDiffuse; 
     const auto& textureArray = isSpecular ? mesh->m_TextureSpecular : mesh->m_TextureDiffuse;
 
+    // loop through all the textures of the mesh
     for (const auto& texture : textureArray)
     {
+        // if the texture already exist, return its index
         if (texture && texturesMap.contains(texture->m_FilePath)) 
         {
             return texturesMap[texture->m_FilePath].m_Index;  
         }
     }
 
-    return isSpecular ? static_cast<int>(m_TexturesSpecular.size()) : static_cast<int>(m_TexturesDiffuse.size()); // Retrieve the next available index for the texture
+    // Retrieve the next available index for the Texture
+    return isSpecular ? static_cast<int>(m_TexturesSpecular.size()) : static_cast<int>(m_TexturesDiffuse.size()); 
 }
 
 void ShadersBuffer::InsertIndices(const Mesh* mesh) 
@@ -190,10 +199,12 @@ void ShadersBuffer::InsertIndices(const Mesh* mesh)
     const int size = static_cast<int>(m_Vertices.size());
     
     m_Indices.reserve(m_Indices.size() + mesh->m_Indices.size());
-    
+
+    // Loop through all the indices of the mesh
     for (const auto& index : mesh->m_Indices)
     {
-        m_Indices.push_back(index + size);
+        // We add the offset of the previous indices added by the previous meshes
+        m_Indices.emplace_back(index + size);
     }
 }
 
@@ -201,7 +212,8 @@ void ShadersBuffer::SetModelIndexForVertexBuffers(Mesh* mesh) const
 {
     const int index = static_cast<int>(m_Models.size());
 
-    if( index > 0)
+    // Since default value is 0, we only need to set the index if it's greater than 0
+    if(index > 0)
     {
         for (auto& vertex : mesh->m_Vertices)
         {
@@ -210,12 +222,12 @@ void ShadersBuffer::SetModelIndexForVertexBuffers(Mesh* mesh) const
     }
 }
 
-void ShadersBuffer::BindTexturesToShader(ShaderType, Shader* shader)
+void ShadersBuffer::SetTexturesUniforms(ShaderType, Shader* shader) const
 {
     shader->Bind();
 
-    SetUniformAndBind( shader, "u_Diffuse", m_Diffuse, m_TexturesDiffuse );
-    SetUniformAndBind( shader, "u_Specular", m_Specular, m_TexturesSpecular );
+    SetUniformAndBind( shader, "u_Diffuse", m_diffuse, m_TexturesDiffuse );
+    SetUniformAndBind( shader, "u_Specular", m_specular, m_TexturesSpecular );
 }
 
 void ShadersBuffer::SetUniformAndBind(Shader* shader, const std::string& uniformName, const std::vector<int>& arraySlot, const std::unordered_map<std::string, Texture>& textures) const
@@ -224,11 +236,14 @@ void ShadersBuffer::SetUniformAndBind(Shader* shader, const std::string& uniform
     
     if (!textures.empty()) 
     {
-        shader->SetUniform1iv(uniformName, arraySlot); 
-    }
-    
-    for (auto& texture : textures)
-    {
-        texture.second.Bind( texture.second.m_Slot - MaxSlotForTextures * m_IndexBuffer );  
+        // loop through all the textures of the buffer and bind them
+        for (auto& texture : textures)
+        {
+            // Offset the slot by the number of textures already added by the previous buffers
+            const int offset = MaxSlotForTextures * m_IndexBuffer;
+            texture.second.Bind( texture.second.m_Slot - offset );  
+        }
+
+        shader->SetUniform1iv(uniformName, arraySlot);
     }
 }

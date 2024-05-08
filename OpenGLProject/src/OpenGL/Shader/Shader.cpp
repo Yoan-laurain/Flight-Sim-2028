@@ -17,10 +17,12 @@ Shader::~Shader()
 
 void Shader::OnBeforeDraw()
 {
+	Application::Get()->SetFaceCulling(true);
 }
 
 void Shader::OnAfterDraw()
 {
+	Application::Get()->SetFaceCulling(false);
 }
 
 void Shader::Bind() const
@@ -62,8 +64,8 @@ void Shader::SetShader(const std::string& filepath)
 int Shader::GetUniformLocation(const std::string& name)
 {
 	// Check if the uniform location is already stored in the cache
-	if (m_UniformLocationCache.contains(name))
-		return m_UniformLocationCache[name];
+	if (m_uniformLocationCache.contains(name))
+		return m_uniformLocationCache[name];
 
 	// If it's not stored in the cache, get the location of the uniform
 	const int location = glGetUniformLocation(m_ID, name.c_str());
@@ -71,7 +73,7 @@ int Shader::GetUniformLocation(const std::string& name)
 		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 
 	// Store the uniform location in the cache
-	m_UniformLocationCache[name] = location;
+	m_uniformLocationCache[name] = location;
 
 	// Return the uniform location
 	return location;
@@ -116,7 +118,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath) const
 	return { ss[0].str(), ss[1].str(), ss[2].str() };
 }
 
-void Shader::HandleLinkError(GLuint Program)
+void Shader::HandleLinkError(const int Program)
 {
 	// display error message if linking failed
 	GLint linkStatus;
@@ -133,7 +135,7 @@ void Shader::HandleLinkError(GLuint Program)
 
 unsigned Shader::CreateComputeShader(const std::string& computeShader)
 {
-	const GLuint computeProgram = glCreateProgram();
+	const int computeProgram = glCreateProgram();
 	const unsigned int cs = CompileShader(GL_COMPUTE_SHADER, computeShader);
 	glAttachShader(computeProgram, cs);
 	glLinkProgram(computeProgram);
@@ -192,6 +194,8 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 			case GL_COMPUTE_SHADER:
 				std::cout << "compute shader!";
 				break;
+			default:
+				break;
 		}
 		
 		std::cout << message << std::endl;
@@ -207,7 +211,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
 	// We need to create a program that will link the shaders together
-	const unsigned int program = glCreateProgram();
+	const int program = glCreateProgram();
 	const unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 	const unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 

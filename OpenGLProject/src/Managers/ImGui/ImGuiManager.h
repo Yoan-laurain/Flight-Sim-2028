@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include <GLFW/glfw3.h>
-
+struct GLFWwindow;
 class Level;
 
 class ImGuiManager
@@ -11,7 +10,7 @@ class ImGuiManager
         ~ImGuiManager();
     
         void InitImGui(GLFWwindow* window);
-        void OnImGuiRender( Level* currentLevel ) const;
+        void OnImGuiRender(Level* currentLevel) const;
 
     private:
         void DestroyImGui();

@@ -6,7 +6,7 @@ class ShaderStorageBufferObject
         ShaderStorageBufferObject();
         ~ShaderStorageBufferObject();
         
-        void Bind( unsigned index = 0) const;
+        void Bind(unsigned index = 0) const;
         void Unbind();
 
         void GetData(void* data, unsigned int size, unsigned int offset, unsigned index) const;

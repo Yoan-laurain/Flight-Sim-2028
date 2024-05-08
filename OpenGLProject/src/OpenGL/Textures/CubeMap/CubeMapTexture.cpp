@@ -4,14 +4,15 @@
 #include "Vendor/stb_image/stb_image.h"
 #include "Managers/ShaderManager/ShaderManager.h"
 #include <iostream>
+#include <GL/glew.h>
 
-CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces,const char* texType) : Texture()
+CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces, const char* texType) : Texture()
 {
 	m_NumFaces = numFaces;
 	m_Type = texType;
 	m_Slot = Application::Get()->GetBatchRenderer()->GetNextIndexToBindTextureTo(ShaderType::SKYBOX);
 	
-	glGenTextures(1, &m_ID);
+	glGenTextures(1, &m_id);
 	CubeMapTexture::Bind();
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -45,7 +46,7 @@ CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces,c
 		}
 		else
 		{
-			std::cout << "Failed to load texture: " << faces[i] << std::endl;
+			std::cout << "Failed to load Texture: " << faces[i] << std::endl;
 			stbi_image_free(data);
 		}
 	}
@@ -54,7 +55,7 @@ CubeMapTexture::CubeMapTexture(const std::string* faces, unsigned int numFaces,c
 void CubeMapTexture::Bind() const
 {
 	glActiveTexture(GL_TEXTURE0 + m_Slot);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
 }
 
 void CubeMapTexture::Unbind() const

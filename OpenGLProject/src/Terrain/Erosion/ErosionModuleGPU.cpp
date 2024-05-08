@@ -9,96 +9,96 @@
 
 ErosionModuleGPU::ErosionModuleGPU()
 {
-    m_ErosionBrushIndicesBuffer = std::make_unique<ShaderStorageBufferObject>();
-    m_ErosionBrushWeightsBuffer = std::make_unique<ShaderStorageBufferObject>();
-    m_ErosionRandomIndexBuffer = std::make_unique<ShaderStorageBufferObject>();
-    m_MapBuffer = std::make_unique<ShaderStorageBufferObject>();
-    m_ErosionShader = Application::Get()->GetShaderManager()->GetShader(ShaderType::EROSION);
+    m_erosionBrushIndicesBuffer = std::make_unique<ShaderStorageBufferObject>();
+    m_erosionBrushWeightsBuffer = std::make_unique<ShaderStorageBufferObject>();
+    m_erosionRandomIndexBuffer = std::make_unique<ShaderStorageBufferObject>();
+    m_mapBuffer = std::make_unique<ShaderStorageBufferObject>();
+    m_erosionShader = Application::Get()->GetShaderManager()->GetShader(ShaderType::EROSION);
 }
 
 ErosionModuleGPU::~ErosionModuleGPU() = default;
 
-void ErosionModuleGPU::Erode(std::vector<float>& heighmap)
+void ErosionModuleGPU::Erode(std::vector<float>& heightmap)
 {
-    m_BrushIndexOffsets.clear();
-    m_BrushWeights.clear();
+    m_brushIndexOffsets.clear();
+    m_brushWeights.clear();
     
     CreateBrushes();
     GenerateRandomIndicesForDropletPlacement();
     SetErosionShaderUniforms();
     
-    m_MapBuffer->SetData(heighmap.data(), heighmap.size() * sizeof(float), 18);
+    m_mapBuffer->SetData(heightmap.data(), static_cast<int>(heightmap.size()) * sizeof(float), 1);
 
-    Application::Get()->GetShaderManager()->RunComputeShader(m_ErosionShader, m_NumErosionIterations,64);
+    Application::Get()->GetShaderManager()->RunComputeShader(m_erosionShader, m_numErosionIterations,64);
     
-    m_MapBuffer->GetData(heighmap.data(), heighmap.size() * sizeof(float), 0,18);
+    m_mapBuffer->GetData(heightmap.data(), static_cast<int>(heightmap.size()) * sizeof(float), 0,1);
     
     UnBind();
 }
 
 int ErosionModuleGPU::GetNumErosionIterations() const
 {
-    return m_NumErosionIterations;
+    return m_numErosionIterations;
 }
 
 float ErosionModuleGPU::GetSedimentCapacityFactor() const
 {
-    return m_SedimentCapacityFactor;
+    return m_sedimentCapacityFactor;
 }
 
 float ErosionModuleGPU::GetEvaporateSpeed() const
 {
-    return m_EvaporateSpeed;
+    return m_evaporateSpeed;
 }
 
 float ErosionModuleGPU::GetInertia() const
 {
-    return m_Inertia;
+    return m_inertia;
 }
 
-void ErosionModuleGPU::SetNumErosionIterations(int numIterations)
+void ErosionModuleGPU::SetNumErosionIterations(const int numIterations)
 {
-    if(m_NumErosionIterations == numIterations)
+    if(m_numErosionIterations == numIterations)
     {
         return;
     }
-    m_NumErosionIterations = numIterations;
+    m_numErosionIterations = numIterations;
     SetDirty();
 }
 
-void ErosionModuleGPU::SetSedimentCapacityFactor(float factor)
+void ErosionModuleGPU::SetSedimentCapacityFactor(const float factor)
 {
-    if(m_SedimentCapacityFactor == factor)
+    if(m_sedimentCapacityFactor == factor)
     {
         return;
     }
-    m_SedimentCapacityFactor = factor;
+    m_sedimentCapacityFactor = factor;
     SetDirty();
 }
 
-void ErosionModuleGPU::SetEvaporateSpeed(float speed)
+void ErosionModuleGPU::SetEvaporateSpeed(const float speed)
 {
-    if(m_EvaporateSpeed == speed)
+    if(m_evaporateSpeed == speed)
     {
         return;
     }
-    m_EvaporateSpeed = speed;
+    m_evaporateSpeed = speed;
     SetDirty();
 }
 
-void ErosionModuleGPU::SetInertia(float inertia)
+void ErosionModuleGPU::SetInertia(const float inertia)
 {
-    if(m_Inertia == inertia)
+    if(m_inertia == inertia)
     {
         return;
     }
-    m_Inertia = inertia;
+    m_inertia = inertia;
     SetDirty();
 }
 
-void ErosionModuleGPU::Process(std::vector<float>& heighmap)
+void ErosionModuleGPU::Process(std::vector<float>& heightmap)
 {
-    Erode(heighmap);
+    Erode(heightmap);
 }
 
 void ErosionModuleGPU::CreateBrushes()
@@ -112,39 +112,37 @@ void ErosionModuleGPU::CreateBrushes()
         for (int brushX = -ErosionBrushRadius; brushX <= ErosionBrushRadius; brushX++)
         {
             // Calculate squared distance from center
-            const float sqrDst = brushX * brushX + brushY * brushY;
+            const float sqrDst = static_cast<float>(brushX) * static_cast<float>(brushX) + static_cast<float>(brushY) * static_cast<float>(brushY);
 
             // Check if within erosion brush radius
             if (sqrDst < ErosionBrushRadius * ErosionBrushRadius)
             {
                 // Calculate index offset and add to brush index offsets vector
-                m_BrushIndexOffsets.push_back(brushY * width + brushX);
+                m_brushIndexOffsets.push_back(brushY * width + brushX);
                 
                 // Calculate brush weight based on distance from center
                 float brushWeight = 1 - sqrt(sqrDst) / ErosionBrushRadius;
                 
-                // Accumulate weight sum
                 weightSum += brushWeight;
                 
-                // Add brush weight to brush weights vector
-                m_BrushWeights.push_back(brushWeight);
+                m_brushWeights.push_back(brushWeight);
             }
         }
     }
 
-    for (float& m_BrushWeight : m_BrushWeights)
+    for (float& m_BrushWeight : m_brushWeights)
     {
         m_BrushWeight /= weightSum;
     }
     
-    m_ErosionBrushIndicesBuffer->SetData(m_BrushIndexOffsets.data(), m_BrushIndexOffsets.size() * sizeof(int), 16);
-    m_ErosionBrushWeightsBuffer->SetData(m_BrushWeights.data(), m_BrushWeights.size() * sizeof(float), 17);
+    m_erosionBrushIndicesBuffer->SetData(m_brushIndexOffsets.data(),static_cast<int>(m_brushIndexOffsets.size()) * sizeof(int), 3);
+    m_erosionBrushWeightsBuffer->SetData(m_brushWeights.data(),static_cast<int>(m_brushWeights.size()) * sizeof(float), 4);
 }
 
 void ErosionModuleGPU::GenerateRandomIndicesForDropletPlacement() const
 {
     const int width = Application::Get()->GetTerrainGenerator()->GetSubdivisions();
-    std::vector<int> randomIndices(m_NumErosionIterations);
+    std::vector<int> randomIndices(m_numErosionIterations);
     
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -152,7 +150,7 @@ void ErosionModuleGPU::GenerateRandomIndicesForDropletPlacement() const
     std::uniform_int_distribution distribution(ErosionBrushRadius, width + ErosionBrushRadius);
     
     // Generate random indices for droplet placement
-    for (int i = 0; i < m_NumErosionIterations; i++)
+    for (int i = 0; i < m_numErosionIterations; i++)
     {
         // Generate random coordinates within the map bounds
         const int randomX = distribution(gen);
@@ -162,32 +160,32 @@ void ErosionModuleGPU::GenerateRandomIndicesForDropletPlacement() const
         randomIndices[i] = randomY * width + randomX;
     }
     
-    m_ErosionRandomIndexBuffer->SetData(randomIndices.data(), randomIndices.size() * sizeof(int), 15);
+    m_erosionRandomIndexBuffer->SetData(randomIndices.data(), static_cast<int>(randomIndices.size()) * sizeof(int), 2);
 }
 
 void ErosionModuleGPU::SetErosionShaderUniforms() const
 {
-    m_ErosionShader->Bind();
+    m_erosionShader->Bind();
 
-    m_ErosionShader->SetUniform1i("borderSize", ErosionBrushRadius);
-    m_ErosionShader->SetUniform1i("brushLength", m_BrushIndexOffsets.size());
-    m_ErosionShader->SetUniform1i("maxLifetime", m_MaxLifetime);
-    m_ErosionShader->SetUniform1f("inertia", m_Inertia);
-    m_ErosionShader->SetUniform1f("sedimentCapacityFactor", m_SedimentCapacityFactor);
-    m_ErosionShader->SetUniform1f("minSedimentCapacity", m_MinSedimentCapacity);
-    m_ErosionShader->SetUniform1f("depositSpeed", m_DepositSpeed);
-    m_ErosionShader->SetUniform1f("erodeSpeed", m_ErodeSpeed);
-    m_ErosionShader->SetUniform1f("evaporateSpeed", m_EvaporateSpeed);
-    m_ErosionShader->SetUniform1f("gravity", m_Gravity);
-    m_ErosionShader->SetUniform1f("startSpeed", m_StartSpeed);
-    m_ErosionShader->SetUniform1f("startWater", m_StartWater);
-    m_ErosionShader->SetUniform1i("mapSize", Application::Get()->GetTerrainGenerator()->m_BorderedMapSize);
+    m_erosionShader->SetUniform1i("u_borderSize", ErosionBrushRadius);
+    m_erosionShader->SetUniform1i("u_brushLength", static_cast<int>(m_brushIndexOffsets.size()));
+    m_erosionShader->SetUniform1i("u_maxLifetime", m_maxLifetime);
+    m_erosionShader->SetUniform1f("u_inertia", m_inertia);
+    m_erosionShader->SetUniform1f("u_sedimentCapacityFactor", m_sedimentCapacityFactor);
+    m_erosionShader->SetUniform1f("u_minSedimentCapacity", m_minSedimentCapacity);
+    m_erosionShader->SetUniform1f("u_depositSpeed", m_depositSpeed);
+    m_erosionShader->SetUniform1f("u_erodeSpeed", m_erodeSpeed);
+    m_erosionShader->SetUniform1f("u_evaporateSpeed", m_evaporateSpeed);
+    m_erosionShader->SetUniform1f("u_gravity", m_gravity);
+    m_erosionShader->SetUniform1f("u_startSpeed", m_startSpeed);
+    m_erosionShader->SetUniform1f("u_startWater", m_startWater);
+    m_erosionShader->SetUniform1i("u_mapSize", Application::Get()->GetTerrainGenerator()->m_BorderedMapSize);
 }
 
 void ErosionModuleGPU::UnBind() const
 {
-    m_MapBuffer->Unbind();
-    m_ErosionBrushIndicesBuffer->Unbind();
-    m_ErosionBrushWeightsBuffer->Unbind();
-    m_ErosionRandomIndexBuffer->Unbind();
+    m_mapBuffer->Unbind();
+    m_erosionBrushIndicesBuffer->Unbind();
+    m_erosionBrushWeightsBuffer->Unbind();
+    m_erosionRandomIndexBuffer->Unbind();
 }

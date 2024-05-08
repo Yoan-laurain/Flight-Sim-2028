@@ -16,5 +16,5 @@ class VertexArray
 
 	private:
 
-		unsigned int m_ID;
+		unsigned int m_id;
 };

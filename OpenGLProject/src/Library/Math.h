@@ -5,6 +5,7 @@
 #include "Quaternion.h"
 
 #include <cmath>
+#include <random>
 
 constexpr double M_PI = 3.14159265358979323846;
 
@@ -32,6 +33,15 @@ namespace Math
     constexpr T cross(const T& vec1, const T& vec2)
     {
         return vec1.cross(vec2);
+    }
+    
+    template<typename T>
+    T rand(T x, T y)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<T> dis(x, y);
+        return dis(gen);
     }
 
     inline Vec3<float> Normalize(const Vec3<float>& vec)

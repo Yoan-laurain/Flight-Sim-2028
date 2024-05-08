@@ -6,7 +6,6 @@
 class TerrainGenerationModule;
 class TerrainModel;
 enum class ShaderType;
-class Shader;
 
 class TerrainGenerator
 {
@@ -18,7 +17,7 @@ class TerrainGenerator
         void GenerateTerrain(float width, int subdivisions, ShaderType shaderType);
 
         /*  Update the terrain by processing all the modules generating the new heightmap and updating the terrain model */
-        void UpdateTerrain() const;
+        void UpdateTerrain();
 
         /*  Update the generation modules based on the current settings */
         void UpdateGenerationModules();
@@ -40,8 +39,8 @@ class TerrainGenerator
         TerrainModel* GetTerrain() const;
         int GetSubdivisions() const;
 
-        float m_ElevationScale = 20.f;
-        bool m_GenerateGPU = true;
+        float m_ElevationScale;
+        bool m_GenerateGPU;
         int m_BorderedMapSize;
 
         double GetMinGenerationTime() const;
@@ -50,6 +49,7 @@ class TerrainGenerator
     
     private:
         int m_subdivision;
+        bool m_isInitialized;
         std::unique_ptr<TerrainModel> m_terrain;
         std::vector<std::unique_ptr<TerrainGenerationModule>> m_modules;
 };

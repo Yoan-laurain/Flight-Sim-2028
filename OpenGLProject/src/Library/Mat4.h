@@ -71,7 +71,7 @@ struct Mat4
         return Result;
     }
     
-    Mat4& operator=(const Mat4& mat4)
+    Mat4& operator=(const Mat4& mat4)  // NOLINT(bugprone-unhandled-self-assignment)
     {
         if (this != &mat4) { 
             for (int i = 0; i < 4; ++i) {

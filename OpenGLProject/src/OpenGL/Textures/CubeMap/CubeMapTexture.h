@@ -5,7 +5,7 @@
 class CubeMapTexture : public Texture
 {
 	public:
-		CubeMapTexture(const std::string* faces, unsigned int numFaces,const char* texType);
+		CubeMapTexture(const std::string* faces, unsigned int numFaces, const char* texType);
 		~CubeMapTexture() override = default;
 
 		/* Inherited via Texture */
