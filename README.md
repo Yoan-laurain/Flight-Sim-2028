@@ -90,3 +90,4 @@ https://ranmantaru.com/blog/2011/10/08/water-erosion-on-heightmap-terrain/
 Compute Shader : 
 
 https://www.youtube.com/watch?v=XyUusirGAl4
+https://www.youtube.com/watch?v=DZRn_jNZjbw
